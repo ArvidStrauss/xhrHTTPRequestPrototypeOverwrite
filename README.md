@@ -1,16 +1,51 @@
-# Setup:
-1. Run "npm install" in root directory
-2. Run "gulp" in root directory to build files and create delivery artifact
-3. If you add more source files, you have to integrate them into the building process defined in "gulpfile.js"
+# Coyo Tracking Script Generator
 
-# Additional Information
-Basically the project consists of 9 main files:
-* "custom_code.js" - includes custom nav menu and several layout adjustemnts, add future not tracking related adjustments here
-* "tracking_utils.js" - contains tracking supporting functions
-* "tracking_db.js" - tracking item naming database which stores information about all trackable objects
-* "tracking.js" - includes tracking logic, add future tracking related adjustments here
-* "db_custom_style.css" - includes all custom css adjustments for DB Planet
-* "schenker_custom_style.css" - includes all custom css adjustments for the Schenker Design
-* "custom_code_dev.html" - HTML template for final DEV source file, including Matomo configuration
-* "custom_code_test.html" - HTML template for final TEST source file, including Matomo configuration
-* "custom_code_prod.html" - HTML template for final PROD source file, including Matomo configuration
+## Project Structure
+
+### common
+
+Contains the shared files for all projects. The main tracking for coyo in general is handled here. Also the whole gulp task and build setup happens here.
+Files are listed in loadorder:
+
+- "tracking_db.js" = tracking item naming database which stores information about all trackable objects
+- "tracking_utils.js" = contains tracking supporting functions
+- "tracking.js" = the main tracking logic, add an http-interceptor to catch responses and send tracking events based on provided data
+- "click_tracking.js" = additional pure onclick tracking logic like navigation actions or videoviews (onplay)
+- "gulpfile.js" = included by each customer project, does all the magic (building)
+
+### BasicExampleProject
+
+This is an example Project with the basic setup. So all files and variables for customizing exist but are basically empty.
+This project tracks everything we can for now, but with pure coyo-data. No renaming or other customer specific stuff.
+
+- "localtracking.js" = the DEV setup for use with local development, see [development](#development)
+- "tracking_config_dev.html" = HTML template for final DEV source file, including Matomo and all other kinds of configuration
+- "tracking_config_test.html" = HTML template for final TEST source file, including Matomo and all other kinds of configuration
+- "tracking_config_prod.html" = HTML template for final PROD source file, including Matomo and all other kinds of configuration
+- "gulpfile.js" = the project specific setup, make sure to setup projectData correctly
+
+## Setup
+
+1. Run "npm install" in root directory
+
+## Development
+
+## Create a new Customer Project
+
+1. Copy the "BasicExampleProject" and rename it
+2. Edit ProjectData in the folders "gulpfile.js" to match you customer
+3. Setup Variables in "tracking_config_\[dev|tast/prod\].html", see comments inside these files for further details
+4. Generate you first delivery, feel free to [add more custom code](#customizing)
+
+## Generate Deliveries
+
+1. go into the customer project directory
+2. Run "gulp" in the customers project directory to build files and create delivery artifact
+3. Edit the projectVersion and projectDate in "project/gulpfile.js" after each delivery!
+
+## Customizing
+
+### Important Rules
+
+1. Think before adding customizing! Is the change something customer specific (add to project folder) or nice to have for all (add to common)?
+2. If you add mandatory functionality to common, make sure you do not break other projects! (e.g. add new stuff requiring a config inside each project...)
