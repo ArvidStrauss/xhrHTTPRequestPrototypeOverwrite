@@ -81,6 +81,7 @@ var coyoClickTracking = {
         // Mobile Sidebar Navigation
         document.querySelectorAll(SELECTORS.NAV_SIDEBAR+ignoreSelector).forEach(function(item) {
             item.addEventListener('click', function(e){
+                if(window.location.href.match(/admin/)) return;
                 var name='Navigation';
                 name = item.textContent.trim();
                 sendTrackingEvent('Navi-Mobile', 'Klick', coyoTrackingUtils.typeNameOverrides(name), null);
@@ -103,19 +104,19 @@ var coyoClickTracking = {
             item.setAttribute(ignore, "true");
         });
         document.querySelectorAll(SELECTORS.SEARCHFILTER_TYPE+ignoreSelector).forEach(function(item) {
-            filterClickTracking('Suche-Typ',item);
+            coyoClickTracking.filterClickTracking('Suche-Typ',item);
             item.setAttribute(ignore, "true");
         });
         document.querySelectorAll(SELECTORS.SEARCHFILTER_MODIFIED+ignoreSelector).forEach(function(item) {
-            filterClickTracking('Suche-Geaendert',item);
+            coyoClickTracking.filterClickTracking('Suche-Geaendert',item);
             item.setAttribute(ignore, "true");
         });
         document.querySelectorAll(SELECTORS.SEARCHFILTER_LOCATION+ignoreSelector).forEach(function(item) {
-            filterClickTracking('Suche-Ort',item);
+            coyoClickTracking.filterClickTracking('Suche-Ort',item);
             item.setAttribute(ignore, "true");
         });
         document.querySelectorAll(SELECTORS.SEARCHFILTER_AUTHOR+ignoreSelector).forEach(function(item) {
-            filterClickTracking('Suche-Autor',item);
+            coyoClickTracking.filterClickTracking('Suche-Autor',item);
             item.setAttribute(ignore, "true");
         });
     }

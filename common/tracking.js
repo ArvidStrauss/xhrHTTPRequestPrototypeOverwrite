@@ -75,13 +75,15 @@ if (!Element.prototype.closest) {
 }
 
 // List of tracked requests
-var coyoRequestTrackingConfig = [{
-    urlPattern: /web\/message-channels$/g,
-    method: 'POST',
-    execute: function(responseUrl, response) {
-        sendTrackingEvent('chat-channel', 'Create', response.type);
-    }
-}, {
+var coyoRequestTrackingConfig = [
+// {
+//     urlPattern: /web\/message-channels$/g,
+//     method: 'POST',
+//     execute: function(responseUrl, response) {
+//         sendTrackingEvent('chat-channel', 'Create', response.type);
+//     }
+// }, 
+{
     urlPattern: /web\/message-channels\/[0-9a-fA-F-]*\/messages$/g,
     method: 'POST',
     execute: function(responseUrl, response) {
@@ -178,7 +180,7 @@ var coyoRequestTrackingConfig = [{
         },1000);
     }
 }, {
-    urlPattern: /web\/search/g,
+    urlPattern: /web\/search(?!.*filters=\w)/g,
     method: 'GET',
     execute: function(responseUrl, response) {
         sendSearchEvent(responseUrl, response, false)
@@ -297,19 +299,19 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     coyoTrackingUtils.cleanupCustomDimensions();
     if(pageType) {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT, coyoTrackingUtils.typeNameOverrides(pageType)]);
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
+        // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
     }
     if(pageTitle) {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
+        // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
     }
     if(appType) {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT, coyoTrackingUtils.typeNameOverrides(appType)]);
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
+        // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
     }
     if(appTitle) {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
+        // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
     }
 
     // special search handling
@@ -333,17 +335,8 @@ function sendSearchEvent(responseUrl, response, isQuicksearch) {
         var pageConfig = coyoTrackingUtils.getPageConfig();
         var searchedTerm = queryParams.term.length === 1 ? decodeURIComponent(queryParams.term[0].toString()) : '';
         var rspFoundEleCount = typeof response.totalElements === 'number' ? parseInt(response.totalElements) : false;
-        // if(queryParams.filters && queryParams.filters.length && queryParams.filters[0].length){
-        //     console.warn(queryParams.filters[0]);
-        //     var filters = coyoTrackingUtils.parseQueryString('?'+decodeURIComponent(queryParams.filters[0]));
-        //     console.warn(filters);
-        //     // var plainfilters = filters.author.reduce(function (plain, item,) {
-        //     //     return plain = plain + '.' + item
-        //     // }); 
-        //     sendTrackingEvent('Suche-Filter', 'Klick', );
-        // }
         if(pageConfig.contentGroup[1]) {
-            _paq.push(['trackSiteSearch', searchedTerm, pageConfig[1], rspFoundEleCount]);
+            _paq.push(['trackSiteSearch', searchedTerm, isQuicksearch ? coyoTrackingUtils.typeNameOverrides('quicksearch') : coyoTrackingUtils.typeNameOverrides('search'), rspFoundEleCount]);
             coyoTrackingUtils.cleanupCustomDimensions();
             if(typeof isQuicksearch !== 'boolean' || !isQuicksearch){
                 debounce(function() {
@@ -456,23 +449,23 @@ function trackPageView(searchResults) {
     if(!coyoTrackingUtils.excludeFromTracking(EXCLUDED_GROUPINGPATHS))  {
         if (pageType) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE, coyoTrackingUtils.typeNameOverrides(pageType)]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
+            // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
         }
         if (pageTitle) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
+            // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
         }
         if (appType) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE, coyoTrackingUtils.typeNameOverrides(appType)]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
+            // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
         }
         if (appTitle) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE, coyoTrackingUtils.typeNameOverrides(appTitle)]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
+            // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
         }
         if (contentTitle) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
+            // _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
         }
     }
     _paq.push(['setReferrerUrl', currentUrl]);

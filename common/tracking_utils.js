@@ -105,6 +105,7 @@ var coyoTrackingUtils = {
             // 'events': 'termine',
             'colleagues': 'Kollegen',
             'activity': 'Aktivitaeten',
+            'quicksearch': 'Schnellsuche',
             // 'blog-list-view': 'Blog',
             // 'wiki-list-view': 'Wiki'
         };
