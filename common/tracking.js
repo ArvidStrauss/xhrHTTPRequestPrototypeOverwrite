@@ -305,7 +305,9 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
     }
-    if(appType) {
+    // prevent tracking apptype 'Show', 
+    // this happens either after a new Page/Workspace is created and there is no app setup or if redirects take longer then our debounce allows
+    if (appType && appType !== 'show') {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT, coyoTrackingUtils.typeNameOverrides(appType)]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
     }
@@ -455,7 +457,9 @@ function trackPageView(searchResults) {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
         }
-        if (appType) {
+        // prevent tracking apptype 'Show', 
+        // this happens either after a new Page/Workspace is created and there is no app setup or if redirects take longer then our debounce allows
+        if (appType && appType !== 'show') {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE, coyoTrackingUtils.typeNameOverrides(appType)]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
         }
