@@ -81,7 +81,9 @@ var coyoClickTracking = {
         // Mobile Sidebar Navigation
         document.querySelectorAll(SELECTORS.NAV_SIDEBAR+ignoreSelector).forEach(function(item) {
             item.addEventListener('click', function(e){
-                if(window.location.href.match(/admin/)) return;
+                for(var i=0;i<EXCLUDED_PATHS.length;i++){
+                    if(window.location.href.match(EXCLUDED_PATHS[i])) return;
+                }
                 var name='Navigation';
                 name = item.textContent.trim();
                 sendTrackingEvent('Navi-Mobile', 'Klick', coyoTrackingUtils.typeNameOverrides(name), null);
