@@ -1,8 +1,8 @@
 // projectdata is required (of course!)
 var projectData = {
-    projectName: 'LHM',
-    projectVersion: '1.0.1',
-    projectDate: '2020-05-15'
+    projectName: 'BasicExampleProject',
+    projectVersion: '1.0.0',
+    projectDate: '2020-06-12'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
 // var builds = [
@@ -21,5 +21,5 @@ var gulp = commonGulp.gulp;
 // and add them to the default build via: commonGulp.tasks.push('my-shiny-task')
 
 gulp.task('build', gulp.parallel(commonGulp.tasks));
-gulp.task('local', function(){commonGulp.watch('src/*.js', gulp.series('build-local'))});
+gulp.task('local', function(){gulp.watch(['src/*.js','../common/*.js'], gulp.series('build-local'))});
 gulp.task('default', gulp.series('min-js', 'build', gulp.parallel('clean-temp', 'zip-files')));

@@ -18,6 +18,22 @@ Files are listed in loadorder:
 This is an example Project with the basic setup. So all files and variables for customizing exist but are basically empty.
 This project tracks everything we can for now, but with pure coyo-data. No renaming or other customer specific stuff.
 
+#### build
+
+- created after first build
+- contains the build output, normal and minified
+
+#### delivery
+
+- contains the zipped packages with versionnumbers set in gulpfile
+
+##### local
+
+- created after first gulp local task
+- contains the built localtracking.js which is delivered by http-server
+
+#### src
+
 - "localtracking.js" = the DEV setup for use with local development, see [development](#development)
 - "tracking_config_dev.html" = HTML template for final DEV source file, including Matomo and all other kinds of configuration
 - "tracking_config_test.html" = HTML template for final TEST source file, including Matomo and all other kinds of configuration
@@ -30,6 +46,15 @@ This project tracks everything we can for now, but with pure coyo-data. No renam
 
 ## Development
 
+1. Switch to the customer project directory
+2. Run "gulp local" to create a file "local/localtracking.js" which uses the src/localtracking.js inside the mainfolder for settings and the normal buildprocess.  
+This also sets a watcher on the file, so it gets rebuilt if you change anything in your code.
+3. Run "npm run serve" to start a local http-server, making the "local" folder accessible on web
+4. Login to Coyo as admin and go to administration->general settings
+5. In the textfield "Tracking Code" enter the following line ```<script type="text/javascript" src="http://127.0.0.1:8080/localtracking.js" />```
+6. Go back to the normal Coyo Pages, check if localtracking.js is loaded, matomo gets initialized and things are being tracked
+7. Have fun developing and see you changes on the fly!
+
 ## Create a new Customer Project
 
 1. Copy the "BasicExampleProject" and rename it
@@ -39,7 +64,7 @@ This project tracks everything we can for now, but with pure coyo-data. No renam
 
 ## Generate Deliveries
 
-1. go into the customer project directory
+1. Go into the customer project directory
 2. Run "gulp" in the customers project directory to build files and create delivery artifact
 3. Edit the projectVersion and projectDate in "project/gulpfile.js" after each delivery!
 

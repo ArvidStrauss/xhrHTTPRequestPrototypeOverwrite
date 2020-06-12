@@ -21,5 +21,5 @@ var gulp = commonGulp.gulp;
 // and add them to the default build via: commonGulp.tasks.push('my-shiny-task')
 
 gulp.task('build', gulp.parallel(commonGulp.tasks));
-gulp.task('local', function(){commonGulp.watch('src/*.js', gulp.series('build-local'))});
+gulp.task('local', function(){gulp.watch(['src/*.js','../common/*.js'], gulp.series('build-local'))});
 gulp.task('default', gulp.series('min-js', 'build', gulp.parallel('clean-temp', 'zip-files')));
