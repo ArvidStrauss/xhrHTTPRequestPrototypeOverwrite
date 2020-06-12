@@ -51,7 +51,7 @@ This project tracks everything we can for now, but with pure coyo-data. No renam
 This also sets a watcher on the file, so it gets rebuilt if you change anything in your code.
 3. Run "npm run serve" to start a local http-server, making the "local" folder accessible on web
 4. Login to Coyo as admin and go to administration->general settings
-5. In the textfield "Tracking Code" enter the following line ```<script type="text/javascript" src="http://127.0.0.1:8080/localtracking.js" />```
+5. In the textfield "Tracking Code" enter a script tag with the path to your local file, e.g. ```<script type="text/javascript" src="http://127.0.0.1:8080/localtracking.js" />```
 6. Go back to the normal Coyo Pages, check if localtracking.js is loaded, matomo gets initialized and things are being tracked
 7. Have fun developing and see you changes on the fly!
 

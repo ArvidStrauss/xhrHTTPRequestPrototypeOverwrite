@@ -7,7 +7,7 @@
 
 // Adjust matomo tracking settings here
 // If you adjust the following params, you have to adjust the src of the image tag above aswell
-const MATOMO_TARGET_ID = '9';
+const MATOMO_TARGET_ID = '0';
 const MATOMO_TARGET_PHP = 'https://di-tools.t-systems-mms.eu/matomo/matomo.php';
 const MATOMO_TARGET_JS = 'https://di-tools.t-systems-mms.eu/matomo/matomo.js';
 
