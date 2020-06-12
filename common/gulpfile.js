@@ -87,7 +87,7 @@ module.exports = function(projectData,builds) {
                 .pipe(replace('_$VERSION$_', projectData.projectVersion))
                 .pipe(replace('_$DATE$_', projectData.projectDate))
                 .pipe(replace('_$ENV$_', buildItem.env.toUpperCase()))
-                .pipe(rename('LHM-Tracking-' + buildItem.env.toUpperCase() + '.html'))
+                .pipe(rename(projectData.projectName+'-Tracking-' + buildItem.env.toUpperCase() + '.html'))
                 .pipe(beautify())
                 .pipe(gulp.dest('build'));
         });
@@ -112,7 +112,7 @@ module.exports = function(projectData,builds) {
                 .pipe(replace('_$VERSION$_', projectData.projectVersion))
                 .pipe(replace('_$DATE$_', projectData.projectDate))
                 .pipe(replace('_$ENV$_', buildItem.env.toUpperCase()))
-                .pipe(rename('LHM-Tracking-' + buildItem.env.toUpperCase() + '.min.html'))
+                .pipe(rename(projectData.projectName+'-Tracking-' + buildItem.env.toUpperCase() + '.min.html'))
                 .pipe(gulp.dest('build'));
         });
     });
