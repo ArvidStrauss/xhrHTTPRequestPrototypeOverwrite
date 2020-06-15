@@ -201,19 +201,40 @@ var coyoRequestTrackingConfig = [
     execute: function(responseUrl, response) {
         sendTrackingEvent('Media', 'Upload', response.displayName);
     }
+}, {
+    // document/files use nearly the same handler because different widgets and filetypes work with different requests
+    // depending on which one gets executed we track the file view and lastFileId prevents double tracking (also for multiple calls when opening modal)
+    // examples: 
+    // single-file-widget + documents panel
+    //  images: first call = /files/ + /documents/, further calls just /documents/
+    //  videos: first call = /files/ + /stream/, further calls nothing catchable, sometimes /stream/ based on currently streamed data
+    //  other docs: first call = /files/ + further calls nothing catchable
+    // media-widget:
+    //  images: always /files/, nothing else
+    //  videos: always /stream/ HEAD, nothing else
+    // embedded video in posts:
+    //  no modal, no xhr requests, so we do our own HEAD request to get the title
+    urlPattern: /web\/senders\/.*\/documents/g,
+    method: 'GET',
+    execute: function(responseUrl, response) {
+        var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
+        var modal = document.querySelector('.modal-dialog');
+        if(docMatch && docMatch[1] && modal) {
+            var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
+            if(lastFileId !== objData.name) sendTrackingEvent('Media', 'Ansicht', objData.name);
+            lastFileId = objData.name;
+            setTimeout(function(){
+                lastFileId = '';
+            }, 5000);
+        }
+    }
 },
 {
     urlPattern: /web\/senders\/.*\/files/g,
     method: 'GET',
     execute: function(responseUrl, response, requestData, respHeader) {
         var modal = document.querySelector('.modal-dialog');
-        if(modal && modal.offsetParent){
-            // check for video extension to prevent double-tracking for single-file-widget: 
-            // click on play button launches video -> tracked by videoTracking
-            // click on anywhere else opens dialog + launches small video in background + stops it immediately -> possible double tracking
-            var ext = response.displayName.split('.').pop();
-            if(['mp4','webm','mov','flv','mpg'].indexOf(ext) !== -1) return
-            // prevent double tracking when opening docviewer from inside content (there are 2 identical responses...)
+        if(modal && response && response.displayName && response.displayName.length) {
             if(lastFileId !== response.displayName) sendTrackingEvent('Media', 'Ansicht', response.displayName);
             lastFileId = response.displayName;
             setTimeout(function(){
@@ -221,23 +242,17 @@ var coyoRequestTrackingConfig = [
             }, 5000);
         }
     }
-}, {
+}, 
+{
     urlPattern: /web\/senders\/.*\/stream/g,
     method: 'HEAD',
     execute: function(responseUrl, response, requestData, respHeader) {
-       var relUrl = '/'+responseUrl.replace(/^(?:\/\/|[^/]+)*\//, '');
-       var matchingVideo = document.querySelector('video[src="'+relUrl+'"]');
-       //try to get the title from stream HEAD request and set it as attribute for the url-matched video-tag
-       //the filename is then used for tracking videoviews on play at click_tracking.js
-       if(matchingVideo && respHeader['content-disposition']) {
-           try {
-            var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
-            matchingVideo.setAttribute('data-title',filename);
-            // sendTrackingEvent('Media', 'Ansicht', filename);
-           } catch (e){}
-       }
-       // trigger tracking-binding to new videos inside possible new open popup
-       coyoClickTracking.addVideoTracking();
+        var modal = document.querySelector('.modal-dialog');
+        if(modal) {
+            coyoTrackingUtils.getVideoInfo(responseUrl,function(filename){
+                sendTrackingEvent('Media', 'Ansicht', filename, null)
+            });
+        }
     }
 },
 {

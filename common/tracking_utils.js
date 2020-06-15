@@ -307,7 +307,6 @@ var coyoTrackingUtils = {
             },
             'fileLibrary': function () {
                 analyzeFile(contentGroup, override);
-                console.warn(contentGroup);
             }
         };
         if (contentGroupTwo[contentGroup[1]]) {
@@ -352,5 +351,23 @@ var coyoTrackingUtils = {
             headersFormatted[name] = value;
         }
         return headersFormatted;
+    },
+    getVideoInfo: function (url,callback){
+        var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
+        var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
+        if(objData && objData.name && objData.name.length){
+            callback(objData.name);
+        } else {
+            var http = new XMLHttpRequest();
+            http.open('HEAD', url);
+            http.onreadystatechange = function() {
+                if (this.readyState == this.DONE) {
+                    var respHeader = coyoTrackingUtils.getResponseHeaders(this);
+                    var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    callback(filename);
+                }
+            };
+            http.send();
+        }
     }
 };

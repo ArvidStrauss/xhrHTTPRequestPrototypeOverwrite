@@ -28,29 +28,24 @@ var coyoClickTracking = {
     addVideoTracking: function() {
         document.querySelectorAll('video'+ignoreSelector).forEach(function(item) {
             // if a default uploaded video is embedded in a post, there is no information about the title
-            // send a HEAD request to the source, parse the title from the header, add the data-title attribute to that video
+            // look into objectDB, otherwise send a HEAD request to the source, parse the title from the header, add the data-title attribute to that video
             // then track it with its title on first play
+            item.setAttribute(ignore, "true");
             if(!item.getAttribute('data-title')) {
-                var http = new XMLHttpRequest();
-                http.open('HEAD', item.src);
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        var respHeader = coyoTrackingUtils.getResponseHeaders(this);
-                        try {
-                        var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
-                        item.setAttribute('data-title',filename);
-                        } catch (e){}
-                    }
-                };
-                http.send();
+                coyoTrackingUtils.getVideoInfo(item.src,function(filename){
+                    item.setAttribute('data-title',filename);
+                });
             }
             item.addEventListener('play', function(e){
                 var viewed = item.getAttribute('data-viewed');
                 //only track initial video starts
                 if(!viewed) {
-                    var title = item.getAttribute('data-title');
-                    if(title) sendTrackingEvent('Media', 'Ansicht', title, null);
-                    item.setAttribute('data-viewed', "true");
+                    setTimeout(function(){
+                        var title = item.getAttribute('data-title');
+                        var modal = document.querySelector('.modal-dialog');
+                        if(title && !modal) sendTrackingEvent('Media', 'Ansicht', title, null);
+                        item.setAttribute('data-viewed', "true");
+                    },500);
                 }
             });
             item.setAttribute(ignore, "true");
@@ -130,4 +125,4 @@ window.document.addEventListener('stateChangeSuccess', debounce(function() {
         coyoClickTracking.addClickBindings();
         coyoClickTracking.addVideoTracking();
     }, extanaSettings.delayForStateChange || 2);
-}, 250), false);
+}, 1000), false);
