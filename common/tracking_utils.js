@@ -75,7 +75,7 @@ var coyoTrackingUtils = {
         return coyoTrackingUtils.excludeUrl(location.href,pathArray) || coyoTrackingUtils.preventTracking;
     },
     typeNameOverrides: function(typeName,escape) {
-        escape = (typeof escape === 'boolean' && !escape) ? false : true;
+        escape = (typeof escape === 'boolean' && escape) ? true : false;
         var overrides = {
             'pages': 'Seiten',
             'page': 'Seite',
