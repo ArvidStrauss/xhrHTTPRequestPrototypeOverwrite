@@ -104,6 +104,16 @@ var coyoRequestTrackingConfig = [
         sendTrackingEvent(item.type, 'Subscribe', item.name, item);
     }
 }, {
+    urlPattern: /subscriptions\/favorite/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        var queryParams = coyoTrackingUtils.parseQueryString(responseUrl.replace(/.*\?/i, '?'));
+        if(queryParams.targetId) {
+            var item = coyoTrackingDBHelper.getObjectData(queryParams.targetId);
+            sendTrackingEvent(item.type, 'Subscribe', item.name, item);
+        }
+    }
+}, {
     urlPattern: /subscriptions.*\?targetId=/g,
     method: 'DELETE',
     execute: function(responseUrl, response) {
@@ -223,6 +233,7 @@ var coyoRequestTrackingConfig = [
            try {
             var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
             matchingVideo.setAttribute('data-title',filename);
+            // sendTrackingEvent('Media', 'Ansicht', filename);
            } catch (e){}
        }
        // trigger tracking-binding to new videos inside possible new open popup
