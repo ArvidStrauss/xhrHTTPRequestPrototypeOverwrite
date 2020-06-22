@@ -96,7 +96,7 @@ var coyoTrackingUtils = {
             'timeline': 'Timeline',
             'filelibrary': 'Dokumente',
             'file-library': 'Dokumente',
-            'content': 'Content',
+            'content': 'Inhalt',
             'article': 'Artikel',
             // 'timeline': 'Verlauf',
             'list': 'Liste',
@@ -106,6 +106,8 @@ var coyoTrackingUtils = {
             'colleagues': 'Kollegen',
             'activity': 'Aktivitaeten',
             'quicksearch': 'Schnellsuche',
+            'form': 'Formular',
+            'task': 'Aufgaben'
             // 'blog-list-view': 'Blog',
             // 'wiki-list-view': 'Wiki'
         };
