@@ -309,13 +309,14 @@ var coyoTrackingUtils = {
                 analyzeFile(contentGroup, override);
             }
         };
-        if (contentGroupTwo[contentGroup[1]]) {
-            contentGroupTwo[contentGroup[1]]();
-        }
 
         //remove anchor tag from pageType
         if(contentGroup[1] && contentGroup[1].indexOf('#') !== -1){
             contentGroup[1] = contentGroup[1].substr(0,contentGroup[1].indexOf('#'));
+        }
+
+        if (contentGroupTwo[contentGroup[1]]) {
+            contentGroupTwo[contentGroup[1]]();
         }
         
         return {
