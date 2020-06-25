@@ -168,6 +168,14 @@ var coyoTrackingUtils = {
         });
         return map;
     },
+    getAngularComponent: function(domElem) {
+        try{
+            return angular.element(domElem).data().$$$angularInjectorController.view.nodes[0].componentView.component;
+        } catch (e) {
+            console.warn(e);
+            return null;
+        }
+    },
     getPageConfig: function (override) {
         var contentGroup = [CONTENTBASE];
         var trackingTitle = '';
@@ -259,10 +267,12 @@ var coyoTrackingUtils = {
         }
 
         var analyzeFile = function (contentGroup, override) {
-            var page = decodeURIComponent(location.href.split('/')[6]);
+            var fileObj = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
             // check for platform specific type name overrides
             contentGroup[1] = 'filelibrary';
-            if (page) contentGroup[2] = override[2] ? override[2] : page;
+            if (fileObj && fileObj.file && fileObj.file.displayName) {
+                contentGroup[2] = override[2] ? override[2] : fileObj.file.displayName;
+            }
         };
 
         // find the first navigation level
@@ -333,7 +343,7 @@ var coyoTrackingUtils = {
         if (contentGroupTwo[contentGroup[1]]) {
             contentGroupTwo[contentGroup[1]]();
         }
-        
+
         return {
             contentGroup: contentGroup,
             trackingTitle: trackingTitle
