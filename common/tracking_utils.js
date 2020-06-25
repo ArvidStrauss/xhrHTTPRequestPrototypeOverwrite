@@ -107,7 +107,13 @@ var coyoTrackingUtils = {
             'activity': 'Aktivitaeten',
             'quicksearch': 'Schnellsuche',
             'form': 'Formular',
-            'task': 'Aufgaben'
+            'task': 'Aufgaben',
+            'files': 'Dateiübersicht',
+            'settings': 'Einstellungen',
+            'members-list': 'Mitglieder Liste',
+            'members-invited': 'Mitglieder Einladungen',
+            'members-requested': 'Mitglieder Anfragen',
+            'participants': 'Teilnehmer'
             // 'blog-list-view': 'Blog',
             // 'wiki-list-view': 'Wiki'
         };
@@ -124,8 +130,7 @@ var coyoTrackingUtils = {
             'workspaces': 'ar',
             'arbeitsraeume': 'ar',
             'workspace': 'ar',
-            'search': 'suche',
-            'filelibrary': 'dokumente'
+            'search': 'suche'
         };
         return overrides[typeName] || typeName;
     },
@@ -179,11 +184,17 @@ var coyoTrackingUtils = {
         override = override || {};
 
         var analyzePage = function (contentGroup, override) {
-            var page = $('section.page div.panel.panel-default div.panel-foreground div.titles-container div.title-description-wrapper div.title').text().trim() || (location.href.split('/')[4] ? decodeURIComponent(location.href.split('/')[4]) : null);
-            var navigation = $('section.page .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(window.location.href.split('/')[7]).name;
+            var splitUrl = window.location.href.split('/');
+            var page = $('section.page div.panel.panel-default div.panel-foreground div.titles-container div.title-description-wrapper div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
+            var navigation = $('section.page .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-page-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-page-show-([\w\-]*)/g.exec(bodyClass) || /state-main-page-([\w\-]*)/g.exec(bodyClass);
-            var app = window.location.href.split('/')[6] ? decodeURIComponent(window.location.href.split('/')[6]) : (classMatch ? classMatch[1] : '');
+            if(splitUrl[6]) {
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+            } else {
+                var app = (classMatch ? classMatch[1] : '');
+            }
             // check for platform specific type name overrides
             contentGroup[1] = 'pages';
             if (page) contentGroup[2] = override[2] ? override[2] : page;
@@ -192,11 +203,17 @@ var coyoTrackingUtils = {
         };
 
         var analyzeWorkspace = function (contentGroup, override) {
-            var workspace = $('section.workspace div.panel.panel-default div.panel-foreground div.titles-container div.title').text().trim() || (location.href.split('/')[4] ? decodeURIComponent(location.href.split('/')[4]) : null);
-            var navigation = $('section.workspace .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(window.location.href.split('/')[7]).name;
+            var splitUrl = window.location.href.split('/');
+            var workspace = $('section.workspace div.panel.panel-default div.panel-foreground div.titles-container div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
+            var navigation = $('section.workspace .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-workspace-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-show-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-([\w\-]*)/g.exec(bodyClass);
-            var app =  window.location.href.split('/')[6] ? decodeURIComponent(window.location.href.split('/')[6]) : (classMatch ? classMatch[1] : '');
+            if(splitUrl[6]) {
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+            } else {
+                var app = (classMatch ? classMatch[1] : '');
+            }
             // check for platform specific type name overrides
             contentGroup[1] = 'workspaces';
             if (workspace) contentGroup[2] = override[2] ? override[2] : workspace;
@@ -205,10 +222,16 @@ var coyoTrackingUtils = {
         };
 
         var analyzeEvent = function (contentGroup, override) {
-            var event = $('section.event div.panel.panel-default div.titles-container div.title').text().trim() || (location.href.split('/')[4] ? decodeURIComponent(location.href.split('/')[4]) : null);
+            var splitUrl = window.location.href.split('/');
+            var event = $('section.event div.panel.panel-default div.titles-container div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-event-show-([\w\-]*)/g.exec(bodyClass) || /state-main-event-([\w\-]*)/g.exec(bodyClass);
-            var app =  window.location.href.split('/')[6] ? decodeURIComponent(window.location.href.split('/')[6]) : (classMatch ? classMatch[1] : '');
+            if(splitUrl[6]) {
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+            } else {
+                var app = (classMatch ? classMatch[1] : '');
+            }
             // check for platform specific type name overrides
             contentGroup[1] = 'events';
             if (event) contentGroup[2] = override[2] ? override[2] : event;
