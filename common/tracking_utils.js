@@ -160,16 +160,6 @@ var coyoTrackingUtils = {
         maxlength = maxlength || 30;
         return input.length > maxlength ? input.substring(0, maxlength).trim() + '...' : input;
     },
-    toAbsoluteUrl: (function() {
-        // return a function and keep elem to prevent creation 
-        // of <a>-element each time this function is called
-        var elem;
-        return function(url) {
-            elem = elem || document.createElement('a');
-            elem.href = url;
-            return elem.href;
-        };
-    })(),
     parseQueryString: function(str) {
         var query = (str || '?').substr(1);
         var map = {};
@@ -178,7 +168,6 @@ var coyoTrackingUtils = {
         });
         return map;
     },
-
     getPageConfig: function (override) {
         var contentGroup = [CONTENTBASE];
         var trackingTitle = '';
