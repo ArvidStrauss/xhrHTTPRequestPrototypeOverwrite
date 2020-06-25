@@ -472,6 +472,11 @@ function trackPageView(searchResults) {
     }
     initDownloadListener();
 
+    if(pageType === 'filelibrary' && DOCUMENTTITLE_AS_CONTENT) {
+        contentTitle    = pageTitle;
+        pageTitle       = null;
+    }
+
     // var userCount = coyoTrackingUtils.getRegisteredUsers();
     if(!coyoTrackingUtils.excludeFromTracking(EXCLUDED_GROUPINGPATHS))  {
         if (pageType) {
