@@ -30,15 +30,15 @@ var coyoTrackingUtils = {
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT]);
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT]);
         //VISIT TEST
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT]);
-        _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT]);
+        // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT]);
     },
     excludeUrl: function(url,pathArray) {
         var paths = pathArray || EXCLUDED_PATHS;

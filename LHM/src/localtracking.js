@@ -10,6 +10,7 @@
 const MATOMO_TARGET_ID = '9';
 const MATOMO_TARGET_PHP = 'https://di-tools.t-systems-mms.eu/matomo/matomo.php';
 const MATOMO_TARGET_JS = 'https://di-tools.t-systems-mms.eu/matomo/matomo.js';
+const MATOMO_HEARTBEAT = 5;
 
 const CUSTOMDIMENSION_PAGETYPE = 1
 const CUSTOMDIMENSION_PAGETITLE = 2
@@ -20,16 +21,6 @@ const CUSTOMDIMENSION_PAGETYPE_EVENT = 6
 const CUSTOMDIMENSION_PAGETITLE_EVENT = 7
 const CUSTOMDIMENSION_APPTYPE_EVENT = 8
 const CUSTOMDIMENSION_APPTITLE_EVENT = 9
-
-const CUSTOMDIMENSION_PAGETYPE_VISIT = 10
-const CUSTOMDIMENSION_PAGETITLE_VISIT = 11
-const CUSTOMDIMENSION_APPTYPE_VISIT = 12
-const CUSTOMDIMENSION_APPTITLE_VISIT = 13
-const CUSTOMDIMENSION_CONTENTTITLE_VISIT = 14
-const CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT = 15
-const CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT = 16
-const CUSTOMDIMENSION_APPTYPE_EVENT_VISIT = 17
-const CUSTOMDIMENSION_APPTITLE_EVENT_VISIT = 18
 
 // list timeline item tracked users here with profile uri endpoint
 // posts by these users in a timeline wont be tracked (likes,comments,...)

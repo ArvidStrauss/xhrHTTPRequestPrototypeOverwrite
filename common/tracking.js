@@ -25,7 +25,6 @@ var extanaSettings = Object.assign({
     pkLogUserUID: false,
     pkHashUserUID: true,
     pkActivateHeartbeat: true,
-    pkHeartbeatDelay: 15,
     pkTrackMiddleRightMouseClick: true,
     pkContentTracking: true,
     pkContentTrackingDOMNode: '.content',
@@ -55,7 +54,7 @@ extanaSettings.pkDomains !== null ? _paq.push(['setDomains', extanaSettings.pkDo
     s.parentNode.insertBefore(g, s);
 })();
 
-_paq.push(['enableHeartBeatTimer', extanaSettings.pkHeartbeatDelay || 15]);
+if(typeof MATOMO_HEARTBEAT === 'number' && MATOMO_HEARTBEAT > 0) _paq.push(['enableHeartBeatTimer', MATOMO_HEARTBEAT]);
 //disable matomo defaut downloadtracking
 _paq.push(['setDownloadExtensions', ""]);
 
