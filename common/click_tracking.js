@@ -76,9 +76,7 @@ var coyoClickTracking = {
         // Mobile Sidebar Navigation
         document.querySelectorAll(SELECTORS.NAV_SIDEBAR+ignoreSelector).forEach(function(item) {
             item.addEventListener('click', function(e){
-                for(var i=0;i<EXCLUDED_PATHS.length;i++){
-                    if(window.location.href.match(EXCLUDED_PATHS[i])) return;
-                }
+                if(coyoTrackingUtils.excludeUrl(window.location.href)) return;
                 var name='Navigation';
                 name = item.textContent.trim();
                 sendTrackingEvent('Navi-Mobile', 'Klick', coyoTrackingUtils.typeNameOverrides(name), null);
@@ -126,3 +124,5 @@ window.document.addEventListener('stateChangeSuccess', debounce(function() {
         coyoClickTracking.addVideoTracking();
     }, extanaSettings.delayForStateChange || 2);
 }, 1000), false);
+coyoClickTracking.addClickBindings();
+coyoClickTracking.addVideoTracking();

@@ -43,7 +43,8 @@ var coyoTrackingUtils = {
     excludeUrl: function(url,pathArray) {
         var paths = pathArray || EXCLUDED_PATHS;
         return paths && paths.some(function(path) {
-            return url && url.indexOf(location.host + path) >= 0;
+            var regex = new RegExp(path.replace('/','\\/')+'(?=$|\\/|\\?)','gi')
+            return url && url.match(regex);
         });
     },
     excludeUser: function(item) {

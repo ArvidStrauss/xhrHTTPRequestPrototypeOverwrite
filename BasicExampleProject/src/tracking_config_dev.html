@@ -36,8 +36,10 @@
     // list timeline item tracked users here with profile uri endpoint
     // posts by these users in a timeline wont be tracked (likes,comments,...)
     const EXCLUDE_TIMELINETRACKINGUSERS = []; //'ian-bold', 'robert-lang'
-    const EXCLUDED_PATHS = ['/admin/']; // '/workspaces/', '/admin/'
-    const EXCLUDED_GROUPINGPATHS = ['/profile/','/account']; // '/workspaces/', '/admin/'
+    // do not track at all on these paths
+    const EXCLUDED_PATHS = ['/admin','/events']; // '/workspaces/', '/admin/'
+    // track, but do not send custom dimensions on these paths
+    const EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
     const ENV = 'dev';
     const CONTENTBASE = 'wilma';
     const USE_TAGMANAGER = false;
