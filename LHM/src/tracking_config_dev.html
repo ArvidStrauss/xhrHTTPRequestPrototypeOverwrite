@@ -9,8 +9,9 @@
     // Adjust matomo tracking settings here
     // If you adjust the following params, you have to adjust the src of the image tag above aswell
     const MATOMO_TARGET_ID = '9';
-    const MATOMO_TARGET_PHP = 'https://di-tools.t-systems-mms.eu/matomo/matomo.php';
-    const MATOMO_TARGET_JS = 'https://di-tools.t-systems-mms.eu/matomo/matomo.js';
+    const MATOMO_BASEPATH = 'https://di-tools.t-systems-mms.eu/matomo/'
+    const MATOMO_TARGET_PHP = MATOMO_BASEPATH + 'matomo.php';
+    const MATOMO_TARGET_JS = MATOMO_BASEPATH + 'matomo.js';
     const MATOMO_HEARTBEAT = 5;
 
     const CUSTOMDIMENSION_PAGETYPE = 1
