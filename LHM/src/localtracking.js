@@ -31,7 +31,7 @@ const EXCLUDED_PATHS = ['/admin','/events']; // '/workspaces/', '/admin/'
 const EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
 const ENV = 'dev';
 const CONTENTBASE = 'wilma';
-const USE_TAGMANAGER = false;
+const USE_TAGMANAGER = true;
 // if we track documents, skip the default logic and use the doctitle as CUSTOMDIMENSION_CONTENTTITLE instead of PAGETITLE, APPTYPE or APPTITLE
 const DOCUMENTTITLE_AS_CONTENT = true;
 

@@ -467,7 +467,7 @@ function trackPageView(searchResults) {
     var appTitle     = pageConfig.contentGroup[4] || null;
     var contentTitle = pageConfig.contentGroup[5] || null;
     if (coyoTrackingUtils.excludeFromTracking() || !pageId || pageId.indexOf(window.location.host + '..') == 0) {
-        // if(ENV === 'test'){console.log('pageview abort excluded',coyoTrackingUtils.excludeFromTracking(), pageId, pageId.indexOf(window.location.host + '..') );}
+        // if(ENV === 'dev'){console.log('pageview abort excluded',coyoTrackingUtils.excludeFromTracking(), pageId, pageId.indexOf(window.location.host + '..') );}
         return;
     }
     initDownloadListener();
@@ -518,7 +518,7 @@ function trackPageView(searchResults) {
                 _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, 'Kein Suchergebnis']);
             }
         } else {
-            // if(ENV === 'test'){console.log('pageview abort search',searchResults);}
+            // if(ENV === 'dev'){console.log('pageview abort search',searchResults);}
             return
         }
     }
@@ -539,15 +539,17 @@ function trackPageView(searchResults) {
     } else {
         _paq.push(["enableLinkTracking"]);
     }
-    // if(ENV === 'test'){console.log('pageview sending',pageConfig );}
+    if(ENV !== 'prod'){console.debug('pageview sending',pageConfig );}
      _paq.push(['trackPageView']);
+     _paq.push(['enableHeartBeatTimer', 0]);
+     _paq.push(['enableHeartBeatTimer', MATOMO_HEARTBEAT]);
     coyoTrackingUtils.cleanupCustomDimensions();
-    // if(ENV === 'test'){console.log('pageview done');}
+    // if(ENV === 'dev'){console.log('pageview done');}
 }
 
 // page view tracking
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
-    // if(ENV === 'test'){console.log('stateChangeSuccess event');}
+    if(ENV !== 'prod'){console.debug('stateChangeSuccess event');}
     setTimeout(function() {
         trackPageView();
     }, extanaSettings.delayForStateChange || 2);
@@ -633,7 +635,7 @@ XMLHttpRequest.prototype.send = function() {
 if(USE_TAGMANAGER){
     setTimeout(function() {
         if(!initialStateChangeFired) {
-            // if(ENV === 'test'){console.log('initial page call');}
+            if(ENV !== 'prod'){console.debug('initial page call');}
             trackPageView();
             initialStateChangeFired = true;
         }
