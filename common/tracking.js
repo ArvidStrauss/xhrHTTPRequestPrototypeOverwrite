@@ -448,7 +448,7 @@ function initDownloadListener() {
 function debounce(func, wait, immediate) {
     var timeout;
     return function() {
-        initialStateChangeFired = true;
+        // initialStateChangeFired = true;
         var context = this;
         var args = arguments;
         var later = function() {
@@ -463,6 +463,11 @@ function debounce(func, wait, immediate) {
 };
 
 function trackPageView(searchResults) {
+    if(initialStateChangeFired) {
+        if(ENV !== 'prod') console.debug('already fired. aborting');
+        initialStateChangeFired = false;
+        return;
+    }
     if (typeof coyoTrackingUtils != "object") {
         console.log("Coyo tracking utils not defined.");
         return;
@@ -646,11 +651,12 @@ XMLHttpRequest.prototype.send = function() {
 // a) the container with this code finished loading BEFORE the app finishes with a stateChangeSuccess -> everything works normal, initial pagewview is catched by the event
 // b) AFTER that -> we missed the first stateChangeSuccess and therefore have to trigger it manually
 if(USE_TAGMANAGER){
-    setTimeout(function() {
+    coyoTrackingUtils.onContentReady(function(){
+        if(ENV !== 'prod') console.debug('initial?',initialStateChangeFired);
         if(!initialStateChangeFired) {
             if(ENV !== 'prod'){console.debug('initial page call');}
             trackPageView();
             initialStateChangeFired = true;
         }
-    }, extanaSettings.delayForStateChange || 2);
+    });
 }

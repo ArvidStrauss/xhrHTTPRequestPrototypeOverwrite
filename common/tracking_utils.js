@@ -395,5 +395,16 @@ var coyoTrackingUtils = {
             };
             http.send();
         }
+    },
+    onContentReady: function(callback) {
+        var check = setInterval(function(){
+            if(ENV !== 'prod') console.debug('checking...',body.className)
+            if(body.className.match(/state(\-\w+)+-\w+/,'gi')){
+                clearInterval(check);
+                callback();
+            }
+        },500);
+        //fallback: clear after 30s
+        setTimeout(function(){clearInterval(check);},30000);
     }
 };
