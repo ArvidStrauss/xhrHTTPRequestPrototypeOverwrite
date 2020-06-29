@@ -39,7 +39,6 @@ var extanaSettings = Object.assign({
 
 var _paq = _paq || [];
 extanaSettings.pkDomains !== null ? _paq.push(['setDomains', extanaSettings.pkDomains]) : null;
-var matomoTracker = null;
 (function() {
     _paq.push(['setTrackerUrl', extanaSettings.pkLibPathPHP]);
     _paq.push(['setSiteId', extanaSettings.pkId]);
@@ -51,10 +50,6 @@ var matomoTracker = null;
     g.type = 'text/javascript';
     g.async = true;
     g.defer = true;
-    g.onload = function() {
-        //get the internal matomo tracker to be able to force ping on pagechange
-        matomoTracker = window.Matomo.getTracker(MATOMO_BASEPATH,MATOMO_TARGET_ID);
-    };
     g.src = extanaSettings.pkLibPathJS;
     s.parentNode.insertBefore(g, s);
 })();
@@ -570,7 +565,7 @@ window.document.addEventListener('stateChangeSuccess', debounce(function() {
 
 // heartbeat hack: ping on change, just ping immediately, do not wait for pagecall
 window.document.addEventListener('stateChangeSuccess', function(){
-    if(matomoTracker && typeof matomoTracker.ping === 'function') matomoTracker.ping();
+    _paq.push(['ping']);
 });
 
 // request event tracking
