@@ -1,6 +1,6 @@
 {
-    "name": "CustomDimensions",
-    "version": "3.1.10",
+    "name": "CustomDimensionsMMS",
+    "version": "3.1.10c",
     "description": "Extend Matomo to your needs by defining and tracking Custom Dimensions in scope Action or Visit",
     "theme": false,
     "keywords": [
@@ -20,7 +20,7 @@
     },
     "authors": [
         {
-            "name": "Matomo",
+            "name": "Matomo + MMS",
             "email": "hello@matomo.org",
             "homepage": "https:\/\/matomo.org"
         }
