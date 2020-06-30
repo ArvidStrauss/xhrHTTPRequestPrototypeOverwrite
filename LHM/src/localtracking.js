@@ -47,7 +47,3 @@ const SELECTORS = {
     SEARCHFILTER_LOCATION: 'coyo-filter[title-key="MODULE.SEARCH.LOCATION"] a',
     SEARCHFILTER_AUTHOR: 'coyo-filter[title-key="MODULE.SEARCH.AUTHOR"] a',
 }
-
-var extanaSettingsOverride = {
-    debug: true
-};

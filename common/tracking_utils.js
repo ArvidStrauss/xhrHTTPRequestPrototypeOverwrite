@@ -114,7 +114,22 @@ var coyoTrackingUtils = {
             'members-list': 'Mitglieder Liste',
             'members-invited': 'Mitglieder Einladungen',
             'members-requested': 'Mitglieder Anfragen',
-            'participants': 'Teilnehmer'
+            'participants': 'Teilnehmer',
+            'create chatmessage': 'Nachricht senden',
+            'create chatchannel': 'Chatkanal erstellen',
+            'create timeline': 'Timeline Eintrag erstellen',
+            'create article': 'Artikel erstellen',
+            'create event': 'Event erstellen',
+            'create page': 'Seite erstellen',
+            'view': 'Ansicht',
+            'searchresults': 'Suchergebnis',
+            'no-searchresults': 'Kein Suchergebnis',
+            'widget-my-pages' : 'Widget-Meine-Seiten',
+            'widget-my-workspaces' : 'Widget-Meine-Arbeitsraeume',
+            'search-type': 'Suche-Typ',
+            'search-modified': 'Suche-Geaendert',
+            'search-location': 'Suche-Ort',
+            'search-author': 'Suche-Autor'
             // 'blog-list-view': 'Blog',
             // 'wiki-list-view': 'Wiki'
         };

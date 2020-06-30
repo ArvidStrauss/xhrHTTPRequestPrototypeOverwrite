@@ -11,37 +11,12 @@ var pendingSearch = 0;
 var lastFileId = '';
 // create tracking settings including overrides if present
 var pageId, pageName, pageType, preventTracking;
-var extanaSettings = Object.assign({
-    system: 'coyo',
-    trackStateChanges: true,
-    trackCoyoStateClass: true,
-    trackCoyoStateClassVisit: true,
-    debug: false,
-    pkInitiate: true,
-    pkId: MATOMO_TARGET_ID,
-    pkLibPathPHP: MATOMO_TARGET_PHP,
-    pkLibPathJS: MATOMO_TARGET_JS,
-    pkDomains: [location.hostname],
-    pkLogUserUID: false,
-    pkHashUserUID: true,
-    pkActivateHeartbeat: true,
-    pkTrackMiddleRightMouseClick: true,
-    pkContentTracking: true,
-    pkContentTrackingDOMNode: '.content',
-    pkContentTrackingScanForMedia: true,
-    pkContentTrackingScanForForms: true,
-    pkContentTrackingAutoRefresh: true,
-    pkContentTrackingRefreshDelay: 750,
-    delayForStateChange: 10,
-    logAllApiCalls: false,
-    logAllApiCallsEvent: ['API', 'Call']
-}, extanaSettingsOverride || {});
 
 var _paq = _paq || [];
-extanaSettings.pkDomains !== null ? _paq.push(['setDomains', extanaSettings.pkDomains]) : null;
+MATOMOSETTINGS.DOMAINS !== null ? _paq.push(['setDomains', MATOMOSETTINGS.DOMAINS]) : null;
 (function() {
-    _paq.push(['setTrackerUrl', extanaSettings.pkLibPathPHP]);
-    _paq.push(['setSiteId', extanaSettings.pkId]);
+    _paq.push(['setTrackerUrl', MATOMO_TARGET_PHP]);
+    _paq.push(['setSiteId', MATOMO_TARGET_ID]);
     var uid = coyoTrackingUtils.getUserIdHash();
     if(uid !== '0') _paq.push(['setUserId', uid]);
     var d = document;
@@ -50,12 +25,12 @@ extanaSettings.pkDomains !== null ? _paq.push(['setDomains', extanaSettings.pkDo
     g.type = 'text/javascript';
     g.async = true;
     g.defer = true;
-    g.src = extanaSettings.pkLibPathJS;
+    g.src = MATOMO_TARGET_JS;
     s.parentNode.insertBefore(g, s);
 })();
 
 // setup heartbeattimer
-if(typeof MATOMO_HEARTBEAT === 'number' && MATOMO_HEARTBEAT > 0) _paq.push(['enableHeartBeatTimer', MATOMO_HEARTBEAT]);
+if(typeof MATOMOSETTINGS.HEARTBEAT === 'number' && MATOMOSETTINGS.HEARTBEAT > 0) _paq.push(['enableHeartBeatTimer', MATOMOSETTINGS.HEARTBEAT]);
 
 
 //disable matomo defaut downloadtracking
@@ -77,79 +52,90 @@ if (!Element.prototype.closest) {
 }
 
 // List of tracked requests
-var coyoRequestTrackingConfig = [
-// {
-//     urlPattern: /web\/message-channels$/g,
-//     method: 'POST',
-//     execute: function(responseUrl, response) {
-//         sendTrackingEvent('chat-channel', 'Create', response.type);
-//     }
-// }, 
-{
+var coyoRequestTrackingConfig = [];
+if(TRACKINGSETTINGS.CHAT_MESSAGES) coyoRequestTrackingConfig.push({
     urlPattern: /web\/message-channels\/[0-9a-fA-F-]*\/messages$/g,
     method: 'POST',
     execute: function(responseUrl, response) {
-        sendTrackingEvent('chat-message', 'Create', '');
+        sendTrackingEvent('chat-message', 'Create Chatmessage', '');
     }
-}, {
+});
+if(TRACKINGSETTINGS.CHAT_CHANNELS) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/message-channels$/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        sendTrackingEvent('chat-channel', 'Create Chatchannel', response.type);
+    }
+});
+if(TRACKINGSETTINGS.COMMENTS) coyoRequestTrackingConfig.push({
     urlPattern: /web\/comments/g,
     method: 'POST',
     execute: function(responseUrl, response) {
         var item = coyoTrackingDBHelper.getObjectData(response.target.id);
         sendTrackingEvent(response.target.typeName, 'Comment', item.name, item);
     }
-}, {
-    urlPattern: /subscriptions$/g,
-    method: 'POST',
-    execute: function(responseUrl, response) {
-        var item = coyoTrackingDBHelper.getObjectData(response.targetId);
-        sendTrackingEvent(item.type, 'Subscribe', item.name, item);
-    }
-}, {
-    urlPattern: /subscriptions\/favorite/g,
-    method: 'POST',
-    execute: function(responseUrl, response) {
-        var queryParams = coyoTrackingUtils.parseQueryString(responseUrl.replace(/.*\?/i, '?'));
-        if(queryParams.targetId) {
-            var item = coyoTrackingDBHelper.getObjectData(queryParams.targetId);
+});
+if(TRACKINGSETTINGS.SUBSCRIPTIONS) {
+    coyoRequestTrackingConfig.push({
+        urlPattern: /subscriptions$/g,
+        method: 'POST',
+        execute: function(responseUrl, response) {
+            var item = coyoTrackingDBHelper.getObjectData(response.targetId);
             sendTrackingEvent(item.type, 'Subscribe', item.name, item);
         }
-    }
-}, {
-    urlPattern: /subscriptions.*\?targetId=/g,
-    method: 'DELETE',
-    execute: function(responseUrl, response) {
-        var targetMatch = (/targetId=([^\&]*)/g).exec(responseUrl);
-        if (targetMatch && targetMatch.length > 1) {
-            var item = coyoTrackingDBHelper.getObjectData(targetMatch[1]);
-            sendTrackingEvent(item.type || 'unknown-type', 'Unsubscribe', item.name, item);
+    });
+    coyoRequestTrackingConfig.push({
+        urlPattern: /subscriptions\/favorite/g,
+        method: 'POST',
+        execute: function(responseUrl, response) {
+            var queryParams = coyoTrackingUtils.parseQueryString(responseUrl.replace(/.*\?/i, '?'));
+            if(queryParams.targetId) {
+                var item = coyoTrackingDBHelper.getObjectData(queryParams.targetId);
+                sendTrackingEvent(item.type, 'Subscribe', item.name, item);
+            }
         }
-    }
-}, {
-    urlPattern: /web\/like-targets\//g,
-    method: 'POST',
-    execute: function(responseUrl, response) {
-        var typeMatch = (/like-targets\/([\w-]*)\/([0-9a-fA-F-]*)/g).exec(responseUrl);
-        if (typeMatch && typeMatch.length > 1) {
-            var type = typeMatch[1];
-            var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
-            var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
-            sendTrackingEvent(type, 'Like', entry, item);
+    });
+    coyoRequestTrackingConfig.push({
+        urlPattern: /subscriptions.*\?targetId=/g,
+        method: 'DELETE',
+        execute: function(responseUrl, response) {
+            var targetMatch = (/targetId=([^\&]*)/g).exec(responseUrl);
+            if (targetMatch && targetMatch.length > 1) {
+                var item = coyoTrackingDBHelper.getObjectData(targetMatch[1]);
+                sendTrackingEvent(item.type || 'unknown-type', 'Unsubscribe', item.name, item);
+            }
         }
-    }
-}, {
-    urlPattern: /web\/like-targets\//g,
-    method: 'DELETE',
-    execute: function(responseUrl, response) {
-        var typeMatch = (/like-targets\/([\w-]*)\/([0-9a-fA-F-]*)/g).exec(responseUrl);
-        if (typeMatch && typeMatch.length > 1) {
-            var type = typeMatch[1];
-            var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
-            var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
-            sendTrackingEvent(type, 'Unlike', entry, item);
+    });
+}
+if(TRACKINGSETTINGS.LIKES) {
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/like-targets\//g,
+        method: 'POST',
+        execute: function(responseUrl, response) {
+            var typeMatch = (/like-targets\/([\w-]*)\/([0-9a-fA-F-]*)/g).exec(responseUrl);
+            if (typeMatch && typeMatch.length > 1) {
+                var type = typeMatch[1];
+                var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
+                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
+                sendTrackingEvent(type, 'Like', entry, item);
+            }
         }
-    }
-}, {
+    });
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/like-targets\//g,
+        method: 'DELETE',
+        execute: function(responseUrl, response) {
+            var typeMatch = (/like-targets\/([\w-]*)\/([0-9a-fA-F-]*)/g).exec(responseUrl);
+            if (typeMatch && typeMatch.length > 1) {
+                var type = typeMatch[1];
+                var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
+                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
+                sendTrackingEvent(type, 'Unlike', entry, item);
+            }
+        }
+    });
+}
+if(TRACKINGSETTINGS.CREATE_TIMELINE) coyoRequestTrackingConfig.push({
     urlPattern: /web\/timeline-items/g,
     method: 'POST',
     execute: function(responseUrl, response) {
@@ -158,10 +144,11 @@ var coyoRequestTrackingConfig = [
             var parentType = coyoTrackingUtils.typeNameOverrides(response.recipients[0].typeName);
             var parentTitle = coyoTrackingDBHelper.buildTrackingTitle(response.recipients[0]);
             title = parentType + ' >> ' + parentTitle;
-            sendTrackingEvent('timeline-item', 'Create', title, { type: 'timeline-item', author: response.author.slug });
+            sendTrackingEvent('timeline-item', 'Create Timeline', title, { type: 'timeline-item', author: response.author.slug });
         }
     }
-}, {
+});
+if(TRACKINGSETTINGS.DELETE_TIMELINE) coyoRequestTrackingConfig.push({
     urlPattern: /web\/timeline-items/g,
     method: 'DELETE',
     execute: function(responseUrl, response) {
@@ -171,7 +158,8 @@ var coyoRequestTrackingConfig = [
             sendTrackingEvent('timeline-item', 'Delete', item.name, item);
         }
     }
-}, {
+});
+if(TRACKINGSETTINGS.USER_STATUS) coyoRequestTrackingConfig.push({
     urlPattern: /web\/users\/([a-z0-9-]+)\/presence-status/g,
     method: 'PUT',
     execute: function(responseUrl, response) {
@@ -179,7 +167,15 @@ var coyoRequestTrackingConfig = [
         var status = (response.state || 'not defined').toLowerCase();
         sendTrackingEvent(status, 'Change Status', '');
     }
-}, {
+});
+if(TRACKINGSETTINGS.SEARCH_MAIN) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/search(?!.*filters=\w)/g,
+    method: 'GET',
+    execute: function(responseUrl, response) {
+        sendSearchEvent(responseUrl, response, false)
+    }
+});
+if(TRACKINGSETTINGS.SEARCH_INLINE) coyoRequestTrackingConfig.push({
     urlPattern: /web\/quick-entity-search/g,
     method: 'GET',
     execute: function(responseUrl, response) {
@@ -191,19 +187,15 @@ var coyoRequestTrackingConfig = [
             }
         },1000);
     }
-}, {
-    urlPattern: /web\/search(?!.*filters=\w)/g,
-    method: 'GET',
-    execute: function(responseUrl, response) {
-        sendSearchEvent(responseUrl, response, false)
-    }
-}, {
+});
+if(TRACKINGSETTINGS.MEDIA_UPLOAD) coyoRequestTrackingConfig.push({
     urlPattern: /web\/senders\/.*\/documents/g,
     method: 'POST',
     execute: function(responseUrl, response) {
         sendTrackingEvent('Media', 'Upload', response.displayName);
     }
-}, {
+});
+if(TRACKINGSETTINGS.MEDIA_VIEW) {
     // document/files use nearly the same handler because different widgets and filetypes work with different requests
     // depending on which one gets executed we track the file view and lastFileId prevents double tracking (also for multiple calls when opening modal)
     // examples: 
@@ -216,96 +208,103 @@ var coyoRequestTrackingConfig = [
     //  videos: always /stream/ HEAD, nothing else
     // embedded video in posts:
     //  no modal, no xhr requests, so we do our own HEAD request to get the title
-    urlPattern: /web\/senders\/.*\/documents/g,
-    method: 'GET',
-    execute: function(responseUrl, response) {
-        var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
-        var modal = document.querySelector('.modal-dialog');
-        if(docMatch && docMatch[1] && modal) {
-            var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
-            if(lastFileId !== objData.name) sendTrackingEvent('Media', 'Ansicht', objData.name);
-            lastFileId = objData.name;
-            setTimeout(function(){
-                lastFileId = '';
-            }, 5000);
-        }
-    }
-},
-{
-    urlPattern: /web\/senders\/.*\/files/g,
-    method: 'GET',
-    execute: function(responseUrl, response, requestData, respHeader) {
-        var modal = document.querySelector('.modal-dialog');
-        if(modal && response && response.displayName && response.displayName.length) {
-            if(lastFileId !== response.displayName) sendTrackingEvent('Media', 'Ansicht', response.displayName);
-            lastFileId = response.displayName;
-            setTimeout(function(){
-                lastFileId = '';
-            }, 5000);
-        }
-    }
-}, 
-{
-    urlPattern: /web\/senders\/.*\/stream/g,
-    method: 'HEAD',
-    execute: function(responseUrl, response, requestData, respHeader) {
-        var modal = document.querySelector('.modal-dialog');
-        if(modal) {
-            coyoTrackingUtils.getVideoInfo(responseUrl,function(filename){
-                sendTrackingEvent('Media', 'Ansicht', filename, null)
-            });
-        }
-    }
-},
-{
-    urlPattern: /web\/shares\/(!multiple)/g,
-    method: 'POST',
-    saveRequestData: true,
-    execute: function(responseUrl, response, requestData) {
-        var itemID = requestData ? requestData.itemId : '';
-        var item = coyoTrackingDBHelper.getObjectData(itemID);
-        sendTrackingEvent(item.type, 'Share', item.name, item);
-    }
-}, {
-    urlPattern: /web\/shares\/multiple\//g,
-    method: 'POST',
-    saveRequestData: true,
-    execute: function(responseUrl, response, requestData) {
-        if (!requestData) {
-            return;
-        }
-        for (var i = 0; i < requestData.length; i++) {
-            var itemID = requestData[i].itemId;
-            var item = coyoTrackingDBHelper.getObjectData(itemID);
-            var share = response[i];
-            if (!share || !share.recipient) {
-                continue;
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/senders\/.*\/documents/g,
+        method: 'GET',
+        execute: function(responseUrl, response) {
+            var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
+            var modal = document.querySelector('.modal-dialog');
+            if(docMatch && docMatch[1] && modal) {
+                var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
+                if(lastFileId !== objData.name) sendTrackingEvent('Media', 'View', objData.name);
+                lastFileId = objData.name;
+                setTimeout(function(){
+                    lastFileId = '';
+                }, 5000);
             }
+        }
+    });
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/senders\/.*\/files/g,
+        method: 'GET',
+        execute: function(responseUrl, response, requestData, respHeader) {
+            var modal = document.querySelector('.modal-dialog');
+            if(modal && response && response.displayName && response.displayName.length) {
+                if(lastFileId !== response.displayName) sendTrackingEvent('Media', 'View', response.displayName);
+                lastFileId = response.displayName;
+                setTimeout(function(){
+                    lastFileId = '';
+                }, 5000);
+            }
+        }
+    }); 
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/senders\/.*\/stream/g,
+        method: 'HEAD',
+        execute: function(responseUrl, response, requestData, respHeader) {
+            var modal = document.querySelector('.modal-dialog');
+            if(modal) {
+                coyoTrackingUtils.getVideoInfo(responseUrl,function(filename){
+                    sendTrackingEvent('Media', 'View', filename, null)
+                });
+            }
+        }
+    });
+}
+if(TRACKINGSETTINGS.SHARE) {
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/shares\/(!multiple)/g,
+        method: 'POST',
+        saveRequestData: true,
+        execute: function(responseUrl, response, requestData) {
+            var itemID = requestData ? requestData.itemId : '';
+            var item = coyoTrackingDBHelper.getObjectData(itemID);
             sendTrackingEvent(item.type, 'Share', item.name, item);
         }
+    });
+    coyoRequestTrackingConfig.push({
+        urlPattern: /web\/shares\/multiple\//g,
+        method: 'POST',
+        saveRequestData: true,
+        execute: function(responseUrl, response, requestData) {
+            if (!requestData) {
+                return;
+            }
+            for (var i = 0; i < requestData.length; i++) {
+                var itemID = requestData[i].itemId;
+                var item = coyoTrackingDBHelper.getObjectData(itemID);
+                var share = response[i];
+                if (!share || !share.recipient) {
+                    continue;
+                }
+                sendTrackingEvent(item.type, 'Share', item.name, item);
+            }
+        }
+    });
+}
+if(TRACKINGSETTINGS.CREATE_ARTICLES) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/.*\/(wiki|blog)\/articles/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        var parent = coyoTrackingDBHelper.getObjectData(response.senderId);
+        var label = coyoTrackingUtils.typeNameOverrides(parent.type) + ' >> ' + parent.name;
+        sendTrackingEvent(response.typeName, 'Create Article', label);
     }
-},
-//     urlPattern: /web\/.*\/(wiki|blog)\/articles/g,
-//     method: 'POST',
-//     execute: function(responseUrl, response) {
-//         var parent = coyoTrackingDBHelper.getObjectData(response.senderId);
-//         var label = coyoTrackingUtils.typeNameOverrides(parent.type) + ' >> ' + parent.name;
-//         sendTrackingEvent(response.typeName, 'Create', label);
-//     }
-// }, {
-// }, {
-//     urlPattern: /web\/events/g,
-//     method: 'POST',
-//     execute: function(responseUrl, response) {
-//         sendTrackingEvent(response.event.typeName, 'Create', coyoTrackingDBHelper.buildTrackingTitle(response.event));
-//     }
-// }, {
-//     urlPattern: /web\/pages/g,
-//     method: 'POST',
-//     execute: function(responseUrl, response) {
-//         sendTrackingEvent(response.typeName, 'Create', coyoTrackingDBHelper.buildTrackingTitle(response));
-//     }
-];
+});
+if(TRACKINGSETTINGS.CREATE_EVENTS) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/events/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        sendTrackingEvent(response.event.typeName, 'Create Event', coyoTrackingDBHelper.buildTrackingTitle(response.event));
+    }
+});
+if(TRACKINGSETTINGS.CREATE_PAGES) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/pages/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        sendTrackingEvent(response.typeName, 'Create Page', coyoTrackingDBHelper.buildTrackingTitle(response));
+    }
+});
 
 function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchResults) {
     if (coyoTrackingUtils.excludeUser(checkUserItem)) return;
@@ -318,10 +317,8 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
 
-    //handle 'create' for chat vs others like timeline
-    if(targetType === 'chat-message' && action === 'Create') action = 'Nachricht senden';
     //handle 'create' for timeline (do not track title)
-    if(targetType === 'timeline-item' && action === 'Create') title = '';
+    if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
     targetType = coyoTrackingUtils.typeNameOverrides(targetType);
     action = coyoTrackingUtils.typeNameOverrides(action);
     coyoTrackingUtils.cleanupCustomDimensions();
@@ -346,7 +343,7 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
 
     // special search handling
     if(typeof hasSearchResults === 'boolean') {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? 'Suchergebnis' : 'Kein Suchergebnis')]);
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))]);
     }
     _paq.push(['trackEvent', targetType, action, title]);
     // _paq.push(['trackEvent', targetType, action, title, null, {
@@ -372,7 +369,7 @@ function sendSearchEvent(responseUrl, response, isQuicksearch) {
                 debounce(function() {
                     setTimeout(function() {
                         trackPageView(rspFoundEleCount);
-                    }, extanaSettings.delayForStateChange || 2);
+                    }, MATOMOSETTINGS.DELAY_FOR_STATECHANGE || 2);
                 }, 250)();
             }
         }
@@ -478,9 +475,9 @@ function trackPageView(searchResults) {
         // if(ENV === 'dev'){console.log('pageview abort excluded',coyoTrackingUtils.excludeFromTracking(), pageId, pageId.indexOf(window.location.host + '..') );}
         return;
     }
-    initDownloadListener();
+    if(TRACKINGSETTINGS.MEDIA_DOWNLOAD) initDownloadListener();
 
-    if(pageType === 'filelibrary' && DOCUMENTTITLE_AS_CONTENT) {
+    if(pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
         contentTitle    = pageTitle;
         pageTitle       = null;
     }
@@ -497,7 +494,7 @@ function trackPageView(searchResults) {
         }
         // prevent tracking apptype 'Show', 
         // this happens either after a new Page/Workspace is created and there is no app setup or if redirects take longer then our debounce allows
-        if (appType && appType !== 'show') {
+        if (appType && appType.toLowerCase() !== 'show') {
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE, coyoTrackingUtils.typeNameOverrides(appType)]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
         }
@@ -520,10 +517,10 @@ function trackPageView(searchResults) {
         if(typeof searchResults !== 'undefined') {
             if(searchResults > 0) { 
                 _paq.push(['setDocumentTitle', pageId + '.suchergebnis']);
-                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, 'Suchergebnis']);
+                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides('searchresults')]);
               } else {
                 _paq.push(['setDocumentTitle', pageId + '.kein-suchergebnis']);
-                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, 'Kein Suchergebnis']);
+                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides('no-searchresults')]);
             }
         } else {
             // if(ENV === 'dev'){console.log('pageview abort search',searchResults);}
@@ -531,26 +528,26 @@ function trackPageView(searchResults) {
         }
     }
 
-    if (extanaSettings.pkContentTracking) {
-        var content = jQuery(extanaSettings.pkContentTrackingSelector).get(0);
-        if (extanaSettings.pkContentTrackingScanForMedia)
+    if (MATOMOSETTINGS.CONTENT_NODE && MATOMOSETTINGS.CONTENT_NODE.length) {
+        var content = document.querySelector(MATOMOSETTINGS.CONTENT_NODE);
+        if(content) {
+            if (MATOMOSETTINGS.CONTENT_SCAN_FOR_MEDIA)
             _paq.push(['MediaAnalytics::scanForMedia', content]);
-        if (extanaSettings.pkContentTrackingScanForForms)
-            _paq.push(['FormAnalytics::scanForForms', content]);
-        if (extanaSettings.pkContentTrackingMode === 'node')
-            _paq.push(['trackContentImpressionsWithinNode', content]);
-        else if (extanaSettings.pkContentTrackingMode === 'delay')
-            _paq.push(['trackVisibleContentImpressions', true, extanaSettings.pkContentTrackingRefreshDelay || 750]);
+            if (MATOMOSETTINGS.CONTENT_SCAN_FOR_FORMS)
+                _paq.push(['FormAnalytics::scanForForms', content]);
+            if (MATOMOSETTINGS.CONTENT_TRACKING_MODE === 'node')
+                _paq.push(['trackContentImpressionsWithinNode', content]);
+            else if (MATOMOSETTINGS.CONTENTTRACKING_MODE === 'delay')
+                _paq.push(['trackVisibleContentImpressions', true, MATOMOSETTINGS.CONTENT_REFRESHDELAY || 750]);
+        }
     }
-    if (extanaSettings.pkTrackMiddleRightMouseClick) {
+    if (MATOMOSETTINGS.MIDDLERIGHT_MOUSECLICK) {
         _paq.push(["enableLinkTracking", true]);
     } else {
         _paq.push(["enableLinkTracking"]);
     }
     if(ENV !== 'prod'){console.debug('pageview sending',pageConfig );}
      _paq.push(['trackPageView']);
-     _paq.push(['enableHeartBeatTimer', 0]);
-     _paq.push(['enableHeartBeatTimer', MATOMO_HEARTBEAT]);
     coyoTrackingUtils.cleanupCustomDimensions();
     // if(ENV === 'dev'){console.log('pageview done');}
 }
@@ -560,7 +557,7 @@ window.document.addEventListener('stateChangeSuccess', debounce(function() {
     if(ENV !== 'prod'){console.debug('stateChangeSuccess event');}
     setTimeout(function() {
         trackPageView();
-    }, extanaSettings.delayForStateChange || 2);
+    }, MATOMOSETTINGS.DELAY_FOR_STATECHANGE || 2);
 }, 1000), false);
 
 // heartbeat hack: ping on change, just ping immediately, do not wait for pagecall
@@ -645,7 +642,7 @@ XMLHttpRequest.prototype.send = function() {
 // the container will be loaded async, this results in 2 cases
 // a) the container with this code finished loading BEFORE the app finishes with a stateChangeSuccess -> everything works normal, initial pagewview is catched by the event
 // b) AFTER that -> we missed the first stateChangeSuccess and therefore have to trigger it manually
-if(USE_TAGMANAGER){
+if(TRACKINGSETTINGS.USE_TAGMANAGER){
     coyoTrackingUtils.onContentReady(function(){
         if(ENV !== 'prod') console.debug('initial?',initialStateChangeFired);
         if(!initialStateChangeFired) {

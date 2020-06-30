@@ -7,11 +7,14 @@
 
 // Adjust matomo tracking settings here
 // If you adjust the following params, you have to adjust the src of the image tag above aswell
-const MATOMO_TARGET_ID = '0';
-const MATOMO_TARGET_PHP = 'https://di-tools.t-systems-mms.eu/matomo/matomo.php';
-const MATOMO_TARGET_JS = 'https://di-tools.t-systems-mms.eu/matomo/matomo.js';
-const MATOMO_HEARTBEAT = 5;
+const MATOMO_TARGET_ID = '13';
+const MATOMO_BASEPATH = 'https://di-tools.t-systems-mms.eu/matomo/'
+const MATOMO_TARGET_PHP = MATOMO_BASEPATH + 'matomo.php';
+const MATOMO_TARGET_JS = MATOMO_BASEPATH + 'matomo.js';
+// the base (first part) of the action identifier
+const CONTENTBASE = 'bep';
 
+// use variables for custom dimensions in case they are setup differently in matomo
 const CUSTOMDIMENSION_PAGETYPE = 1
 const CUSTOMDIMENSION_PAGETITLE = 2
 const CUSTOMDIMENSION_APPTYPE = 3
@@ -22,29 +25,72 @@ const CUSTOMDIMENSION_PAGETITLE_EVENT = 7
 const CUSTOMDIMENSION_APPTYPE_EVENT = 8
 const CUSTOMDIMENSION_APPTITLE_EVENT = 9
 
-const CUSTOMDIMENSION_PAGETYPE_VISIT = 10
-const CUSTOMDIMENSION_PAGETITLE_VISIT = 11
-const CUSTOMDIMENSION_APPTYPE_VISIT = 12
-const CUSTOMDIMENSION_APPTITLE_VISIT = 13
-const CUSTOMDIMENSION_CONTENTTITLE_VISIT = 14
-const CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT = 15
-const CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT = 16
-const CUSTOMDIMENSION_APPTYPE_EVENT_VISIT = 17
-const CUSTOMDIMENSION_APPTITLE_EVENT_VISIT = 18
-
 // list timeline item tracked users here with profile uri endpoint
 // posts by these users in a timeline wont be tracked (likes,comments,...)
 const EXCLUDE_TIMELINETRACKINGUSERS = []; //'ian-bold', 'robert-lang'
 // do not track at all on these paths
-const EXCLUDED_PATHS = ['/admin','/events']; // '/workspaces/', '/admin/'
+const EXCLUDED_PATHS = ['/admin']; // '/workspaces/', '/admin/'
 // track, but do not send custom dimensions on these paths
 const EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
+// dev/test/prod
 const ENV = 'dev';
-const CONTENTBASE = 'wilma';
-const USE_TAGMANAGER = false;
-// if we track documents, skip the default logic and use the doctitle as CUSTOMDIMENSION_CONTENTTITLE instead of PAGETITLE, APPTYPE or APPTITLE
-const DOCUMENTTITLE_AS_CONTENT = true;
 
+const TRACKINGSETTINGS = {
+    // if we track documents, skip the default logic and use the doctitle as CUSTOMDIMENSION_CONTENTTITLE instead of PAGETITLE, APPTYPE or APPTITLE
+    DOCUMENTTITLE_AS_CONTENT: true,
+    // use the tagmanager or inline js code for tracking, tagmanager needs some extra logic which is activated here
+    USE_TAGMANAGER: true,
+    // clicktracking events on the mainnavigation
+    NAV_MAIN: true,
+    // clicktracking events on the subnavigation
+    NAV_SUB: true,
+    // clicktracking events on mobile sidemenu, careful: if the admin area is not excluded by EXCLUDED_PATHS this menu is considered as mobile too!
+    NAV_MOBILE: true,
+    // clicktracking events on subscriptions (sidebar of homepage)
+    SIDEBAR_SUBSCRIPTIONS: true,
+    // clicktracking events on bookmarks (sidebar of homepage)
+    SIDEBAR_BOOKMARKS: true,
+    // searchtracking while typing in the inline searchfield
+    SEARCH_INLINE: true,
+    // searchtracking on main searchresultpage
+    SEARCH_MAIN: true,
+    // clicktracking events when clicking on filters at searchresultpage
+    SEARCHFILTER: true,
+    // eventtracking embedded videos onPlay (currently only coyo-uploaded) 
+    VIDEOPLAY: true,
+    // eventtracking sending of chat-messages
+    CHAT_MESSAGES: true,
+    // eventtracking creation of new chat channels
+    CHAT_CHANNELS: true,
+    // eventtracking creation of all kinds of comments
+    COMMENTS: true,
+    // eventtracking subscribe/unsubscribe
+    SUBSCRIPTIONS: true,
+    // eventtracking like/unlike
+    LIKES: true,
+    // eventtracking change of user status
+    USER_STATUS: true,
+    // eventtracking file uploads
+    MEDIA_UPLOAD: true,
+    // eventtracking for downloading files, done by downloadlistener in tracking.js
+    MEDIA_DOWNLOAD: true,
+    // eventtracking file views (when modal with filedetails opens), for all filetypes including videos
+    MEDIA_VIEW: true,
+    // eventtracking for shares
+    SHARE: true,
+    // eventtracking creation of articles (wiki,blog)
+    CREATE_ARTICLES: true,
+    // eventtracking creation of events
+    CREATE_EVENTS: true,
+    // eventtracking creation of pages
+    CREATE_PAGES: true,
+    // eventtracking for new timeline entries
+    CREATE_TIMELINE: true,
+    // eventtracking if timeline items get deleted
+    DELETE_TIMELINE: true,
+}
+
+// selectors used by clicktracking
 const SELECTORS = {
     HEAD_NAVIGATION: '.navbar-main .nav-left a',
     HEAD_SUBNAVIGATION: '.navbar-sub a',
@@ -57,6 +103,27 @@ const SELECTORS = {
     SEARCHFILTER_AUTHOR: 'coyo-filter[title-key="MODULE.SEARCH.AUTHOR"] a',
 }
 
-var extanaSettingsOverride = {
-    debug: true
-};
+// matomo specific tracking settings
+const MATOMOSETTINGS = {
+    HEARTBEAT: 5,
+    // feature untested: if this is empty the following settings starting with CONTENT_ do nothing, 
+    // otherwise its used as selector to send content impressions
+    CONTENT_NODE: '', // add valid selector here (e.g. '.content')
+    // feature untested: sends trackContentImpressionsWithinNode (standard for single page applications) / trackVisibleContentImpressions
+    // if this is empty, no content impressions are tracked
+    CONTENT_TRACKING_MODE: '', // valid values: node/delay
+    // the delay for sending content impressions if CONTENT_TRACKING_MODE is set to 'delay'
+    CONTENT_REFRESHDELAY: 750,
+    // feature untested: Mediaanalytics
+    CONTENT_SCAN_FOR_MEDIA: true,
+    // feature untested: Formanalytics
+    CONTENT_SCAN_FOR_FORMS: true,
+    // feature untested: clicktracking behavior (https://developer.matomo.org/api-reference/tracking-javascript)
+    // false = only left clicks count, 
+    // true = opening the contextmenu via middle or right button counts too, even before actually leaving the page
+    MIDDLERIGHT_MOUSECLICK: true,
+    // short delay for internal use doing async things... 
+    DELAY_FOR_STATECHANGE: 10,
+    // domainfilter that tells matomo to store trackingdata only when sent via these domains (typically just the own/current domain) 
+    DOMAINS: [location.hostname],
+}
