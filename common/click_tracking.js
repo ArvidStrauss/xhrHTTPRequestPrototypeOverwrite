@@ -103,7 +103,7 @@ var coyoClickTracking = {
             document.querySelectorAll(SELECTORS.SIDEBAR_BOOKMARKS+ignoreSelector).forEach(function(item) {
                 item.addEventListener('click', function(e){
                     var name = item.textContent.trim();
-                    sendTrackingEvent('Widget-Lesezeichen', coyoTrackingUtils.typeNameOverrides('Click'), coyoTrackingUtils.typeNameOverrides(name), null);
+                    sendTrackingEvent('widget-bookmarks', coyoTrackingUtils.typeNameOverrides('Click'), coyoTrackingUtils.typeNameOverrides(name), null);
                 });
                 item.setAttribute(ignore, "true");
             });
