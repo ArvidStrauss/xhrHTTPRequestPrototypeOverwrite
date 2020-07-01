@@ -6,6 +6,10 @@
 /** ######################## **/
 
 var coyoTrackingUtils = {
+    OVERRIDES: {
+        TYPE: {},
+        PAGEID: {}
+    },
     createHashCode: function(input) {
         var hash = 0, i, chr;
         if (!input || input.length === 0) return hash;
@@ -77,78 +81,13 @@ var coyoTrackingUtils = {
     },
     typeNameOverrides: function(typeName,escape) {
         escape = (typeof escape === 'boolean' && escape) ? true : false;
-        var overrides = {
-            'pages': 'Seiten',
-            'page': 'Seite',
-            'home': 'Startseite',
-            'workspaces': 'Arbeitsräume',
-            'arbeitsraeume': 'Arbeitsräume',
-            'workspace': 'Arbeitsraum',
-            'blog-article': 'Blog-Artikel',
-            'wiki-article': 'Wiki-Artikel',
-            'chat-message': 'Chat',
-            'create': 'Erstellen',
-            'timeline-item': 'Timeline-Item',
-            'comment': 'Kommentieren',
-            'share': 'Teilen',
-            'subscribe': 'Abonnieren',
-            'unsubscribe': 'Deabonnieren',
-            'search': 'Suche',
-            'timeline': 'Timeline',
-            'filelibrary': 'Dokumente',
-            'file-library': 'Dokumente',
-            'content': 'Inhalt',
-            'article': 'Artikel',
-            // 'timeline': 'Verlauf',
-            'list': 'Liste',
-            'invited': 'Einladungen',
-            'imprint': 'Impressum',
-            // 'events': 'termine',
-            'colleagues': 'Kollegen',
-            'activity': 'Aktivitaeten',
-            'quicksearch': 'Schnellsuche',
-            'form': 'Formular',
-            'task': 'Aufgaben',
-            'files': 'Dateiübersicht',
-            'settings': 'Einstellungen',
-            'members-list': 'Mitglieder Liste',
-            'members-invited': 'Mitglieder Einladungen',
-            'members-requested': 'Mitglieder Anfragen',
-            'participants': 'Teilnehmer',
-            'create chatmessage': 'Nachricht senden',
-            'create chatchannel': 'Chatkanal erstellen',
-            'create timeline': 'Timeline Eintrag erstellen',
-            'create article': 'Artikel erstellen',
-            'create event': 'Event erstellen',
-            'create page': 'Seite erstellen',
-            'view': 'Ansicht',
-            'searchresults': 'Suchergebnis',
-            'no-searchresults': 'Kein Suchergebnis',
-            'widget-my-pages' : 'Widget-Meine-Seiten',
-            'widget-my-workspaces' : 'Widget-Meine-Arbeitsraeume',
-            'search-type': 'Suche-Typ',
-            'search-modified': 'Suche-Geaendert',
-            'search-location': 'Suche-Ort',
-            'search-author': 'Suche-Autor'
-            // 'blog-list-view': 'Blog',
-            // 'wiki-list-view': 'Wiki'
-        };
-        typeName = overrides[typeName.toLowerCase().trim()] || typeName;
+        typeName = coyoTrackingUtils.OVERRIDES.TYPE[typeName.toLowerCase().trim()] || typeName;
         if(typeName && typeName.length) typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
         if(escape) typeName = encodeURIComponent(coyoTrackingUtils.shortenString(typeName,200));
         return typeName;
     },
     typeNameOverridesPageId: function(typeName) {
-        var overrides = {
-            'pages': 'seiten',
-            'page': 'seite',
-            'home': 'startseite',
-            'workspaces': 'ar',
-            'arbeitsraeume': 'ar',
-            'workspace': 'ar',
-            'search': 'suche'
-        };
-        return overrides[typeName] || typeName;
+        return coyoTrackingUtils.OVERRIDES.PAGEID[typeName] || typeName;
     },
     translateText: function(text) {
         return text && text.toLowerCase()

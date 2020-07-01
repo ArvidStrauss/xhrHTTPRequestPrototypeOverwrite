@@ -1,5 +1,10 @@
 # Coyo Tracking Script Generator
 
+## General advice
+
+There are lots of comments in the code, especially for settings, customization and "difficult" code parts.
+If the information in this readme is not sufficent, you will probably find more detailed answers in the code.
+
 ## Project Structure
 
 ### common
@@ -27,14 +32,16 @@ This project tracks everything we can for now, but with pure coyo-data. No renam
 
 - contains the zipped packages with versionnumbers set in gulpfile
 
-##### local
+#### local
 
 - created after first gulp local task
 - contains the built localtracking.js which is delivered by http-server
 
 #### src
 
+- "custom_code.js" = a place where you can put customizings to coyo, not related to tracking
 - "localtracking.js" = the DEV setup for use with local development, see [development](#development)
+- "overrides.js" = add customer specific changes here, see [customizing](#customizing) for more info
 - "tracking_config_dev.html" = HTML template for final DEV source file, including Matomo and all other kinds of configuration
 - "tracking_config_test.html" = HTML template for final TEST source file, including Matomo and all other kinds of configuration
 - "tracking_config_prod.html" = HTML template for final PROD source file, including Matomo and all other kinds of configuration
@@ -70,7 +77,27 @@ This also sets a watcher on the file, so it gets rebuilt if you change anything 
 
 ## Customizing
 
-### Important Rules
+Customizing is separated in two different categories: tracking related and non tracking related.
 
-1. Think before adding customizing! Is the change something customer specific (add to project folder) or nice to have for all (add to common)?
-2. If you add mandatory functionality to common, make sure you do not break other projects! (e.g. add new stuff requiring a config inside each project...)
+### Tracking Related
+
+Tracking related customizations are done in ```overrides.js``` because that is what we are doing here.
+You can override existing variables and functions used by our tracking script, or you can add additional functionality.
+**Please be aware of the [important rules](#important-rules)!**
+
+Common use-case examples:
+
+1. rename wordings in tracked data: translate to german instead of english coyo-internal identifiers
+2. override coyoTrackingUtils.translateText method to allow a different characterset
+3. override coyoTRackingUtils.pageIdToString to completely change the behavior how a pageID / actionurl is built
+
+### Non Tracking Related
+
+This means all customizations to Coyo itself by just throwing JS onto the page.
+If you have to add/change UI functionality just put your code into each projects ```custom_code.js``` file.
+This code is attached at the end of the trackingcode js and zipped into the delivery.
+
+### **Important Rules**
+
+1. **Think before adding customizing! Is the change something customer specific (add to project folder) or nice to have for all (add to common)?**
+2. **If you add mandatory functionality to common, make sure you do not break other projects! (e.g. add new stuff requiring a config inside each project...)**
