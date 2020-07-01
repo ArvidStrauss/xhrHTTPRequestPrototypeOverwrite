@@ -164,8 +164,7 @@ if(TRACKINGSETTINGS.USER_STATUS) coyoRequestTrackingConfig.push({
     method: 'PUT',
     execute: function(responseUrl, response) {
         // get presence status
-        var status = (response.state || 'not defined').toLowerCase();
-        sendTrackingEvent(status, 'Change Status', '');
+        if(response.state) sendTrackingEvent(response.state.toLowerCase(), 'Change Status', '');
     }
 });
 if(TRACKINGSETTINGS.SEARCH_MAIN) coyoRequestTrackingConfig.push({
