@@ -61,10 +61,12 @@ coyoTrackingUtils.OVERRIDES = {
       'no-searchresults': 'Kein Suchergebnis',
       'widget-my-pages' : 'Widget-Meine-Seiten',
       'widget-my-workspaces' : 'Widget-Meine-Arbeitsraeume',
+      'widget-bookmarks': 'Widget-Lesezeichen',
       'search-type': 'Suche-Typ',
       'search-modified': 'Suche-Geaendert',
       'search-location': 'Suche-Ort',
-      'search-author': 'Suche-Autor'
+      'search-author': 'Suche-Autor',
+      'click': 'Klick'
       // 'blog-list-view': 'Blog',
       // 'wiki-list-view': 'Wiki'
   },
