@@ -133,7 +133,7 @@ var coyoClickTracking = {
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
     coyoTrackingUtils.onContentReady(function(){
         coyoClickTracking.addClickBindings();
-        if(TRACKINGSETTINGS.VIDEOPLAY) coyoClickTracking.addVideoTracking();
+        if(TRACKINGSETTINGS.VIDEOPLAY && TRACKINGSETTINGS.MEDIA_VIEW) coyoClickTracking.addVideoTracking();
     });
 },1000));
 
