@@ -476,7 +476,7 @@ function trackPageView(searchResults) {
     }
     if(TRACKINGSETTINGS.MEDIA_DOWNLOAD) initDownloadListener();
 
-    if(pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
+    if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
         contentTitle    = pageTitle;
         pageTitle       = null;
     }
