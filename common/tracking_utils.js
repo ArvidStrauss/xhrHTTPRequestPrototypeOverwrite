@@ -241,7 +241,6 @@ var coyoTrackingUtils = {
         if (!navItem.length) {
             navItem = $('div.sub-navigation nav.navbar ul.nav li.nav-item.active a.nav-item');
         }
-
         if (navItem.length && navItem.attr('href')) {
             var menuEntry = (/\/([^?\/]*)/g).exec(navItem.attr('href'));
             if (menuEntry && menuEntry.length > 1) {
@@ -253,7 +252,9 @@ var coyoTrackingUtils = {
             // get the current position generically from body class
             var classMatch = (/state-main-([\w-]*)/g).exec($('body:eq(0)').attr('class'));
             if (classMatch && classMatch.length > 1) {
-                contentGroup[1] = override[1] ? override[1] : classMatch[1];
+                var pageType = classMatch[1].split('-')[0];
+                if(['page','workspace','event'].indexOf(pageType) !== -1) pageType += 's';
+                contentGroup[1] = override[1] ? override[1] : pageType;
             } else if ((/state-admin/g).exec($('body:eq(0)').attr('class'))) {
                 contentGroup[1] = override[1] ? override[1] : 'admin';
             }
