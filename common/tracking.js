@@ -494,7 +494,7 @@ function trackPageView(searchResults) {
         contentTitle    = pageTitle;
         pageTitle       = null;
     }
-
+    coyoTrackingUtils.cleanupCustomDimensions();
     // var userCount = coyoTrackingUtils.getRegisteredUsers();
     if(!coyoTrackingUtils.excludeFromTracking(EXCLUDED_GROUPINGPATHS))  {
         if (pageType) {
