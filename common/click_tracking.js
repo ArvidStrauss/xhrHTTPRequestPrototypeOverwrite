@@ -8,6 +8,14 @@
 var ignore = 'data-piwikignore';
 var ignoreSelector = ':not(['+ignore+']';
 
+if(TRACKINGSETTINGS.TRACKEXTERNALFILES) {
+    var FILELINKSELECTOR = '';
+    for(var i=0; i<coyoTrackingUtils.FILEEXTENSIONS.length;i++){
+        FILELINKSELECTOR += 'a[href$=".' + coyoTrackingUtils.FILEEXTENSIONS[i] + '"]'+':not(['+ignore+'-extfile])';
+        if(i !== coyoTrackingUtils.FILEEXTENSIONS.length-1) FILELINKSELECTOR += ', ';
+    }
+}
+
 //click event tracking
 var coyoClickTracking = {
     filterClickTracking: function(category, item) {
@@ -128,6 +136,15 @@ var coyoClickTracking = {
             document.querySelectorAll(SELECTORS.SEARCHFILTER_AUTHOR+ignoreSelector).forEach(function(item) {
                 coyoClickTracking.filterClickTracking(coyoTrackingUtils.typeNameOverrides('Search-Author'),item);
                 item.setAttribute(ignore, "true");
+            });
+        }
+        if(TRACKINGSETTINGS.TRACKEXTERNALFILES) {
+            document.querySelectorAll(FILELINKSELECTOR).forEach(function(item) {
+                item.setAttribute(ignore+'-extfile', "true");
+                item.addEventListener('click', function(e) {
+                    var title = coyoTrackingUtils.shortenString(item.textContent,200)
+                    sendTrackingEvent('Media', coyoTrackingUtils.typeNameOverrides('View'), title, null);
+                });
             });
         }
     }

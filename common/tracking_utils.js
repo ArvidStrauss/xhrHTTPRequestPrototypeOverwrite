@@ -10,6 +10,11 @@ var coyoTrackingUtils = {
         TYPE: {},
         PAGEID: {}
     },
+    FILEEXTENSIONS: ['7z','aac','apk','arc','arj','asf','asx','avi','azw3','bin','csv','deb','dmg','doc','docx',
+    'epub','exe','flv','gif','gz','gzip','hqx','ibooks','jar','jpg','jpeg','js','mobi','mp2','mp3','mp4','mpg',
+    'mpeg','mov','movie','msi','msp','odb','odf','odg','ods','odt','ogg','ogv','pdf','phps','png','ppt','pptx',
+    'qt','qtm','ra','ram','rar','rpm','sea','sit','tar','tbz','tbz2','bz','bz2','tgz','torrent','txt','wav','wma',
+    'wmv','wpd','xls','xlsx','xml','z','zip'],
     createHashCode: function(input) {
         var hash = 0, i, chr;
         if (!input || input.length === 0) return hash;

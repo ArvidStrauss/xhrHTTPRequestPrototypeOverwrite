@@ -88,6 +88,8 @@ const TRACKINGSETTINGS = {
     CREATE_TIMELINE: true,
     // eventtracking if timeline items get deleted
     DELETE_TIMELINE: true,
+    // track clicks on links to coyo-external files
+    TRACKEXTERNALFILES: true,
 }
 
 // selectors used by clicktracking
