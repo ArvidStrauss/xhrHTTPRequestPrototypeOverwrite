@@ -328,6 +328,7 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
     targetType = coyoTrackingUtils.typeNameOverrides(targetType);
     action = coyoTrackingUtils.typeNameOverrides(action);
+    title = coyoTrackingUtils.cleanUnicodeIcons(title).text;
     coyoTrackingUtils.cleanupCustomDimensions();
 
     if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
