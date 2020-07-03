@@ -229,11 +229,19 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
         execute: function(responseUrl, response, requestData, respHeader) {
             var modal = document.querySelector('.modal-dialog');
             if(modal && response && response.displayName && response.displayName.length) {
-                if(lastFileId !== response.displayName) sendTrackingEvent('Media', 'View', response.displayName);
-                lastFileId = response.displayName;
-                setTimeout(function(){
-                    lastFileId = '';
-                }, 5000);
+                // events use contentReady+Angular approach to be able to handle both: 
+                // direct file views (with id in url) 
+                // and opening modals on other pages (no fileid in url)
+                coyoTrackingUtils.onContentReady(function() {
+                    var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
+                    if(filePreview && filePreview.file && filePreview.file.displayName){
+                        if(lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
+                        lastFileId = filePreview.file.displayName;
+                        setTimeout(function(){
+                            lastFileId = '';
+                        }, 5000);
+                    }
+                });
             }
         }
     }); 
@@ -321,6 +329,11 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     targetType = coyoTrackingUtils.typeNameOverrides(targetType);
     action = coyoTrackingUtils.typeNameOverrides(action);
     coyoTrackingUtils.cleanupCustomDimensions();
+
+    if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
+        pageTitle       = null;
+    }
+
     if(pageType) {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT, coyoTrackingUtils.typeNameOverrides(pageType)]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
@@ -554,9 +567,10 @@ function trackPageView(searchResults) {
 // page view tracking
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
     if(ENV !== 'prod'){console.debug('stateChangeSuccess event');}
-    setTimeout(function() {
+    // wait until content is ready
+    coyoTrackingUtils.onContentReady(function(){
         trackPageView();
-    }, MATOMOSETTINGS.DELAY_FOR_STATECHANGE || 2);
+    });
 }, 1000), false);
 
 // heartbeat hack: ping on change, just ping immediately, do not wait for pagecall

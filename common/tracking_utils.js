@@ -222,13 +222,12 @@ var coyoTrackingUtils = {
         }
 
         var analyzeFile = function (contentGroup, override) {
-
-            var fileObj = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
-            // check for platform specific type name overrides
-
+            var splitUrl = window.location.href.split('/');
             contentGroup[1] = 'filelibrary';
-            if (fileObj && fileObj.file && fileObj.file.displayName) {
-                contentGroup[2] = override[2] ? override[2] : fileObj.file.displayName;
+            if (splitUrl[5]) {
+                var fileObj = coyoTrackingDBHelper.getObjectData(splitUrl[5]);
+                // check for platform specific type name overrides
+                contentGroup[2] = override[2] ? override[2] : fileObj.name;
             }
         };
 
