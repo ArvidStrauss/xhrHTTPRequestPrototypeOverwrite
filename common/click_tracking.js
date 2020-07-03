@@ -27,11 +27,13 @@ var coyoClickTracking = {
     // if there is no such attribute, this failed because it was not possible to parse a title or match the response with an element
     addVideoTracking: function() {
         document.querySelectorAll('video'+ignoreSelector).forEach(function(item) {
+            console.debug('found video:', item);
             // if a default uploaded video is embedded in a post, there is no information about the title
             // look into objectDB, otherwise send a HEAD request to the source, parse the title from the header, add the data-title attribute to that video
             // then track it with its title on first play
             item.setAttribute(ignore, "true");
             if(!item.getAttribute('data-title')) {
+                console.debug('no title found, try to get it...');
                 coyoTrackingUtils.getVideoInfo(item.src,function(filename){
                     item.setAttribute('data-title',filename);
                 });
@@ -39,10 +41,12 @@ var coyoClickTracking = {
             item.addEventListener('play', function(e){
                 var viewed = item.getAttribute('data-viewed');
                 //only track initial video starts
+                console.debug('video play triggered, viewed: '+viewed);
                 if(!viewed) {
                     setTimeout(function(){
                         var title = item.getAttribute('data-title');
                         var modal = document.querySelector('.modal-dialog');
+                        console.debug('title: '+title+'\t/\tmodal: '+(modal.length > 0));
                         if(title && !modal) sendTrackingEvent('Media', coyoTrackingUtils.typeNameOverrides('View'), title, null);
                         item.setAttribute('data-viewed', "true");
                     },500);

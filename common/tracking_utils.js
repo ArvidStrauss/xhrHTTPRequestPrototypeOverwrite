@@ -222,8 +222,10 @@ var coyoTrackingUtils = {
         }
 
         var analyzeFile = function (contentGroup, override) {
+
             var fileObj = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
             // check for platform specific type name overrides
+
             contentGroup[1] = 'filelibrary';
             if (fileObj && fileObj.file && fileObj.file.displayName) {
                 contentGroup[2] = override[2] ? override[2] : fileObj.file.displayName;
@@ -336,15 +338,21 @@ var coyoTrackingUtils = {
     getVideoInfo: function (url,callback){
         var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
         var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
-        if(objData && objData.name && objData.name.length){
+        console.debug('getVideoInfo: objData lookup: ', objData);
+        if(objData && objData.name && objData.name.length) {
+            console.debug('getVideoInfo: objData callback', objData.name);
             callback(objData.name);
         } else {
+            console.debug('getVideoInfo: send HEAD Request');
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
             http.onreadystatechange = function() {
+                console.debug('getVideoInfo: got HEAD Response', this);
                 if (this.readyState == this.DONE) {
                     var respHeader = coyoTrackingUtils.getResponseHeaders(this);
                     var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    console.debug('getVideoInfo: Header: ', respHeader);
+                    console.debug('getVideoInfo: filename', filename);
                     callback(filename);
                 }
             };
