@@ -5,13 +5,6 @@
 /* Updated: _$DATE$_
 /** ######################## **/
 
-var currentUrl = location.href;
-var initialStateChangeFired = false;
-var pendingSearch = 0;
-var lastFileId = '';
-// create tracking settings including overrides if present
-var pageId, pageName, pageType, preventTracking;
-
 var _paq = _paq || [];
 MATOMOSETTINGS.DOMAINS !== null ? _paq.push(['setDomains', MATOMOSETTINGS.DOMAINS]) : null;
 (function() {
@@ -180,8 +173,8 @@ if(TRACKINGSETTINGS.SEARCH_INLINE) coyoRequestTrackingConfig.push({
     execute: function(responseUrl, response) {
         //quicksearch handling: do not track every response on typing, wait some time and track the last (possible complete) term
         setTimeout(function(){
-            pendingSearch--;
-            if(pendingSearch == 0) {
+            coyoTrackingUtils._pendingSearch--;
+            if(coyoTrackingUtils._pendingSearch == 0) {
                 sendSearchEvent(responseUrl,response, true);
             }
         },1000);
@@ -196,7 +189,7 @@ if(TRACKINGSETTINGS.MEDIA_UPLOAD) coyoRequestTrackingConfig.push({
 });
 if(TRACKINGSETTINGS.MEDIA_VIEW) {
     // document/files use nearly the same handler because different widgets and filetypes work with different requests
-    // depending on which one gets executed we track the file view and lastFileId prevents double tracking (also for multiple calls when opening modal)
+    // depending on which one gets executed we track the file view and coyoTrackingUtils._lastFileId prevents double tracking (also for multiple calls when opening modal)
     // examples: 
     // single-file-widget + documents panel
     //  images: first call = /files/ + /documents/, further calls just /documents/
@@ -215,10 +208,10 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
             var modal = document.querySelector('.modal-dialog');
             if(docMatch && docMatch[1] && modal) {
                 var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
-                if(lastFileId !== objData.name) sendTrackingEvent('Media', 'View', objData.name);
-                lastFileId = objData.name;
+                if(coyoTrackingUtils._lastFileId !== objData.name) sendTrackingEvent('Media', 'View', objData.name);
+                coyoTrackingUtils._lastFileId = objData.name;
                 setTimeout(function(){
-                    lastFileId = '';
+                    coyoTrackingUtils._lastFileId = '';
                 }, 5000);
             }
         }
@@ -235,10 +228,10 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                 coyoTrackingUtils.onContentReady(function() {
                     var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
                     if(filePreview && filePreview.file && filePreview.file.displayName){
-                        if(lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
-                        lastFileId = filePreview.file.displayName;
+                        if(coyoTrackingUtils._lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
+                        coyoTrackingUtils._lastFileId = filePreview.file.displayName;
                         setTimeout(function(){
-                            lastFileId = '';
+                            coyoTrackingUtils._lastFileId = '';
                         }, 5000);
                     }
                 });
@@ -453,7 +446,7 @@ function initDownloadListener() {
 function debounce(func, wait, immediate) {
     var timeout;
     return function() {
-        // initialStateChangeFired = true;
+        // coyoTrackingUtils._initialStateChangeFired = true;
         var context = this;
         var args = arguments;
         var later = function() {
@@ -468,9 +461,9 @@ function debounce(func, wait, immediate) {
 };
 
 function trackPageView(searchResults) {
-    if(initialStateChangeFired) {
+    if(coyoTrackingUtils._initialStateChangeFired) {
         if(ENV !== 'prod') console.debug('already fired. aborting');
-        initialStateChangeFired = false;
+        coyoTrackingUtils._initialStateChangeFired = false;
         return;
     }
     if (typeof coyoTrackingUtils != "object") {
@@ -520,9 +513,9 @@ function trackPageView(searchResults) {
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
         }
     }
-    _paq.push(['setReferrerUrl', currentUrl]);
-    currentUrl = window.location.href;
-    _paq.push(['setCustomUrl', currentUrl]);
+    _paq.push(['setReferrerUrl', coyoTrackingUtils._currentUrl]);
+    coyoTrackingUtils._currentUrl = window.location.href;
+    _paq.push(['setCustomUrl', coyoTrackingUtils._currentUrl]);
     _paq.push(['setDocumentTitle', pageId]);
     _paq.push(['setGenerationTimeMs', 0]);
 
@@ -586,7 +579,8 @@ XMLHttpRequest.prototype.open = function() {
     var method = arguments[0];
     var reqURL = arguments[1];
     var that = this;
-
+    coyoTrackingUtils._openRequests++;
+    if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
     // special case for getting request data from send() method
     coyoRequestTrackingConfig.forEach(function(item) {
         if (method == item.method && reqURL && reqURL.match(item.urlPattern) && item.saveRequestData) {
@@ -596,10 +590,12 @@ XMLHttpRequest.prototype.open = function() {
 
     //quicksearch handling: do not track every response on typing, wait some time and track the last (possible complete) term 
     if(reqURL.match(/web\/quick-entity-search/g)){
-        pendingSearch++;
+        coyoTrackingUtils._pendingSearch++;
     }
 
     this.addEventListener('load', function(e) {
+        coyoTrackingUtils._openRequests--;
+        if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
         if (coyoTrackingUtils.excludeFromTracking()) {
             return;
         }
@@ -658,11 +654,11 @@ XMLHttpRequest.prototype.send = function() {
 // b) AFTER that -> we missed the first stateChangeSuccess and therefore have to trigger it manually
 if(TRACKINGSETTINGS.USE_TAGMANAGER){
     coyoTrackingUtils.onContentReady(function(){
-        if(ENV !== 'prod') console.debug('initial?',initialStateChangeFired);
-        if(!initialStateChangeFired) {
+        if(ENV !== 'prod') console.debug('initial?',coyoTrackingUtils._initialStateChangeFired);
+        if(!coyoTrackingUtils._initialStateChangeFired) {
             if(ENV !== 'prod'){console.debug('initial page call');}
             trackPageView();
-            initialStateChangeFired = true;
+            coyoTrackingUtils._initialStateChangeFired = true;
         }
     });
 }

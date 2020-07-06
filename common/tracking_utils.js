@@ -15,6 +15,11 @@ var coyoTrackingUtils = {
     'mpeg','mov','movie','msi','msp','odb','odf','odg','ods','odt','ogg','ogv','pdf','phps','png','ppt','pptx',
     'qt','qtm','ra','ram','rar','rpm','sea','sit','tar','tbz','tbz2','bz','bz2','tgz','torrent','txt','wav','wma',
     'wmv','wpd','xls','xlsx','xml','z','zip'],
+    _openRequests: 0,
+    _currentUrl: location.href,
+    _initialStateChangeFired: false,
+    _pendingSearch: 0,
+    _lastFileId: '',
     createHashCode: function(input) {
         var hash = 0, i, chr;
         if (!input || input.length === 0) return hash;
@@ -365,14 +370,25 @@ var coyoTrackingUtils = {
         }
     },
     onContentReady: function(callback) {
+        // idea: increment _openRequests for outgoing xhr requests, decrement for each finished request
+        // check periodically if there are no open requests (_openRequests = 0), 
+        // if the check is true at least 2 times in a row (because sometimes loaded components execute more following requests),
+        // execute our tracking
+        var counter = 0;
         var check = setInterval(function(){
-            if(ENV !== 'prod') console.debug('checking...',body.className)
-            if(body.className.match(/state(\-\w+)+-\w+/,'gi')){
-                clearInterval(check);
-                callback();
+            if(ENV !== 'prod') console.debug('checking...',coyoTrackingUtils._openRequests)
+            if(coyoTrackingUtils._openRequests === 0){
+                counter++;
+                if(ENV !== 'prod') console.debug('finished? ',counter);
+                if(counter >= 1) {
+                    clearInterval(check);
+                    callback();
+                }
+            } else {
+                counter = Math.max(0,counter-1);
             }
         },500);
-        //fallback: clear after 30s
+        // fallback: clear after 30s
         setTimeout(function(){clearInterval(check);},30000);
     },
     cleanUnicodeIcons: function(text) {
