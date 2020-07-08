@@ -105,7 +105,7 @@ var coyoClickTracking = {
             document.querySelectorAll(SELECTORS.SIDEBAR_SUBSCRIPTIONS+ignoreSelector).forEach(function(item) {
                 item.addEventListener('click', function(){
                     var type = /\/pages\//gi.exec(item.href) ? 'widget-my-pages' : 'widget-my-workspaces';
-                    var name = item.querySelector('.senderName').textContent.trim();
+                    var name = item.querySelector('span').textContent.trim();
                     sendTrackingEvent(type, coyoTrackingUtils.typeNameOverrides('Click'), coyoTrackingUtils.typeNameOverrides(name), null);
                 });
                 item.setAttribute(ignore, "true");
