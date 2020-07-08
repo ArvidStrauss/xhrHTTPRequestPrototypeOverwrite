@@ -227,7 +227,7 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                 // and opening modals on other pages (no fileid in url)
                 coyoTrackingUtils.onContentReady(function() {
                     var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
-                    if(filePreview && filePreview.file && filePreview.file.displayName){
+                    if(filePreview && filePreview.file && filePreview.file.displayName) {
                         if(coyoTrackingUtils._lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
                         coyoTrackingUtils._lastFileId = filePreview.file.displayName;
                         setTimeout(function(){
@@ -471,6 +471,7 @@ function trackPageView(searchResults) {
         return;
     }
     var pageConfig   = coyoTrackingUtils.getPageConfig();
+    if(ENV !== 'prod') console.log(pageConfig);
     var pageId       = coyoTrackingUtils.pageIdToString(pageConfig.contentGroup);
     var pageType     = pageConfig.contentGroup[1] || null;
     var pageTitle    = pageConfig.contentGroup[2] || null;
@@ -562,13 +563,13 @@ function trackPageView(searchResults) {
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
     if(ENV !== 'prod'){console.debug('stateChangeSuccess event');}
     // wait until content is ready
-    coyoTrackingUtils.onContentReady(function(){
+    coyoTrackingUtils.onContentReady(function() {
         trackPageView();
     });
 }, 1000), false);
 
 // heartbeat hack: ping on change, just ping immediately, do not wait for pagecall
-window.document.addEventListener('stateChangeSuccess', function(){
+window.document.addEventListener('stateChangeSuccess', function() {
     _paq.push(['ping']);
 });
 
