@@ -152,6 +152,7 @@ var coyoTrackingUtils = {
             var navigation = $('section.page .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-page-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-page-show-([\w\-]*)/g.exec(bodyClass) || /state-main-page-([\w\-]*)/g.exec(bodyClass);
+            if(ENV !== 'prod') console.log('analyzePage',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
                 var app = (classMatch ? classMatch[1].split('-')[0] : '');
             } else if (splitUrl[6]) {
@@ -171,6 +172,7 @@ var coyoTrackingUtils = {
             var navigation = $('section.workspace .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-workspace-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-show-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-([\w\-]*)/g.exec(bodyClass);
+            if(ENV !== 'prod') console.log('analyzeWorkspace',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
                 var app = (classMatch ? classMatch[1].split('-')[0] : '');
             } else if (splitUrl[6]) {
@@ -189,6 +191,7 @@ var coyoTrackingUtils = {
             var event = $('section.event div.panel.panel-default div.titles-container div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
             var bodyClass = $('body').attr('class');
             var classMatch = /state-main-event-show-([\w\-]*)/g.exec(bodyClass) || /state-main-event-([\w\-]*)/g.exec(bodyClass);
+            if(ENV !== 'prod') console.log('analyzeEvent',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
                 var app = (classMatch ? classMatch[1].split('-')[0] : '');
             } else if (splitUrl[6]) {
@@ -374,22 +377,31 @@ var coyoTrackingUtils = {
         // check periodically if there are no open requests (_openRequests = 0), 
         // if the check is true at least 2 times in a row (because sometimes loaded components execute more following requests),
         // execute our tracking
-        var counter = 0;
+        var that = this;
+        that.counter = 0;
+        that.initialVal = coyoTrackingUtils._openRequests;
+        that.executed = false;
         var check = setInterval(function(){
             if(ENV !== 'prod') console.debug('checking...',coyoTrackingUtils._openRequests)
-            if(coyoTrackingUtils._openRequests === 0){
-                counter++;
-                if(ENV !== 'prod') console.debug('finished? ',counter);
-                if(counter >= 1) {
+            if(coyoTrackingUtils._openRequests === that.initialVal){
+                that.counter++;
+                if(ENV !== 'prod') console.debug('finished? ',that.counter);
+                if(that.counter >= 1) {
                     clearInterval(check);
+                    that.executed = true;
                     callback();
                 }
             } else {
-                counter = Math.max(0,counter-1);
+                that.counter = Math.max(0,that.counter-1);
             }
         },500);
-        // fallback: clear after 30s
-        setTimeout(function(){clearInterval(check);},30000);
+        // fallback: clear after 5s (usually statechange event + 5s)
+        setTimeout(function(){
+            if(!that.executed) {
+                clearInterval(check);
+                callback();
+            }
+        },5000);
     },
     cleanUnicodeIcons: function(text) {
         var matched = false;
