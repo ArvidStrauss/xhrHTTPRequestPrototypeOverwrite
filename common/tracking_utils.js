@@ -154,7 +154,10 @@ var coyoTrackingUtils = {
             var classMatch = /state-main-page-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-page-show-([\w\-]*)/g.exec(bodyClass) || /state-main-page-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzePage',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
-                var app = (classMatch ? classMatch[1].split('-')[0] : '');
+                // fix: strip things like blog-list-view to "blog", but this also cuts "file-library" which is the correct term,
+                // so repair it
+                var appTmp = classMatch[1].split('-')[0];
+                var app = (appTmp === 'file' ? appTmp+'-library'  : appTmp);
             } else if (splitUrl[6]) {
                // handle anything that is not an app by prepending the type like members_invited
                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
@@ -174,7 +177,10 @@ var coyoTrackingUtils = {
             var classMatch = /state-main-workspace-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-show-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzeWorkspace',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
-                var app = (classMatch ? classMatch[1].split('-')[0] : '');
+                // fix: strip things like blog-list-view to "blog", but this also cuts "file-library" which is the correct term,
+                // so repair it
+                var appTmp = classMatch[1].split('-')[0];
+                var app = (appTmp === 'file' ? appTmp+'-library'  : appTmp);
             } else if (splitUrl[6]) {
                // handle anything that is not an app by prepending the type like members_invited
                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
@@ -193,7 +199,10 @@ var coyoTrackingUtils = {
             var classMatch = /state-main-event-show-([\w\-]*)/g.exec(bodyClass) || /state-main-event-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzeEvent',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
-                var app = (classMatch ? classMatch[1].split('-')[0] : '');
+                // fix: strip things like blog-list-view to "blog", but this also cuts "file-library" which is the correct term,
+                // so repair it
+                var appTmp = classMatch[1].split('-')[0];
+                var app = (appTmp === 'file' ? appTmp+'-library'  : appTmp);
             } else if (splitUrl[6]) {
                // handle anything that is not an app by prepending the type like members_invited
                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
