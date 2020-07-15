@@ -376,15 +376,18 @@ var coyoTrackingUtils = {
         }
         return result;
     },
-    getResponseHeaders: function (respObj) {
+    getResponseHeaders: function (respObj, log) {
         var headers = respObj.getAllResponseHeaders().split(/\r\n/);
         var headersFormatted = {};
+        if(log) console.group();
         for(i=0;i<headers.length;i++){
             var item = headers[i].split(': ');
             var name = item[0];
             var value = item[1]
             headersFormatted[name] = value;
+            if(log) console.debug('getVideoInfo: ',item,name,value);
         }
+        if(log) console.groupEnd();
         return headersFormatted;
     },
     getVideoInfo: function (url,callback) {
@@ -401,7 +404,8 @@ var coyoTrackingUtils = {
             http.onreadystatechange = function() {
                 console.debug('getVideoInfo: got HEAD StateChange', this);
                 if (this.readyState == this.DONE) {
-                    var respHeader = coyoTrackingUtils.getResponseHeaders(this);
+                    var respHeader = coyoTrackingUtils.getResponseHeaders(this,true);
+                    console.debug('getVideoInfo: DATA ', this, coyoTrackingUtils.getResponseHeaders(this));
                     var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
                     console.debug('getVideoInfo: Header: ', respHeader);
                     console.debug('getVideoInfo: filename', filename);

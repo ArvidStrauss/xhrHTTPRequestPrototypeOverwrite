@@ -245,8 +245,8 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
         method: 'HEAD',
         execute: function(responseUrl, response, requestData, respHeader) {
             var modal = document.querySelector('.modal-dialog');
-            if(modal && modal.offsetParent === null) {
-                var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
+            if(modal && modal.offsetParent !== null) {
+                var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
                 var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
                 if(objData && objData.name && objData.name.length) {
                     var filename = objData.name;
@@ -256,7 +256,7 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                     sendTrackingEvent('Media', 'View', filename, null);
                 }
             } else {
-                console.debug('VideoRequest: no modal open');
+                console.debug('VideoRequest: no modal open',document.querySelector('.modal-dialog'));
             }
         }
     });
