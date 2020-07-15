@@ -244,6 +244,7 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
         urlPattern: /web\/senders\/.*\/stream/g,
         method: 'HEAD',
         execute: function(responseUrl, response, requestData, respHeader) {
+            console.warn('HEAD STREAM');
             var modal = document.querySelector('.modal-dialog');
             if(modal && modal.offsetParent !== null) {
                 var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
@@ -252,11 +253,14 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                     var filename = objData.name;
                     sendTrackingEvent('Media', 'View', filename, null);
                 } else {
-                    var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    console.debug('StreamRequest: DATA ', this, coyoTrackingUtils.getResponseHeaders(this));
+                    var filename = respHeader['content-disposition'] && respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    console.debug('StreamRequest: Header: ', respHeader);
+                    console.debug('StreamRequest: filename', filename);
                     sendTrackingEvent('Media', 'View', filename, null);
                 }
             } else {
-                console.debug('VideoRequest: no modal open',document.querySelector('.modal-dialog'));
+                console.debug('VideoRequest: no modal open - ignore',document.querySelector('.modal-dialog'));
             }
         }
     });
@@ -591,7 +595,7 @@ XMLHttpRequest.prototype.open = function() {
     var reqURL = arguments[1];
     var that = this;
     coyoTrackingUtils._openRequests++;
-    if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
+    // if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
     // special case for getting request data from send() method
     coyoRequestTrackingConfig.forEach(function(item) {
         if (method == item.method && reqURL && reqURL.match(item.urlPattern) && item.saveRequestData) {
@@ -606,7 +610,7 @@ XMLHttpRequest.prototype.open = function() {
 
     this.addEventListener('load', function(e) {
         coyoTrackingUtils._openRequests--;
-        if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
+        // if(ENV !== 'prod') console.debug(coyoTrackingUtils._openRequests);
         if (coyoTrackingUtils.excludeFromTracking()) {
             return;
         }

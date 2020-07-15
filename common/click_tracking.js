@@ -56,7 +56,7 @@ var coyoClickTracking = {
                     setTimeout(function(){
                         var title = item.getAttribute('data-title');
                         var modal = document.querySelector('.modal-dialog');
-                        console.debug('title: '+title+'\t/\tmodal: '+(modal.length > 0));
+                        console.debug('title: '+title+'\t/\tmodal: '+(modal && modal.length > 0));
                         if(title && !modal) sendTrackingEvent('Media', coyoTrackingUtils.typeNameOverrides('View'), title, null);
                         item.setAttribute('data-viewed', "true");
                     },500);
