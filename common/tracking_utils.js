@@ -137,7 +137,7 @@ var coyoTrackingUtils = {
         try{
             return angular.element(domElem).data().$$$angularInjectorController.view.nodes[0].componentView.component;
         } catch (e) {
-            console.warn(e);
+            console.debug(e);
             return null;
         }
     },
@@ -248,18 +248,28 @@ var coyoTrackingUtils = {
             var articleTitleElem = $($('.article-view .panel-title-main:first')[0] || $('.article-view .panel-title:first')[0] || $('.article-view .article-title:first')[0]);
             var articleTitle = articleTitleElem.text().trim();
 
-            if (func && !articleTitle) {
-                articleTitle = $('form input[id*="title"]').val().trim();
-            }
+            try {
+                // this can cause errors for MEDIA UPLOAD event, when uploading files while editing/creating articles
+                // but as we dont need the contenttitle for events, we just ignore them
+                console.log('func:',func,' / articleTitleElem: ',articleTitleElem, ' / title: ',articleTitle,' / form: ',$('form input[id*="title"]'));
+                if (func && !articleTitle) {
+                    // the following line seems to be the cause, but I was unable to reproduce it
+                    // articleTitle = $('form input[id*="title"]').val().trim();
+                    var articleFormElem = $('form input[id*="title"]');
+                    if(articleFormElem) articleTitle = articleFormElem.val().trim();
+                }
 
-            var title = articleTitle || threadTitle;
-            if (title) {
-                contentGroup[contentGroup.length] = override[contentGroup.length] ? override[contentGroup.length] : title;
-                trackingTitle = title + ':' + (contentGroup[2] || '');
-            }
-            // add 'create' or 'edit' behind the content or app title
-            if (func) {
-                contentGroup[contentGroup.length] = override[contentGroup.length] ? override[contentGroup.length] : func;
+                var title = articleTitle || threadTitle;
+                if (title) {
+                    contentGroup[contentGroup.length] = override[contentGroup.length] ? override[contentGroup.length] : title;
+                    // trackingTitle = title + ':' + (contentGroup[2] || '');
+                }
+                // add 'create' or 'edit' behind the content or app title
+                if (func) {
+                    contentGroup[contentGroup.length] = override[contentGroup.length] ? override[contentGroup.length] : func;
+                }
+            } catch (e) {
+                console.warn(e);
             }
         }
 
