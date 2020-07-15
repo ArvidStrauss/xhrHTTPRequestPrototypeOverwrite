@@ -226,7 +226,9 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                 // direct file views (with id in url) 
                 // and opening modals on other pages (no fileid in url)
                 coyoTrackingUtils.onContentReady(function() {
-                    var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
+                    if(document.querySelector('coyo-file-preview')) {
+                        var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
+                    }
                     if(filePreview && filePreview.file && filePreview.file.displayName) {
                         if(coyoTrackingUtils._lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
                         coyoTrackingUtils._lastFileId = filePreview.file.displayName;
@@ -324,7 +326,7 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     var pageTitle    = pageConfig.contentGroup[2] || null;
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
-
+    if(ENV !== 'prod') console.log(pageConfig);
     //handle 'create' for timeline (do not track title)
     if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
     targetType = coyoTrackingUtils.typeNameOverrides(targetType);
