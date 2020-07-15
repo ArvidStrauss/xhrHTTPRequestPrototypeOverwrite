@@ -46,6 +46,7 @@ coyoTrackingUtils.OVERRIDES = {
       'task': 'Aufgaben',
       'files': 'Dateiübersicht',
       'settings': 'Einstellungen',
+      'members': 'Mitglieder',
       'members-list': 'Mitglieder Liste',
       'members-invited': 'Mitglieder Einladungen',
       'members-requested': 'Mitglieder Anfragen',
