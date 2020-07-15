@@ -400,38 +400,49 @@ var coyoTrackingUtils = {
             };
             http.send();
         }
-    },
+    }, 
     onContentReady: function(callback) {
-        // idea: increment _openRequests for outgoing xhr requests, decrement for each finished request
-        // check periodically if there are no open requests (_openRequests = 0), 
-        // if the check is true at least 2 times in a row (because sometimes loaded components execute more following requests),
-        // execute our tracking
-        var that = this;
-        that.counter = 0;
-        that.initialVal = coyoTrackingUtils._openRequests;
-        that.executed = false;
         var check = setInterval(function(){
-            if(ENV !== 'prod') console.debug('checking...',coyoTrackingUtils._openRequests)
-            if(coyoTrackingUtils._openRequests === that.initialVal){
-                that.counter++;
-                if(ENV !== 'prod') console.debug('finished? ',that.counter);
-                if(that.counter >= 1) {
-                    clearInterval(check);
-                    that.executed = true;
-                    callback();
-                }
-            } else {
-                that.counter = Math.max(0,that.counter-1);
-            }
-        },500);
-        // fallback: clear after 5s (usually statechange event + 5s)
-        setTimeout(function(){
-            if(!that.executed) {
+            if(ENV !== 'prod') console.debug('checking...',body.className)
+            if(document.body.className.match(/state(\-\w+)+-\w+/,'gi')){
                 clearInterval(check);
                 callback();
             }
-        },5000);
+        },500);
+        //fallback: clear after 30s
+        setTimeout(function(){clearInterval(check);},30000);
     },
+    // onContentReady: function(callback) {
+    //     // idea: increment _openRequests for outgoing xhr requests, decrement for each finished request
+    //     // check periodically if there are no open requests (_openRequests = 0), 
+    //     // if the check is true at least 2 times in a row (because sometimes loaded components execute more following requests),
+    //     // execute our tracking
+    //     var that = this;
+    //     that.counter = 0;
+    //     that.initialVal = coyoTrackingUtils._openRequests;
+    //     that.executed = false;
+    //     var check = setInterval(function(){
+    //         if(ENV !== 'prod') console.debug('checking...',coyoTrackingUtils._openRequests)
+    //         if(coyoTrackingUtils._openRequests === that.initialVal){
+    //             that.counter++;
+    //             if(ENV !== 'prod') console.debug('finished? ',that.counter);
+    //             if(that.counter >= 1) {
+    //                 clearInterval(check);
+    //                 that.executed = true;
+    //                 callback();
+    //             }
+    //         } else {
+    //             that.counter = Math.max(0,that.counter-1);
+    //         }
+    //     },500);
+    //     // fallback: clear after 5s (usually statechange event + 5s)
+    //     setTimeout(function(){
+    //         if(!that.executed) {
+    //             clearInterval(check);
+    //             callback();
+    //         }
+    //     },5000);
+    // },
     cleanUnicodeIcons: function(text) {
         var matched = false;
         var cleantext = text.replace(/[^\u0000-~\u0080-þĀ-žƀ-Ɏ֊־؋৲-৳૱௹฿៛᠆Ḁ-Ỿ\u2000-\u206e₠-₵∀-⋾Ⱡ-\u2c7e⸗⸚〜〰゠꜠-ꟾ﷼︱-︲﹘﹣﹩＄－￠-￡￥-￦]/g, function (match, offset) {
