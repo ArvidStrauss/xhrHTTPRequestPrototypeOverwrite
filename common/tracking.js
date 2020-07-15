@@ -261,7 +261,7 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
 }
 if(TRACKINGSETTINGS.SHARE) {
     coyoRequestTrackingConfig.push({
-        urlPattern: /web\/shares\/(!multiple)/g,
+        urlPattern: /web\/shares\/(?!multiple)/g,
         method: 'POST',
         saveRequestData: true,
         execute: function(responseUrl, response, requestData) {
