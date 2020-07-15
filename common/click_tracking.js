@@ -7,12 +7,13 @@
 
 //click event tracking
 var coyoClickTracking = {
+    objects: {},
     init: function() {
         coyoClickTracking.ignore = 'data-piwikignore';
         coyoClickTracking.ignoreSelector = ':not(['+coyoClickTracking.ignore+']';
         coyoUrl = window.location.protocol + '//' + window.location.hostname;
         if(TRACKINGSETTINGS.TRACKEXTERNALFILES) {
-            coyoClickTracking.FILELINKSELECTOR = 'a[target="_blank"]:not(['+coyoClickTracking.ignore+'-extfile]),';
+            coyoClickTracking.FILELINKSELECTOR = 'a[target="_blank"][href^="'+coyoUrl+'/files"]:not(['+coyoClickTracking.ignore+'-extfile]),';
             for(var i=0; i<coyoTrackingUtils.FILEEXTENSIONS.length;i++){
                 coyoClickTracking.FILELINKSELECTOR += 'a[href$=".' + coyoTrackingUtils.FILEEXTENSIONS[i] + '"]'+':not(['+coyoClickTracking.ignore+'-extfile]):not([href^="/"]):not([href^="'+coyoUrl+'"])';
                 if(i !== coyoTrackingUtils.FILEEXTENSIONS.length-1) coyoClickTracking.FILELINKSELECTOR += ', ';
@@ -66,6 +67,13 @@ var coyoClickTracking = {
     },
 
     addClickBindings: function(){
+        /* update selector object for debugging */
+        coyoClickTracking.objects = {};
+        for(i=0; i<Object.keys(SELECTORS).length;i++) {
+            var key = Object.keys(SELECTORS)[i];
+            var value = SELECTORS[key];
+            coyoClickTracking.objects[key] = document.querySelectorAll(value);
+        }
         // Header Navigation
         if(TRACKINGSETTINGS.NAV_MAIN) {
             document.querySelectorAll(SELECTORS.HEAD_NAVIGATION+coyoClickTracking.ignoreSelector).forEach(function(item) {
@@ -163,5 +171,5 @@ window.document.addEventListener('stateChangeSuccess', debounce(function() {
 
 coyoTrackingUtils.onContentReady(function(){
     coyoClickTracking.addClickBindings();
-    coyoClickTracking.addVideoTracking();
+    if(TRACKINGSETTINGS.VIDEOPLAY && TRACKINGSETTINGS.MEDIA_VIEW) coyoClickTracking.addVideoTracking();
 });

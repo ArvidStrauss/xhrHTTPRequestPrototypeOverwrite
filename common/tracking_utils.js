@@ -377,7 +377,7 @@ var coyoTrackingUtils = {
         }
         return headersFormatted;
     },
-    getVideoInfo: function (url,callback){
+    getVideoInfo: function (url,callback) {
         var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
         var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
         console.debug('getVideoInfo: objData lookup: ', objData);
@@ -389,7 +389,7 @@ var coyoTrackingUtils = {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
             http.onreadystatechange = function() {
-                console.debug('getVideoInfo: got HEAD Response', this);
+                console.debug('getVideoInfo: got HEAD StateChange', this);
                 if (this.readyState == this.DONE) {
                     var respHeader = coyoTrackingUtils.getResponseHeaders(this);
                     var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');

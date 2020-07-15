@@ -243,10 +243,18 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
         method: 'HEAD',
         execute: function(responseUrl, response, requestData, respHeader) {
             var modal = document.querySelector('.modal-dialog');
-            if(modal) {
-                coyoTrackingUtils.getVideoInfo(responseUrl,function(filename){
-                    sendTrackingEvent('Media', 'View', filename, null)
-                });
+            if(modal && modal.offsetParent === null) {
+                var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
+                var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
+                if(objData && objData.name && objData.name.length) {
+                    var filename = objData.name;
+                    sendTrackingEvent('Media', 'View', filename, null);
+                } else {
+                    var filename = respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    sendTrackingEvent('Media', 'View', filename, null);
+                }
+            } else {
+                console.debug('VideoRequest: no modal open');
             }
         }
     });
