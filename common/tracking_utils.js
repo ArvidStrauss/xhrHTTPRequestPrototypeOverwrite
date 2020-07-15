@@ -434,7 +434,7 @@ var coyoTrackingUtils = {
     },
     cleanUnicodeIcons: function(text) {
         var matched = false;
-        var cleantext = text.replace(/[^\u0000-~\u0080-þĀ-žƀ-ɎḀ-ỾⱠ-\u2c7e꜠-ꟾ]/g, function (match, offset) {
+        var cleantext = text.replace(/[^\u0000-~\u0080-þĀ-žƀ-Ɏ֊־؋৲-৳૱௹฿៛᠆Ḁ-Ỿ\u2000-\u206e₠-₵∀-⋾Ⱡ-\u2c7e⸗⸚〜〰゠꜠-ꟾ﷼︱-︲﹘﹣﹩＄－￠-￡￥-￦]/g, function (match, offset) {
             matched = true;
             return '';
         });
