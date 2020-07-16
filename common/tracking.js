@@ -253,8 +253,11 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                     var filename = objData.name;
                     sendTrackingEvent('Media', 'View', filename, null);
                 } else {
-                    console.debug('StreamRequest: DATA ', this, coyoTrackingUtils.getResponseHeaders(this));
-                    var filename = respHeader['content-disposition'] && respHeader['content-disposition'].match(/filename=\".*(?=")/g)[0].replace('filename="','');
+                    var contentDisposition = respHeader['content-disposition'] || respHeader['Content-Disposition'];
+                    console.debug('StreamRequest: DATA ', respHeader, contentDisposition);
+                    console.debug('StreamRequest match ', contentDisposition.match(/filename=\".*"/g));
+                    var filename = contentDisposition && contentDisposition.match(/filename=\".*"/g)[0].replace('filename="','');
+                    filename = filename.substr(0, filename.length-1);
                     console.debug('StreamRequest: Header: ', respHeader);
                     console.debug('StreamRequest: filename', filename);
                     sendTrackingEvent('Media', 'View', filename, null);
