@@ -1,8 +1,8 @@
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'LHM',
-    projectVersion: '1.0.6',
-    projectDate: '2020-07-15'
+    projectVersion: '1.0.7',
+    projectDate: '2020-07-16'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
 // var builds = [
