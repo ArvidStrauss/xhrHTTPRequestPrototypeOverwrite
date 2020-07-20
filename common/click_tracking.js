@@ -43,7 +43,7 @@ var coyoClickTracking = {
             // then track it with its title on first play
             item.setAttribute(coyoClickTracking.ignore, "true");
             if(!item.getAttribute('data-title')) {
-                console.debug('no title found, try to get it...');
+                // console.debug('no title found, try to get it...');
                 coyoTrackingUtils.getVideoInfo(item.src,function(filename){
                     item.setAttribute('data-title',filename);
                 });
@@ -51,12 +51,12 @@ var coyoClickTracking = {
             item.addEventListener('play', function(e){
                 var viewed = item.getAttribute('data-viewed');
                 //only track initial video starts
-                console.debug('video play triggered, viewed: '+viewed);
+                // console.debug('video play triggered, viewed: '+viewed);
                 if(!viewed) {
                     setTimeout(function(){
                         var title = item.getAttribute('data-title');
                         var modal = document.querySelector('.modal-dialog');
-                        console.debug('title: '+title+'\t/\tmodal: '+(modal && modal.length > 0));
+                        // console.debug('title: '+title+'\t/\tmodal: '+(modal && modal.length > 0));
                         if(title && !modal) sendTrackingEvent('Media', coyoTrackingUtils.typeNameOverrides('View'), title, null);
                         item.setAttribute('data-viewed', "true");
                     },500);

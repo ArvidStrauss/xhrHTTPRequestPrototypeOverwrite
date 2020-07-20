@@ -251,7 +251,7 @@ var coyoTrackingUtils = {
             try {
                 // this can cause errors for MEDIA UPLOAD event, when uploading files while editing/creating articles
                 // but as we dont need the contenttitle for events, we just ignore them
-                console.log('func:',func,' / articleTitleElem: ',articleTitleElem, ' / title: ',articleTitle,' / form: ',$('form input[id*="title"]'));
+                // console.log('func:',func,' / articleTitleElem: ',articleTitleElem, ' / title: ',articleTitle,' / form: ',$('form input[id*="title"]'));
                 if (func && !articleTitle) {
                     // the following line seems to be the cause, but I was unable to reproduce it
                     // articleTitle = $('form input[id*="title"]').val().trim();
@@ -390,22 +390,22 @@ var coyoTrackingUtils = {
     getVideoInfo: function (url,callback) {
         var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
         var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
-        console.debug('getVideoInfo: objData lookup: ', objData);
+        // console.debug('getVideoInfo: objData lookup: ', objData);
         if(objData && objData.name && objData.name.length) {
         } else {
-            console.debug('getVideoInfo: send HEAD Request');
+            // console.debug('getVideoInfo: send HEAD Request');
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
             http.onreadystatechange = function() {
-                console.debug('getVideoInfo: got HEAD StateChange', this);
+                // console.debug('getVideoInfo: got HEAD StateChange', this);
                 if (this.readyState == this.DONE) {
                     var respHeader = coyoTrackingUtils.getResponseHeaders(this);
                     var contentDisposition = respHeader['content-disposition'] || respHeader['Content-Disposition'];
-                    console.debug('getVideoInfo: DATA ', respHeader, contentDisposition);
+                    // console.debug('getVideoInfo: DATA ', respHeader, contentDisposition);
                     var filename = contentDisposition && contentDisposition.match(/filename=\".*"/g)[0].replace('filename="','');
                     filename = filename.substr(0, filename.length-1);
-                    console.debug('getVideoInfo: Header: ', respHeader);
-                    console.debug('getVideoInfo: filename', filename);
+                    // console.debug('getVideoInfo: Header: ', respHeader);
+                    // console.debug('getVideoInfo: filename', filename);
                     if(filename) callback(filename);
                 }
             };

@@ -244,7 +244,6 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
         urlPattern: /web\/senders\/.*\/stream/g,
         method: 'HEAD',
         execute: function(responseUrl, response, requestData, respHeader) {
-            console.warn('HEAD STREAM');
             var modal = document.querySelector('.modal-dialog');
             if(modal && modal.offsetParent !== null) {
                 var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(responseUrl);
@@ -254,16 +253,16 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                     sendTrackingEvent('Media', 'View', filename, null);
                 } else {
                     var contentDisposition = respHeader['content-disposition'] || respHeader['Content-Disposition'];
-                    console.debug('StreamRequest: DATA ', respHeader, contentDisposition);
-                    console.debug('StreamRequest match ', contentDisposition.match(/filename=\".*"/g));
+                    // console.debug('StreamRequest: DATA ', respHeader, contentDisposition);
+                    // console.debug('StreamRequest match ', contentDisposition.match(/filename=\".*"/g));
                     var filename = contentDisposition && contentDisposition.match(/filename=\".*"/g)[0].replace('filename="','');
                     filename = filename.substr(0, filename.length-1);
-                    console.debug('StreamRequest: Header: ', respHeader);
-                    console.debug('StreamRequest: filename', filename);
+                    // console.debug('StreamRequest: Header: ', respHeader);
+                    // console.debug('StreamRequest: filename', filename);
                     sendTrackingEvent('Media', 'View', filename, null);
                 }
             } else {
-                console.debug('VideoRequest: no modal open - ignore',document.querySelector('.modal-dialog'));
+                // console.debug('VideoRequest: no modal open - ignore',document.querySelector('.modal-dialog'));
             }
         }
     });
