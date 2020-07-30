@@ -47,6 +47,8 @@ var coyoTrackingDBHelper = {
         } else if (item.typeName == 'comment') {
             var message = item.message || (item.data ? item.data.message : '');
             title = this.buildAuthorMessage(message, item.author);
+        } else if (item.typeName == 'app') {
+            title = item.name;
         } else if ('user' == item.typeName) {
             title = item.slug;
         }
@@ -138,7 +140,6 @@ var coyoTrackingDBHelper = {
         this.objects[id].parent.id = (parent ? parent.id : item.parent ? item.parent.id : '') || this.objects[id].parent.id;
         this.objects[id].parent.type = (parent ? parent.typeName : item.parent ? item.parent.typeName : '') || this.objects[id].parent.type;
         this.objects[id].parent.name = (parent ? parent.name : item.parent ? item.parent.name : '') || this.objects[id].parent.name;
-
         // this has to be last call because there may be dependencies to the objects parent when generating the name
         this.objects[id].name = nameOverride ? nameOverride : (this.buildTrackingTitle(item, this.objects[id].parent) || this.objects[id].name);
     },
