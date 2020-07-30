@@ -129,3 +129,5 @@ const MATOMOSETTINGS = {
     // domainfilter that tells matomo to store trackingdata only when sent via these domains (typically just the own/current domain) 
     DOMAINS: [location.hostname],
 }
+
+setTimeout(function(){document.querySelector('.license-warning-bar').style = 'display:none;';},2000);
