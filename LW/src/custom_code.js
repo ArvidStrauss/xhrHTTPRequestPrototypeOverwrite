@@ -1,5 +1,5 @@
 /** ######################## **/
-/* _$PROJECT$_ Custom Code _$ENV$_
+/* _$PROJECT$_ Customization Code _$ENV$_
 /* T-Systems MMS
 /* Version: _$VERSION$_
 /* Updated: _$DATE$_

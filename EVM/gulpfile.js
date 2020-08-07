@@ -22,4 +22,4 @@ var gulp = commonGulp.gulp;
 
 gulp.task('build', gulp.parallel(commonGulp.tasks));
 gulp.task('local', function(){gulp.watch(['src/*.js','../common/*.js'], gulp.series('build-local'))});
-gulp.task('default', gulp.series('min-js', 'build', gulp.parallel('clean-temp', 'zip-files')));
+gulp.task('default', gulp.series('min-js', 'build', 'clean-temp'));

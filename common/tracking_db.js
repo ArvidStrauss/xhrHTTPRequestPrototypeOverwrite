@@ -56,6 +56,18 @@ var coyoTrackingDBHelper = {
         return title;
     },
 
+    loadCurrentUser: function() {
+        try {
+            var cache = JSON.parse(sessionStorage['ngStorage-etagCache'] || '{}');
+            key = Object.keys(cache).find(function(key) {
+                return key.match(/\/web\/users\/me/g);
+            });
+            if (cache[key] && cache[key].data && cache[key].data) {
+                this.setObjectData(cache[key].data);
+            }
+        } catch (e) { }
+    },
+
     checkStorageForData: function(method, responseHeader) {
         if (!responseHeader) {
             return null;

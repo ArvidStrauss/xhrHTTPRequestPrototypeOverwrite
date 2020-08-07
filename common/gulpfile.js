@@ -30,7 +30,7 @@ module.exports = function(projectData,builds) {
     });
 
     gulp.task('min-js', function() {
-        return gulp.src(['../common/click_tracking.js', '../common/tracking.js', '../common/tracking_utils.js', '../common/tracking_db.js', 'src/overrides.js', 'src/custom_code.js'])
+        return gulp.src(['../common/click_tracking.js', '../common/tracking.js', '../common/tracking_utils.js', '../common/tracking_db.js', 'src/overrides.js'])
             .pipe(uglify())
             .pipe(rename({ suffix: '.min' }))
             .pipe(gulp.dest('temp'));
@@ -98,7 +98,8 @@ module.exports = function(projectData,builds) {
                 .pipe(replace('_$DATE$_', projectData.projectDate))
                 .pipe(replace('_$ENV$_', buildItem.env.toUpperCase()))
                 .pipe(rename(projectData.projectName+'-Tracking-' + buildItem.env.toUpperCase() + '.html'))
-                .pipe(beautify())
+                // causes problems with legacy custom code
+                //.pipe(beautify())
                 .pipe(gulp.dest('build'));
         });
 
@@ -121,7 +122,7 @@ module.exports = function(projectData,builds) {
                 .pipe(gap.appendFile('temp/tracking.min.js'))
                 .pipe(gap.appendText(' '))
                 .pipe(gap.appendText('/* ###### Custom Code ###### */'))
-                .pipe(gap.appendFile('temp/custom_code.min.js'))
+                .pipe(gap.appendFile('src/custom_code.js'))
                 .pipe(gap.appendText(' '))
                 .pipe(gap.appendText('</script>'))
                 .pipe(replace('_$PROJECT$_', projectData.projectName))

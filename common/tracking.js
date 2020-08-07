@@ -500,6 +500,8 @@ function trackPageView(searchResults) {
     }
     if(TRACKINGSETTINGS.MEDIA_DOWNLOAD) initDownloadListener();
 
+    coyoTrackingDBHelper.loadCurrentUser();
+
     if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
         contentTitle    = pageTitle;
         pageTitle       = null;
