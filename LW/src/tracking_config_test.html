@@ -8,12 +8,12 @@
 
 // Adjust matomo tracking settings here
 // If you adjust the following params, you have to adjust the src of the image tag above aswell
-const MATOMO_TARGET_ID = '13';
-const MATOMO_BASEPATH = 'https://di-tools.t-systems-mms.eu/matomo/';
+const MATOMO_TARGET_ID = '2';
+const MATOMO_BASEPATH = 'https://matomo.leonhard-weiss.com/';
 const MATOMO_TARGET_PHP = MATOMO_BASEPATH + 'matomo.php';
 const MATOMO_TARGET_JS = MATOMO_BASEPATH + 'matomo.js';
 // the base (first part) of the action identifier
-const CONTENTBASE = 'bep';
+const CONTENTBASE = 'leoworld';
 
 // use variables for custom dimensions in case they are setup differently in matomo
 const CUSTOMDIMENSION_PAGETYPE = 1
@@ -34,7 +34,7 @@ const EXCLUDED_PATHS = ['/admin']; // '/workspaces/', '/admin/'
 // track, but do not send custom dimensions on these paths
 const EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
 // dev/test/prod
-const ENV = 'dev';
+const ENV = 'test';
 
 const TRACKINGSETTINGS = {
     // if we track documents, skip the default logic and use the doctitle as CUSTOMDIMENSION_CONTENTTITLE instead of PAGETITLE, APPTYPE or APPTITLE
