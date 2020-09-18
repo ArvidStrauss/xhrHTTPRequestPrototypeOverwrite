@@ -133,13 +133,11 @@ var coyoTrackingUtils = {
         });
         return map;
     },
-    getAngularComponent: function(domElem) {
-        try{
-            return angular.element(domElem).data().$$$angularInjectorController.view.nodes[0].componentView.component;
-        } catch (e) {
-            console.debug(e);
-            return null;
-        }
+    getElementAngularController: function(selector) {
+        var object = document.querySelector(selector);
+        var angularData = angular.element(object).data() || {};
+        var controllerKey = Object.keys(angularData)[0];
+        return angularData[controllerKey];
     },
     /* Pass in the objects to merge as arguments.
    For a deep extend, set the first argument to `true`.*/

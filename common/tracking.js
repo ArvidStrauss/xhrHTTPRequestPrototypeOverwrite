@@ -227,7 +227,7 @@ if(TRACKINGSETTINGS.MEDIA_VIEW) {
                 // and opening modals on other pages (no fileid in url)
                 coyoTrackingUtils.onContentReady(function() {
                     if(document.querySelector('coyo-file-preview')) {
-                        var filePreview = coyoTrackingUtils.getAngularComponent(document.querySelector('coyo-file-preview'));
+                        var filePreview = coyoTrackingUtils.getElementAngularController('coyo-file-preview');
                     }
                     if(filePreview && filePreview.file && filePreview.file.displayName) {
                         if(coyoTrackingUtils._lastFileId !== filePreview.file.displayName) sendTrackingEvent('Media', 'View', filePreview.file.displayName);
