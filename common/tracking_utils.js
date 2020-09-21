@@ -134,7 +134,7 @@ var coyoTrackingUtils = {
         return map;
     },
     getElementAngularController: function(selector) {
-        var object = document.querySelector(selector);
+        var object = typeof selector === 'object' && typeof selector.getAttribute === 'function' ? selector : document.querySelector(selector);
         var angularData = angular.element(object).data() || {};
         var controllerKey = Object.keys(angularData)[0];
         return angularData[controllerKey];
