@@ -73,7 +73,7 @@ var coyoTrackingDBHelper = {
             return null;
         }
         try {
-            var cache = $.extend(JSON.parse(sessionStorage['ngStorage-etagBulkCache'] || null), JSON.parse(sessionStorage['coyo-etagBulkCache'] || null));
+            var cache = coyoTrackingUtils.extend(JSON.parse(sessionStorage['ngStorage-etagBulkCache'] || null), JSON.parse(sessionStorage['coyo-etagBulkCache'] || null));
             var keys = Object.keys(cache);
             var itemID = (/"([0-9a-fA-F-]*)":/g).exec(responseHeader)[1];
             var etag = (/:"([0-9a-fA-F-]*)"/g).exec(responseHeader)[1];
@@ -212,7 +212,7 @@ XMLHttpRequest.prototype.open = function() {
                 }
             } catch (e) { }
 
-            if ($.isEmptyObject(response) && coyoTrackingDBHelper.isAcceptedURL(resp.responseURL, method)) {
+            if (response && Object.keys(response).length === 0 && coyoTrackingDBHelper.isAcceptedURL(resp.responseURL, method)) {
                 response = coyoTrackingDBHelper.checkStorageForData(method, resp.responseHeader);
             }
 
