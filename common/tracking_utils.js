@@ -133,13 +133,44 @@ var coyoTrackingUtils = {
         });
         return map;
     },
-    getAngularComponent: function(domElem) {
-        try{
-            return angular.element(domElem).data().$$$angularInjectorController.view.nodes[0].componentView.component;
-        } catch (e) {
-            console.debug(e);
-            return null;
+    getElementAngularController: function(selector) {
+        var object = typeof selector === 'object' && typeof selector.getAttribute === 'function' ? selector : document.querySelector(selector);
+        var angularData = angular.element(object).data() || {};
+        var controllerKey = Object.keys(angularData)[0];
+        return angularData[controllerKey];
+    },
+    /* Pass in the objects to merge as arguments.
+   For a deep extend, set the first argument to `true`.*/
+    extend: function () {
+        // Variables
+        var extended = {};
+        var deep = false;
+        var i = 0;
+        var length = arguments.length;
+        // Check if a deep merge
+        if ( Object.prototype.toString.call( arguments[0] ) === '[object Boolean]' ) {
+            deep = arguments[0];
+            i++;
         }
+        // Merge the object into the extended object
+        var merge = function (obj) {
+            for ( var prop in obj ) {
+                if ( Object.prototype.hasOwnProperty.call( obj, prop ) ) {
+                    // If deep merge and property is an object, merge properties
+                    if ( deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ) {
+                        extended[prop] = extend( true, extended[prop], obj[prop] );
+                    } else {
+                        extended[prop] = obj[prop];
+                    }
+                }
+            }
+        };
+        // Loop through each object and conduct a merge
+        for ( ; i < length; i++ ) {
+            var obj = arguments[i];
+            merge(obj);
+        }
+        return extended;
     },
     /* handleAppTypeExceptions
     * we check the class for an appname (because the url is unreliabe)
@@ -174,9 +205,11 @@ var coyoTrackingUtils = {
 
         var analyzePage = function (contentGroup, override) {
             var splitUrl = window.location.href.split('/');
-            var page = $('section.page div.panel.panel-default div.panel-foreground div.titles-container div.title-description-wrapper div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
-            var navigation = $('section.page .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
-            var bodyClass = $('body').attr('class');
+            var pageElem = document.querySelector('section.page div.panel.panel-default div.panel-foreground div.titles-container div.title-description-wrapper div.title');
+            var page = pageElem && pageElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
+            var navElem = document.querySelector('section.page .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a');
+            var navigation = navElem && navElem.textContent.trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
+            var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-page-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-page-show-([\w\-]*)/g.exec(bodyClass) || /state-main-page-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzePage',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
@@ -195,9 +228,11 @@ var coyoTrackingUtils = {
 
         var analyzeWorkspace = function (contentGroup, override) {
             var splitUrl = window.location.href.split('/');
-            var workspace = $('section.workspace div.panel.panel-default div.panel-foreground div.titles-container div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
-            var navigation = $('section.workspace .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a').text().trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
-            var bodyClass = $('body').attr('class');
+            var workspaceElem = document.querySelector('section.workspace div.panel.panel-default div.panel-foreground div.titles-container div.title');
+            var workspace = workspaceElem && workspaceElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
+            var navElem = document.querySelector('section.workspace .content-sidebar .panel-navigation ul.nav.nav-default li.filter-entry.active a');
+            var navigation = navElem && navElem.textContent.trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
+            var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-workspace-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-show-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzeWorkspace',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
@@ -216,8 +251,9 @@ var coyoTrackingUtils = {
 
         var analyzeEvent = function (contentGroup, override) {
             var splitUrl = window.location.href.split('/');
-            var event = $('section.event div.panel.panel-default div.titles-container div.title').text().trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
-            var bodyClass = $('body').attr('class');
+            var eventElem = document.querySelector('section.event div.panel.panel-default div.titles-container div.title');
+            var event = eventElem && eventElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
+            var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-event-show-([\w\-]*)/g.exec(bodyClass) || /state-main-event-([\w\-]*)/g.exec(bodyClass);
             if(ENV !== 'prod') console.log('analyzeEvent',bodyClass,classMatch);
             if(classMatch && classMatch[1]) {
@@ -235,7 +271,7 @@ var coyoTrackingUtils = {
 
         var analyzeContentTitle = function (contentGroup, override) {
             // check if the user is creating or editing sth
-            var bodyClass = $('body').attr('class');
+            var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-(page|workspace|event)-show-apps-([\w\-]*)/g.exec(bodyClass) ||
                 /state-main-(page|workspace|event)-show-([\w\-]*)/g.exec(bodyClass) ||
                 /state-main-(page|workspace|event)-([\w\-]*)/g.exec(bodyClass);
@@ -243,20 +279,19 @@ var coyoTrackingUtils = {
             func = func ? func[1] : null;
 
             // cloning and stuff is needed to remove the status text from title string (open, closed, etc.)
-            var threadTitle = $('.thread-view .thread-title').clone().children().remove().end().text().trim();
+            var threadTitle = document.querySelector('.thread-view .thread-title') && [].reduce.call(document.querySelector('.thread-view .thread-title').childNodes, function(a, b) { return a + (b.nodeType === 3 ? b.textContent : ''); }, '').trim();
             // since is possible that there are multiple article titles on a page, we have to priorize them with the following statement
-            var articleTitleElem = $($('.article-view .panel-title-main:first')[0] || $('.article-view .panel-title:first')[0] || $('.article-view .article-title:first')[0]);
-            var articleTitle = articleTitleElem.text().trim();
-
+            var articleTitleElem = document.querySelector('.article-view .panel-title-main') || document.querySelector('.article-view .panel-title') || document.querySelector('.article-view .article-title');
+            var articleTitle = articleTitleElem && articleTitleElem.textContent.trim();
             try {
                 // this can cause errors for MEDIA UPLOAD event, when uploading files while editing/creating articles
                 // but as we dont need the contenttitle for events, we just ignore them
-                // console.log('func:',func,' / articleTitleElem: ',articleTitleElem, ' / title: ',articleTitle,' / form: ',$('form input[id*="title"]'));
+                // console.log('func:',func,' / articleTitleElem: ',articleTitleElem, ' / title: ',articleTitle,' / form: ',document.querySelector('form input[id*="title"]'));
                 if (func && !articleTitle) {
                     // the following line seems to be the cause, but I was unable to reproduce it
-                    // articleTitle = $('form input[id*="title"]').val().trim();
-                    var articleFormElem = $('form input[id*="title"]');
-                    if(articleFormElem) articleTitle = articleFormElem.val().trim();
+                    // articleTitle = document.querySelector('form input[id*="title"]').value.trim();
+                    var articleFormElem = document.querySelector('form input[id*="title"]');
+                    if(articleFormElem) articleTitle = articleFormElem.value.trim();
                 }
 
                 var title = articleTitle || threadTitle;
@@ -284,32 +319,32 @@ var coyoTrackingUtils = {
         };
 
         // find the first navigation level
-        var navItem = $('nav.navbar-main ul.nav li.nav-item.active a');
-        if (!navItem.length) {
-            navItem = $('div.sub-navigation nav.navbar ul.nav li.nav-item.active a.nav-item');
+        var navItem = document.querySelector('nav.navbar-main ul.nav li.nav-item.active a');
+        if (!navItem) {
+            navItem = document.querySelector('div.sub-navigation nav.navbar ul.nav li.nav-item.active a.nav-item');
         }
-        if (navItem.length && navItem.attr('href')) {
-            var menuEntry = (/\/([^?\/]*)/g).exec(navItem.attr('href'));
+        if (navItem && navItem.getAttribute('href')) {
+            var menuEntry = (/\/([^?\/]*)/g).exec(navItem.getAttribute('href'));
             if (menuEntry && menuEntry.length > 1) {
                 contentGroup[1] = override[1] ? override[1] : menuEntry[1];
             }
-        } else if ($('div.content section.profile').length) {
+        } else if (document.querySelector('div.content section.profile')) {
             contentGroup[1] = override[1] ? override[1] : 'profile';
         } else {
             // get the current position generically from body class
-            var classMatch = (/state-main-([\w-]*)/g).exec($('body:eq(0)').attr('class'));
+            var classMatch = (/state-main-([\w-]*)/g).exec(document.querySelector('body').getAttribute('class'));
             if (classMatch && classMatch.length > 1) {
                 var pageType = classMatch[1].split('-')[0];
                 if(['page','workspace','event'].indexOf(pageType) !== -1) pageType += 's';
                 contentGroup[1] = override[1] ? override[1] : pageType;
-            } else if ((/state-admin/g).exec($('body:eq(0)').attr('class'))) {
+            } else if ((/state-admin/g).exec(document.querySelector('body').getAttribute('class'))) {
                 contentGroup[1] = override[1] ? override[1] : 'admin';
             }
         }
 
         var contentGroupTwo = {
             'home': function () {
-                var homepage = (/\/[^\/]*\/([^?\/]*)/g).exec(navItem.attr('href'));
+                var homepage = navItem && (/\/[^\/]*\/([^?\/]*)/g).exec(navItem.getAttribute('href'));
                 if (homepage.length > 1) {
                     contentGroup[2] = override[2] ? override[2] : homepage[1];
                 }
@@ -326,8 +361,8 @@ var coyoTrackingUtils = {
                 analyzeEvent(contentGroup, override);
             },
             'profile': function () {
-                var name = $('section.profile div.panel.panel-default div.titles-container div.title').text();
-                var view = $('section.profile div.panel.panel-default div.profile-nav ul.nav li.nav-item.active').attr('href');
+                var name = (a = document.querySelector('section.profile div.panel.panel-default div.titles-container div.title')) !== null ? a.textContent : null;
+                var view = (a = document.querySelector('section.profile div.panel.panel-default div.profile-nav ul.nav li.nav-item.active')) !== null ? a.getAttribute('href') : null;
                 if (view && view.split('/').length > 3) {
                     contentGroup[3] = override[3] ? override[3] : view.split('/')[3];
                 }

@@ -170,8 +170,17 @@
     }, r.o = function (e, t) {
       return Object.prototype.hasOwnProperty.call(e, t)
     }, r.p = "", r(r.s = 0)
-  }([function (e, t) {
-    var v = [{
+  }([function (e) {
+    coyoTrackingUtils.onContentReady(function(){
+      var x = {
+        de: "Seite beantragen",
+        en: "Ask for a page",
+        et: "Loo leht"
+      }, z = {
+        de: "Gruppe löschen",
+        en: "Delete group",
+        et: "Kustuta grupp"
+      },v = [{
         de: "Intern",
         en: "Internal",
         et: "Sisegrupp"
@@ -199,7 +208,7 @@
         de: "EE",
         en: "EE",
         et: "EE"
-      }],
+      }];
       y = [{
         de: "Unternehmen",
         en: "Company",
@@ -225,50 +234,53 @@
         en: "Locations",
         et: "Asukohad"
       }];
-    setInterval(function () {
-      var e, t = angular.element(document.body).injector().get("$translate").use(),
-        n = angular.element('coyo-filter[title-key="MODULE.WORKSPACES.FILTER.CATEGORY"]'),
-        a = angular.element("body.state-main-workspace-create"),
-        r = angular.element("body.state-main-workspace-show-settings"),
-        l = angular.element('coyo-filter[title-key="MODULE.PAGES.FILTER.CATEGORY"]'),
-        o = angular.element("body.state-main-page-create"),
-        i = angular.element("body.state-main-page-show-settings");
-      if ((0 < n.length || 0 < a.length || 0 < r.length) && (e = v), (0 < l.length || 0 < o.length || 0 < i.length) && (e = y), 0 < l.length || 0 < n.length)
-        for (var u = 0; u < e.length; u++)
-          if (null != angular.element('li[text="' + e[u].de + '"]') && "" != e[u][t]) {
-            angular.element('li[text="' + e[u].de + '"] a > span:nth-child(2)').text(e[u][t]);
-            var g, s = angular.element(".page-card-footer div[ng-repeat=\"category in ::page.categories | orderBy:'name'\"]"),
-              m = angular.element('.label-container.hidden-xs div[ng-repeat="category in ::workspace.categories | limitTo:2"]');
-            if (0 < s.length && (g = s), 0 < m.length && (g = m), null != g)
-              for (var d = 0; d < g.length; d++) g[d].textContent === e[u].de && (g[d].innerText = e[u][t])
-          } if (0 < angular.element('button[form-ctrl="pageForm1"]').length || 0 < angular.element('button[form-ctrl="pageForm"]').length || 0 < angular.element('button[form-ctrl="workspaceForm1"]').length || 0 < angular.element('button[form-ctrl="workspaceForm"]').length) {
-        for (var c = angular.element('span[ng-bind-html="::option.displayName | highlight: $select.search"]'), p = 0; p < c.length; p++)
-          for (var f = 0; f < e.length; f++) e[f].de === c[p].innerText && (c[p].innerText = e[f][t]);
-        angular.element("span.ui-select-match-item");
-        if (0 < angular.element("span.ui-select-match-item").length)
-          for (var h = 0; h < angular.element('span[ng-bind="$item.displayName"]').length; h++)
-            for (var b = 0; b < e.length; b++) e[b].de === angular.element('span[ng-bind="$item.displayName"]')[h].textContent && (angular.element('span[ng-bind="$item.displayName"]')[h].innerText = e[b][t])
+      var t = angular.element(document.body).injector().get("$translate").use();
+      function handleTrans(){
+        var n = angular.element(document.querySelector('coyo-filter[title-key="MODULE.WORKSPACES.FILTER.CATEGORY"]')),
+        a = angular.element(document.querySelector('body.state-main-workspace-create')),
+        r = angular.element(document.querySelector('body.state-main-workspace-show-settings')),
+        l = angular.element(document.querySelector('coyo-filter[title-key="MODULE.PAGES.FILTER.CATEGORY"]')),
+        o = angular.element(document.querySelector('body.state-main-page-create')),
+        i = angular.element(document.querySelector('body.state-main-page-show-settings'));
+        if ((0 < n.length || 0 < a.length || 0 < r.length) && (e = v), (0 < l.length || 0 < o.length || 0 < i.length) && (e = y), 0 < l.length || 0 < n.length)
+          for (var u = 0; u < e.length; u++)
+            if (null != angular.element(document.querySelector('li[text="' + e[u].de + '"]')) && "" != e[u][t]) {
+              angular.element(document.querySelector('li[text="' + e[u].de + '"] a > span:nth-child(2)')).text(e[u][t]);
+              var g, s = angular.element(document.querySelector('.page-card-footer div[ng-repeat=\"category in ::page.categories | orderBy:\'name\'\"]')),
+                m = angular.element(document.querySelector('.label-container.hidden-xs div[ng-repeat="category in ::workspace.categories | limitTo:2"]'));
+              if (0 < s.length && (g = s), 0 < m.length && (g = m), null != g)
+                for (var d = 0; d < g.length; d++) g[d].textContent === e[u].de && (g[d].innerText = e[u][t])
+            } if (0 < angular.element(document.querySelector('button[form-ctrl="pageForm1"]')).length || 0 < angular.element(document.querySelector('button[form-ctrl="pageForm"]')).length || 0 < angular.element(document.querySelector('button[form-ctrl="workspaceForm1"]')).length || 0 < angular.element(document.querySelector('button[form-ctrl="workspaceForm"]')).length) {
+          for (var c = angular.element(document.querySelector('span[ng-bind-html="::option.displayName | highlight: $select.search"]')), p = 0; p < c.length; p++)
+            for (var f = 0; f < e.length; f++) e[f].de === c[p].innerText && (c[p].innerText = e[f][t]);
+          angular.element(document.querySelector('span.ui-select-match-item'));
+          if (0 < angular.element(document.querySelector('span.ui-select-match-item')).length)
+            for (var h = 0; h < angular.element(document.querySelector('span[ng-bind="$item.displayName"]')).length; h++)
+              for (var b = 0; b < e.length; b++) e[b].de === angular.element(document.querySelector('span[ng-bind="$item.displayName"]'))[h].textContent && (angular.element(document.querySelector('span[ng-bind="$item.displayName"]'))[h].innerText = e[b][t])
+        }
+        console.warn(typeof x[t],angular.element(document.querySelector(".lwPageRequestButton")).length,angular.element(document.querySelector(".lwPageRequestButton")).attr("translated"));
+        // these elements "appear" some time after pageload/statechangesuccess
+        var intv = setInterval(() => {
+          if ("string" == typeof x[t] && 1 === angular.element(document.querySelector(".lwPageRequestButton")).length && void 0 === angular.element(document.querySelector(".lwPageRequestButton")).attr("translated")) {
+            console.warn(x[t]);
+            document.querySelector(".lwPageRequestButton").innerHTML = '<i class="zmdi zmdi-plus-circle"></i><span>' + x[t] + '</span>';
+            document.querySelector(".lwPageRequestButton").setAttribute("translated", "1");
+            clearInterval(intv);
+          }
+          if ("string" == typeof z[t] && 1 === angular.element(document.querySelector(".lwGroupRequestButton")).length && void 0 === angular.element(document.querySelector(".lwGroupRequestButton")).attr("translated")) {
+            document.querySelector(".lwGroupRequestButton").innerHTML = '<i class="zmdi zmdi-minus-circle"></i><span>' + z[t] + '</span>';
+            document.querySelector(".lwGroupRequestButton").setAttribute("translated", "1");
+            clearInterval(intv);
+          }
+        }, 200);
+        setTimeout(() => {
+          clearInterval(intv);
+        }, 5000);
       }
-    }, 500);
-    var n = {
-        de: "Seite beantragen",
-        en: "Ask for a page",
-        et: "Loo leht"
-      },
-      a = {
-        de: "Gruppe löschen",
-        en: "Delete group",
-        et: "Kustuta grupp"
-      };
-    setInterval(function () {
-      if (1 === angular.element(".lwPageRequestButton").length && void 0 === angular.element(".lwPageRequestButton").attr("translated")) {
-        var e = angular.element(document.body).injector().get("$translate");
-        "string" == typeof n[e.use()] && (angular.element(".lwPageRequestButton").html('<i class="zmdi zmdi-plus-circle"></i> ' + n[e.use()]), angular.element(".lwPageRequestButton").attr("translated", "1"))
-      }
-    }, 70), setInterval(function () {
-      if (1 === angular.element(".lwGroupRequestButton").length && void 0 === angular.element(".lwGroupRequestButton").attr("translated")) {
-        var e = angular.element(document.body).injector().get("$translate");
-        "string" == typeof a[e.use()] && (angular.element(".lwGroupRequestButton").html('<i class="zmdi zmdi-minus-circle"></i> ' + a[e.use()]), angular.element(".lwGroupRequestButton").attr("translated", "1"))
-      }
-    }, 70)
+      
+      window.document.addEventListener('stateChangeSuccess', debounce(function() {
+        handleTrans();
+      }));
+      handleTrans();
+    });
   }]);
