@@ -258,11 +258,10 @@
             for (var h = 0; h < angular.element(document.querySelector('span[ng-bind="$item.displayName"]')).length; h++)
               for (var b = 0; b < e.length; b++) e[b].de === angular.element(document.querySelector('span[ng-bind="$item.displayName"]'))[h].textContent && (angular.element(document.querySelector('span[ng-bind="$item.displayName"]'))[h].innerText = e[b][t])
         }
-        console.warn(typeof x[t],angular.element(document.querySelector(".lwPageRequestButton")).length,angular.element(document.querySelector(".lwPageRequestButton")).attr("translated"));
+        // console.warn(typeof x[t],angular.element(document.querySelector(".lwPageRequestButton")).length,angular.element(document.querySelector(".lwPageRequestButton")).attr("translated"));
         // these elements "appear" some time after pageload/statechangesuccess
         var intv = setInterval(() => {
           if ("string" == typeof x[t] && 1 === angular.element(document.querySelector(".lwPageRequestButton")).length && void 0 === angular.element(document.querySelector(".lwPageRequestButton")).attr("translated")) {
-            console.warn(x[t]);
             document.querySelector(".lwPageRequestButton").innerHTML = '<i class="zmdi zmdi-plus-circle"></i><span>' + x[t] + '</span>';
             document.querySelector(".lwPageRequestButton").setAttribute("translated", "1");
             clearInterval(intv);
