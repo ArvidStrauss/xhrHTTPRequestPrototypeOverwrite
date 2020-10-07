@@ -332,7 +332,7 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     var pageTitle    = pageConfig.contentGroup[2] || null;
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
-    if(ENV !== 'prod') console.log(pageConfig);
+    if(ENV !== 'prod') console.log('event',pageConfig);
     //handle 'create' for timeline (do not track title)
     if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
     targetType = coyoTrackingUtils.typeNameOverrides(targetType);
@@ -487,7 +487,7 @@ function trackPageView(searchResults) {
         return;
     }
     var pageConfig   = coyoTrackingUtils.getPageConfig();
-    if(ENV !== 'prod') console.log(pageConfig);
+    if(ENV !== 'prod') console.log('pageview',pageConfig);
     var pageId       = coyoTrackingUtils.pageIdToString(pageConfig.contentGroup);
     var pageType     = pageConfig.contentGroup[1] || null;
     var pageTitle    = pageConfig.contentGroup[2] || null;
