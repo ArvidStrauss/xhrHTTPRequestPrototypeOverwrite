@@ -1,0 +1,13 @@
+{
+  "defaultCommandTimeout": 4000,
+  "execTimeout": 60000,
+  "taskTimeout": 60000,
+  "pageLoadTimeout": 60000,
+  "requestTimeout": 5000,
+  "responseTimeout": 30000,
+  "video": false,
+  "viewportWidth": 1200,
+  "viewportHeight": 800,
+  "userAgent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36 Cypress",
+  "chromeWebSecurity" : false
+}
