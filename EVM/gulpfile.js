@@ -1,3 +1,7 @@
+var gap = require('gulp-append-prepend');
+var minifyCSS = require('gulp-minify-css');
+var rename = require('gulp-rename');
+
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'EVM-PIA',
@@ -12,7 +16,7 @@ var projectData = {
 //     }
 // ];
 
-var commonGulp = require('../common/gulpfile')(projectData,typeof builds !== 'undefined' ? builds : null);
+var commonGulp = require('../common/gulpfile')(projectData, typeof builds !== 'undefined' ? builds : null);
 // shortcut to use the returned gulp instance from common/gulpfile, including all the setup
 var gulp = commonGulp.gulp;
 
@@ -20,6 +24,18 @@ var gulp = commonGulp.gulp;
 // gulp.task('my-shiny-task', function() { ...
 // and add them to the default build via: commonGulp.tasks.push('my-shiny-task')
 
+gulp.task('build-css', function() {
+    return gulp.src('src/custom_style.css')
+        .pipe(minifyCSS())
+        .pipe(gap.prependText('/* Updated: ' + projectData.projectDate + ' */'))
+        .pipe(gap.prependText('/* Version: ' + projectData.projectVersion + ' */'))
+        .pipe(gap.prependText('/* T-Systems MMS - ' + projectData.projectName + ' Custom Style */'))
+        .pipe(rename('Custom-Style.css'))
+        .pipe(gulp.dest('build'));
+});
+
+commonGulp.tasks.push('build-css');
+
 gulp.task('build', gulp.parallel(commonGulp.tasks));
-gulp.task('local', function(){gulp.watch(['src/*.js','../common/*.js'], gulp.series('build-local'))});
+gulp.task('local', function() { gulp.watch(['src/*.js', '../common/*.js'], gulp.series('build-local')) });
 gulp.task('default', gulp.series('min-js', 'build', 'clean-temp'));
