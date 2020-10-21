@@ -14,24 +14,29 @@
 // ###############################################
 // #### Show first activity tab in notification bell
 // ###############################################
-coyoTrackingUtils.onContentReady(function(){
+coyoTrackingUtils.onContentReady(function() {
   var openPrototypeTracking = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function() {
     this.addEventListener('load', function(e) {
-      if(this.responseURL.match(/notifications/)){
-        var lastopen = localStorage.getItem('mms.notifications.lastopen') || 1;
-        lastopen = parseInt(lastopen);
-        var tabs = document.querySelectorAll('#notifications-dialog .notifications-tabs li a');
-        for (var i = 0; i < tabs.length; i++) {
-          tabs[i].classList.remove('active');
-          tabs[i].setAttribute('data-num',i);
-          tabs[i].addEventListener('click', function(){
-            var num = parseInt(this.getAttribute('data-num'));
-            localStorage.setItem('mms.notifications.lastopen',num);
-          });
-          // debugger;
+      if(this.responseURL.match(/notifications/)) {
+        try {
+          var lastopen = localStorage.getItem('mms.notifications.lastopen') || 'activity';
+          // var tabs = document.querySelectorAll('#notifications-dialog .notifications-tabs li a');
+          // for (var i = 0; i < tabs.length; i++) {
+          //   tabs[i].addEventListener('click', function(){
+          //     var tabname = this.getAttribute('aria-controls').split('-')[2];
+          //     localStorage.setItem('mms.notifications.lastopen',tabname);
+          //   });
+          // }
+          if(lastopen && lastopen.length) {
+            var activity = document.querySelector('#notifications-dialog .notifications-tabs li a[aria-controls="notification-panel-'+lastopen+'"]');
+            var e = document.createEvent('HTMLEvents');
+            e.initEvent('click', false, true);
+            activity.dispatchEvent(e);
+          }
+        } catch(e) {
+          console.warn(e);
         }
-        tabs[lastopen].classList.add('active');
       }
     });
     openPrototypeTracking.apply(this, arguments);
