@@ -142,7 +142,7 @@ if(TRACKINGSETTINGS.CREATE_TIMELINE) coyoRequestTrackingConfig.push({
     }
 });
 if(TRACKINGSETTINGS.DELETE_TIMELINE) coyoRequestTrackingConfig.push({
-    urlPattern: /web\/timeline-items/g,
+    urlPattern: /web\/timeline-items($|\?)/g,
     method: 'DELETE',
     execute: function(responseUrl, response) {
         var itemMatch = (/\/web\/timeline-items\/([0-9a-fA-F-]*)$/g).exec(responseUrl);
