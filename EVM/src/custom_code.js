@@ -15,10 +15,11 @@
 // #### Show first activity tab in notification bell
 // ###############################################
 coyoTrackingUtils.onContentReady(function() {
+  var notifications = document.querySelector('#notification-toggle');
   var openPrototypeTracking = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function() {
     this.addEventListener('load', function(e) {
-      if(this.responseURL.match(/notifications/)) {
+      if(this.responseURL.match(/notifications/) && notifications.getAttribute('data-mms-opened') === null) {
         try {
           var lastopen = localStorage.getItem('mms.notifications.lastopen') || 'activity';
           // var tabs = document.querySelectorAll('#notifications-dialog .notifications-tabs li a');
@@ -34,6 +35,7 @@ coyoTrackingUtils.onContentReady(function() {
             e.initEvent('click', false, true);
             activity.dispatchEvent(e);
           }
+          notifications.setAttribute('data-mms-opened','');
         } catch(e) {
           console.warn(e);
         }
