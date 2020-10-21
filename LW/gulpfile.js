@@ -1,7 +1,7 @@
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'LW-Leoworld',
-    projectVersion: '1.0.1',
+    projectVersion: '1.0.2',
     projectDate: '2020-10-07'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
