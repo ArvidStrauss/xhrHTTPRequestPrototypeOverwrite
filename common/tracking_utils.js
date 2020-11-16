@@ -43,6 +43,10 @@ var coyoTrackingUtils = {
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT]);
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT]);
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT]);
+        if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined') {
+            _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN]);
+            _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN]);
+        }
         //VISIT TEST
         // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT]);
         // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT]);

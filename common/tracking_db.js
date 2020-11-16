@@ -150,14 +150,14 @@ var coyoTrackingDBHelper = {
         this.objects[id].target.type = (recipient ? recipient.typeName : '') || this.objects[id].target.type;
         this.objects[id].author = (item.author ? item.author.slug : '') || this.objects[id].author;
         this.objects[id].parent.id = (parent ? parent.id : item.parent ? item.parent.id : '') || this.objects[id].parent.id;
-        this.objects[id].parent.type = (parent ? parent.typeName : item.parent ? item.parent.typeName : '') || this.objects[id].parent.type;
+        this.objects[id].parent.type = (parent ? parent.type : item.parent ? item.parent.typeName : '') || this.objects[id].parent.type;
         this.objects[id].parent.name = (parent ? parent.name : item.parent ? item.parent.name : '') || this.objects[id].parent.name;
         // this has to be last call because there may be dependencies to the objects parent when generating the name
         this.objects[id].name = nameOverride ? nameOverride : (this.buildTrackingTitle(item, this.objects[id].parent) || this.objects[id].name);
     },
 
     getObjectData: function(id) {
-        return this.objects[id] || { name: '', type: '', target: { id: '', type: '' }, author: '', parent: { id: '', type: '', name: '' } };
+        return object = this.objects[id] || { name: '', type: '', target: { id: '', type: '' }, author: '', parent: { id: '', type: '', name: '' } };
     },
 
     populateContentData: function(content) {

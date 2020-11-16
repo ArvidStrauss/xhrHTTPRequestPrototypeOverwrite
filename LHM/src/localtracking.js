@@ -24,6 +24,8 @@ const CUSTOMDIMENSION_PAGETYPE_EVENT = 6
 const CUSTOMDIMENSION_PAGETITLE_EVENT = 7
 const CUSTOMDIMENSION_APPTYPE_EVENT = 8
 const CUSTOMDIMENSION_APPTITLE_EVENT = 9
+const CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN = 19
+const CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN = 20
 
 // list timeline item tracked users here with profile uri endpoint
 // posts by these users in a timeline wont be tracked (likes,comments,...)
