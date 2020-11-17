@@ -157,7 +157,21 @@ var coyoTrackingDBHelper = {
     },
 
     getObjectData: function(id) {
-        return object = this.objects[id] || { name: '', type: '', target: { id: '', type: '' }, author: '', parent: { id: '', type: '', name: '' } };
+        var object = this.objects[id] || { name: '', type: '', target: { id: '', type: '' }, author: '', parent: { id: '', type: '', name: '' } };
+        // do we have an id but no type? possibly the parent object was loaded after the current object was stored, so lets lookup the parent again,
+        // if found: update object in db and return it for further use, otherwise keep the empty part
+        var matchParent, matchTarget;
+        console.warn(object);
+        if(object.parent.type === '' && object.parent.id !== '' && typeof (matchParent = this.objects[object.parent.id]) !== 'undefined') {
+            object.parent = {id: object.parent.id, name: matchParent.name, type: matchParent.type};
+            console.warn('parent',object.parent);
+        }
+        if(object.target.type === '' && object.target.id !== '' && typeof (matchTarget = this.objects[object.target.id]) !== 'undefined') {
+            object.target = {id: object.target.id, name: matchTarget.name, type: matchTarget.type};
+            console.warn('target',object.target);
+        }
+        this.objects[id] = object;
+        return object;
     },
 
     populateContentData: function(content) {
