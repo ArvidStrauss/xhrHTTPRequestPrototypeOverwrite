@@ -277,6 +277,7 @@ if(TRACKINGSETTINGS.SHARE) {
         execute: function(responseUrl, response, requestData) {
             var itemID = requestData ? requestData.itemId : '';
             var item = coyoTrackingDBHelper.getObjectData(itemID);
+            if(!item.type) return;
             sendTrackingEvent(item.type, 'Share', item.name, item);
         }
     });
@@ -610,7 +611,7 @@ XMLHttpRequest.prototype.open = function() {
     });
 
     //quicksearch handling: do not track every response on typing, wait some time and track the last (possible complete) term 
-    if(reqURL.match(/web\/quick-entity-search/g)){
+    if(reqURL && reqURL.match(/web\/quick-entity-search/g)){
         coyoTrackingUtils._pendingSearch++;
     }
 
@@ -649,7 +650,7 @@ XMLHttpRequest.prototype.open = function() {
 
             // check all defined listener
             coyoRequestTrackingConfig.forEach(function(item) {
-                if (method == item.method && resp.responseURL.match(item.urlPattern) && typeof item.execute == 'function') {
+                if (method == item.method && resp.responseURL && resp.responseURL.match(item.urlPattern) && typeof item.execute == 'function') {
                     item.execute(resp.responseURL, response, resp.requestData, resp.headers);
                     return;
                 }
