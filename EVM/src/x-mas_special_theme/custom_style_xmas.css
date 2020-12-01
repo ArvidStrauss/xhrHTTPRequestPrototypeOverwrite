@@ -606,6 +606,32 @@ body img.x-mas-background {
     display: block !important;
     visibility: visible !important;
 }
+
 body .body .container-main {
     background: transparent;
+}
+
+@media print,
+screen and (min-width: 992px) {
+    .user-card .user-card-heading.panel-body {
+        border-top: none;
+    }
+    coyo-empty-list-notice .text-center {
+        border-radius: 5px;
+    }
+}
+
+body li.filter-entry.active span.badge {
+    background-color: var(--btn-primary-bg);
+}
+
+body .nav.nav-default>li.active>*>a,
+.nav.nav-default>li.active>*>a:hover,
+.nav.nav-default>li.active>a,
+.nav.nav-default>li.active>a:hover {
+    border-color: var(--btn-primary-bg);
+}
+
+coyo-empty-list-notice .text-center {
+    background-color: #ffffff;
 }
