@@ -370,7 +370,8 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
         try {
             var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type;
             var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originType)]);
+            //extend an 's' to 'page'/'workspace' to get the same naming as in pagetype, changing the type in objectdb can possibly break too much
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originType+'s')]);
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originName)]);
         } catch (e) {
             console.warn(e);
