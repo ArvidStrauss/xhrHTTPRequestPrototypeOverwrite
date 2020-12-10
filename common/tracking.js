@@ -325,8 +325,10 @@ if(TRACKINGSETTINGS.CREATE_PAGES) coyoRequestTrackingConfig.push({
     }
 });
 
-function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchResults) {
-    if (coyoTrackingUtils.excludeUser(checkUserItem)) return;
+function sendTrackingEvent(targetType, action, title, originItem, hasSearchResults) {
+    if (coyoTrackingUtils.excludeUser(originItem)) return;
+    //cleanup
+    coyoTrackingUtils.cleanupCustomDimensions();
 
     // check for platform specific type name overrides
     var pageConfig   = coyoTrackingUtils.getPageConfig();
@@ -336,12 +338,6 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
     if(ENV !== 'prod') console.log('event',pageConfig);
-    //handle 'create' for timeline (do not track title)
-    if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
-    targetType = coyoTrackingUtils.typeNameOverrides(targetType);
-    action = coyoTrackingUtils.typeNameOverrides(action);
-    title = coyoTrackingUtils.cleanUnicodeIcons(title).text;
-    coyoTrackingUtils.cleanupCustomDimensions();
 
     if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
         pageTitle       = null;
@@ -370,13 +366,27 @@ function sendTrackingEvent(targetType, action, title, checkUserItem, hasSearchRe
     if(typeof hasSearchResults === 'boolean') {
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))]);
     }
+
+    if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && typeof originItem === 'object' && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share'].indexOf(action) !== -1){
+        try {
+            var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type;
+            var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
+            //extend an 's' to 'page'/'workspace' to get the same naming as in pagetype, changing the type in objectdb can possibly break too much
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originType+'s')]);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originName)]);
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
+    //handle 'create' for timeline (do not track title)
+    if(targetType === 'timeline-item' && action === 'Create Timeline') title = '';
+    //replace values with customer overrides before sending
+    targetType = coyoTrackingUtils.typeNameOverrides(targetType);
+    action = coyoTrackingUtils.typeNameOverrides(action);
+    title = coyoTrackingUtils.cleanUnicodeIcons(title).text;
+
     _paq.push(['trackEvent', targetType, action, title]);
-    // _paq.push(['trackEvent', targetType, action, title, null, {
-    //     dimension6: pageType, 
-    //     dimension7: pageTitle, 
-    //     dimension8: appType,
-    //     dimension9: appTitle
-    // }]);
     coyoTrackingUtils.cleanupCustomDimensions();
 }
 
@@ -452,6 +462,9 @@ function initDownloadListener() {
                     }
                     var link = getLink(elem);
                     if (link.filename && link.filename.length) {
+                        var urlParts = link.url.split('/');
+                        //get the coyo file data by id from url
+                        // console.log(coyoTrackingDBHelper.getObjectData(urlParts[5]));
                         sendTrackingEvent('Media', 'Download', link.filename);
                         // _paq.push(['trackLink', link, 'download']);
                     }
