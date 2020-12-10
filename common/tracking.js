@@ -416,14 +416,14 @@ function initDownloadListener() {
     // add download tracking for coyo internal files
     window.mtmDownloadListener = window.mtmDownloadListener || setInterval(function() {
         // [].slice.call for IE compatibility
-        [].slice.call(document.querySelectorAll('a[coyo-download]:not(.piwik_ignore), a[href^="/web/senders/"][href*="/documents/"]:not(.piwik_ignore)')).forEach(function(elem) {
+        [].slice.call(document.querySelectorAll('a[coyo-download]:not(.piwik_ignore), a[href^="/web/senders/"][href*="/documents/"]:not(.piwik_ignore), a.single-file-download:not(.piwik_ignore)')).forEach(function(elem) {
             elem.classList.add('piwik_ignore');
             if (!coyoTrackingUtils.excludeFromTracking()) {
                 elem.addEventListener('mousedown', function() {
                     function getLink(elem) {
                         var parent = elem.closest('.modal-file-details, .fl-table-row.file');
                         if (parent) {
-                            var url = parent.querySelector('coyo-copy-file-link .copy-link a').dataset.clipboardText
+                            var url = parent.querySelector('coyo-copy-file-link [data-clipboard-text]').dataset.clipboardText;
                             var linkparts = url.split('/');
                             var filename = decodeURIComponent(linkparts[linkparts.length-1]);
                             var lastSpace = filename.lastIndexOf(' ');
@@ -453,6 +453,14 @@ function initDownloadListener() {
                             } else if ((parent = elem.closest('.single-file-widget-details-text')) !== null) {
                                 filename = parent.firstElementChild.innerText.trim();
                             }
+                            return {
+                                url: '', // TODO: try to add get the url from somewhere, if required someday...
+                                filename: filename
+                            }
+                        }
+
+                        if(elem.className.indexOf('single-file-download') !== -1) {
+                            var filename = elem.closest('coyo-single-file-widget').querySelector('.single-file-widget-details-text a[title]').getAttribute('title');
                             return {
                                 url: '', // TODO: try to add get the url from somewhere, if required someday...
                                 filename: filename
