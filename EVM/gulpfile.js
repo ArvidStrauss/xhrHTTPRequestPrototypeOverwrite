@@ -5,8 +5,8 @@ var rename = require('gulp-rename');
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'EVM-PIA',
-    projectVersion: '1.1.0',
-    projectDate: '2020-07-03'
+    projectVersion: '1.1.1',
+    projectDate: '2020-12-11'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
 // var builds = [
