@@ -349,9 +349,17 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
     var pageConfig   = coyoTrackingUtils.getPageConfig();
     var pageType     = pageConfig.contentGroup[1] || null;
     var pageTitle    = pageConfig.contentGroup[2] || null;
-    var pageTitle    = pageConfig.contentGroup[2] || null;
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
+    var cd = {
+        pageType: null,
+        pageTitle: null,
+        appType: null,
+        appTitle: null,
+        content: null,
+        originType: null,
+        originTitle: null
+    }
     if(ENV !== 'prod') console.log('event',pageConfig);
 
     if(pageType && pageType.toLowerCase() === 'filelibrary' && TRACKINGSETTINGS.DOCUMENTTITLE_AS_CONTENT) {
@@ -359,36 +367,42 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
     }
 
     if(pageType) {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT, coyoTrackingUtils.typeNameOverrides(pageType)]);
+        cd.pageType = coyoTrackingUtils.typeNameOverrides(pageType);
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT, cd.pageType]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
+        
     }
     if(pageTitle) {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
+        cd.pageTitle = coyoTrackingUtils.typeNameOverrides(pageTitle);
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, cd.pageTitle]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
     }
     // prevent tracking apptype 'Show', 
     // this happens either after a new Page/Workspace is created and there is no app setup or if redirects take longer then our debounce allows
     if (appType && appType !== 'show') {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT, coyoTrackingUtils.typeNameOverrides(appType)]);
+        cd.appType = coyoTrackingUtils.typeNameOverrides(appType);
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT, cd.appType]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
     }
     if(appTitle) {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
+        cd.appTitle = coyoTrackingUtils.typeNameOverrides(appTitle);
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT, cd.appTitle]);
         // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
     }
 
     // special search handling
     if(typeof hasSearchResults === 'boolean') {
-        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))]);
+        cd.pageTitle = (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))
+        _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, cd.pageTitle]);
     }
 
     if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && typeof originItem === 'object' && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share'].indexOf(action) !== -1){
         try {
-            var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type;
-            var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
+            cd.originType = ('type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type)+'s';
+            cd.originTitle = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
             //extend an 's' to 'page'/'workspace' to get the same naming as in pagetype, changing the type in objectdb can possibly break too much
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originType+'s')]);
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originName)]);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(cd.originType)]);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(cd.originTitle)]);
         } catch (e) {
             console.warn(e);
         }
@@ -402,6 +416,7 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
     title = coyoTrackingUtils.cleanUnicodeIcons(title).text;
 
     _paq.push(['trackEvent', targetType, action, title]);
+    coyoTrackingUtils.sendTestEvent('event', {targetType:targetType, action:action, title:title}, cd);
     coyoTrackingUtils.cleanupCustomDimensions();
 }
 
@@ -533,6 +548,16 @@ function trackPageView(searchResults) {
     var appType      = pageConfig.contentGroup[3] || null;
     var appTitle     = pageConfig.contentGroup[4] || null;
     var contentTitle = pageConfig.contentGroup[5] || null;
+    var cd = {
+        pageType: null,
+        pageTitle: null,
+        appType: null,
+        appTitle: null,
+        content: null,
+        originType: null,
+        originTitle: null
+    }
+    var docTitle = null;
     if (coyoTrackingUtils.excludeFromTracking() || !pageId || pageId.indexOf(window.location.host + '..') == 0) {
         // if(ENV === 'dev'){console.log('pageview abort excluded',coyoTrackingUtils.excludeFromTracking(), pageId, pageId.indexOf(window.location.host + '..') );}
         return;
@@ -549,43 +574,51 @@ function trackPageView(searchResults) {
     // var userCount = coyoTrackingUtils.getRegisteredUsers();
     if(!coyoTrackingUtils.excludeFromTracking(EXCLUDED_GROUPINGPATHS))  {
         if (pageType) {
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE, coyoTrackingUtils.typeNameOverrides(pageType)]);
+            cd.pageType = coyoTrackingUtils.typeNameOverrides(pageType);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE, cd.pageType]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_VISIT, coyoTrackingUtils.typeNameOverrides(pageType)]);
         }
         if (pageTitle) {
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
+            cd.pageTitle = coyoTrackingUtils.typeNameOverrides(pageTitle);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, cd.pageTitle]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_VISIT, coyoTrackingUtils.typeNameOverrides(pageTitle)]);
         }
         // prevent tracking apptype 'Show', 
         // this happens either after a new Page/Workspace is created and there is no app setup or if redirects take longer then our debounce allows
         if (appType && appType.toLowerCase() !== 'show') {
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE, coyoTrackingUtils.typeNameOverrides(appType)]);
+            cd.appType = coyoTrackingUtils.typeNameOverrides(appType);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE, cd.appType]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTYPE_VISIT, coyoTrackingUtils.typeNameOverrides(appType)]);
         }
         if (appTitle) {
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE, coyoTrackingUtils.typeNameOverrides(appTitle)]);
+            cd.appTitle = coyoTrackingUtils.typeNameOverrides(appTitle);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE, cd.appTitle]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_APPTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(appTitle)]);
         }
         if (contentTitle) {
-            _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
+            cd.content = coyoTrackingUtils.typeNameOverrides(contentTitle);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE, cd.content]);
             // _paq.push(['setCustomDimension', CUSTOMDIMENSION_CONTENTTITLE_VISIT, coyoTrackingUtils.typeNameOverrides(contentTitle)]);
         }
     }
     _paq.push(['setReferrerUrl', coyoTrackingUtils._currentUrl]);
     coyoTrackingUtils._currentUrl = window.location.href;
     _paq.push(['setCustomUrl', coyoTrackingUtils._currentUrl]);
-    _paq.push(['setDocumentTitle', pageId]);
+    docTitle = pageId;
+    _paq.push(['setDocumentTitle', docTitle]);
     _paq.push(['setGenerationTimeMs', 0]);
 
     if(pageType === 'search') {
         if(typeof searchResults !== 'undefined') {
-            if(searchResults > 0) { 
-                _paq.push(['setDocumentTitle', pageId + '.suchergebnis']);
-                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides('searchresults')]);
+            if(searchResults > 0) {
+                docTitle = pageId + '.suchergebnis'
+                cd.pageTitle = coyoTrackingUtils.typeNameOverrides('searchresults');
               } else {
-                _paq.push(['setDocumentTitle', pageId + '.kein-suchergebnis']);
-                _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, coyoTrackingUtils.typeNameOverrides('no-searchresults')]);
+                docTitle = pageId + '.kein-suchergebnis'
+                cd.pageTitle = coyoTrackingUtils.typeNameOverrides('no-searchresults')
             }
+            _paq.push(['setDocumentTitle', docTitle]);
+            _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE, cd.pageTitle]);
         } else {
             // if(ENV === 'dev'){console.log('pageview abort search',searchResults);}
             return
@@ -612,6 +645,7 @@ function trackPageView(searchResults) {
     }
     if(ENV !== 'prod'){console.debug('pageview sending',pageConfig );}
      _paq.push(['trackPageView']);
+    coyoTrackingUtils.sendTestEvent('pageview', docTitle, cd);
     coyoTrackingUtils.cleanupCustomDimensions();
     // if(ENV === 'dev'){console.log('pageview done');}
 }
@@ -720,3 +754,10 @@ if(TRACKINGSETTINGS.USE_TAGMANAGER){
         }
     });
 }
+
+document.addEventListener('MMS:TRACKING:EVENT',function(data){
+    console.warn('asdf:EVENT', data.detail);
+});
+document.addEventListener('MMS:TRACKING:PAGEVIEW',function(data){
+    console.warn('asdf:PAGEVIEW', data.detail);
+});

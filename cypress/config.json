@@ -9,5 +9,6 @@
   "viewportWidth": 1200,
   "viewportHeight": 800,
   "userAgent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36 Cypress",
-  "chromeWebSecurity" : false
+  "chromeWebSecurity" : false,
+  "baseUrl": "https://192.168.57.68"
 }

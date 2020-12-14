@@ -161,7 +161,6 @@ var coyoTrackingDBHelper = {
         // do we have an id but no type? possibly the parent object was loaded after the current object was stored, so lets lookup the parent again,
         // if found: update object in db and return it for further use, otherwise keep the empty part
         var matchParent, matchTarget;
-        console.warn(object);
         if(object.parent.type === '' && object.parent.id !== '' && typeof (matchParent = this.objects[object.parent.id]) !== 'undefined') {
             object.parent = {id: object.parent.id, name: matchParent.name, type: matchParent.type};
             console.warn('parent',object.parent);
