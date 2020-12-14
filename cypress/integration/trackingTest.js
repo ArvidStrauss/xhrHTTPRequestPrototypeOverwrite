@@ -25,18 +25,15 @@ describe('Tracking', function () {
     Cypress.Cookies.preserveOnce('COYOSESSION');
   });
 
-  context('awesome test', () => {
+  context('opening test page', () => {
     it('check page', () => {
       cy.get('.user-name').should('be.visible').should('contain', 'Robert Lang');
     });
-    it('response', () => {
-      cy.server();
-      cy.route('GET', 'https://di-tools.t-systems-mms.eu/matomo/matomo.php').as('matomo');
-      cy.get('.timeline-widget coyo-timeline-item').first().find('coyo-like-button').first().click();
-      cy.wait("@matomo").then(xhr => {
-        // you can read the full response from `xhr.response.body`
-        cy.log(JSON.stringify(xhr.response.body));
-      });
+  });
+
+  context('pageviews', () => {
+    it('pageview homepage', () => {
+      
     });
   });
 });
