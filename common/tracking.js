@@ -382,10 +382,11 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))]);
     }
 
-    if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share'].indexOf(action) !== -1){
+    if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && typeof originItem === 'object' && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share'].indexOf(action) !== -1){
         try {
-            var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : ('type' in originItem.target && originItem.target.type.length ? originItem.target.type : originItem.type);
-            var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : ('name' in originItem.target && originItem.target.name.length ? originItem.target.name : originItem.name);
+            var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type;
+            var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
+            //extend an 's' to 'page'/'workspace' to get the same naming as in pagetype, changing the type in objectdb can possibly break too much
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originType+'s')]);
             _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN, coyoTrackingUtils.typeNameOverrides(originName)]);
         } catch (e) {
