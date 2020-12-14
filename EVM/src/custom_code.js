@@ -19,7 +19,7 @@ coyoTrackingUtils.onContentReady(function() {
   var openPrototypeTracking = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function() {
     this.addEventListener('load', function(e) {
-      if(this.responseURL && this.responseURL.match(/notifications/) && notifications.getAttribute('data-mms-opened') === null) {
+      if(this.responseURL && this.responseURL.match(/notifications/) && notifications && notifications.getAttribute('data-mms-opened') === null) {
         try {
           var lastopen = localStorage.getItem('mms.notifications.lastopen') || 'activity';
           // var tabs = document.querySelectorAll('#notifications-dialog .notifications-tabs li a');
