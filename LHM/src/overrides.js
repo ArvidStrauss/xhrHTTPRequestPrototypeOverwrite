@@ -57,6 +57,7 @@ coyoTrackingUtils.OVERRIDES = {
       'create article': 'Artikel erstellen',
       'create event': 'Event erstellen',
       'create page': 'Seite erstellen',
+      'create workspace': 'Arbeitsraum erstellen',
       'view': 'Ansicht',
       'searchresults': 'Suchergebnis',
       'no-searchresults': 'Kein Suchergebnis',
