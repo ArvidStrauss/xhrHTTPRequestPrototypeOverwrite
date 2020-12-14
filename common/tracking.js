@@ -324,6 +324,13 @@ if(TRACKINGSETTINGS.CREATE_PAGES) coyoRequestTrackingConfig.push({
         sendTrackingEvent(response.typeName, 'Create Page', coyoTrackingDBHelper.buildTrackingTitle(response));
     }
 });
+if(TRACKINGSETTINGS.CREATE_PAGES) coyoRequestTrackingConfig.push({
+    urlPattern: /web\/workspaces/g,
+    method: 'POST',
+    execute: function(responseUrl, response) {
+        sendTrackingEvent(response.typeName, 'Create Workspace', coyoTrackingDBHelper.buildTrackingTitle(response));
+    }
+});
 
 function sendTrackingEvent(targetType, action, title, originItem, hasSearchResults) {
     if (coyoTrackingUtils.excludeUser(originItem)) return;

@@ -82,7 +82,7 @@ const TRACKINGSETTINGS = {
     CREATE_ARTICLES: true,
     // eventtracking creation of events
     CREATE_EVENTS: true,
-    // eventtracking creation of pages
+    // eventtracking creation of pages/workspaces (groups)
     CREATE_PAGES: true,
     // eventtracking for new timeline entries
     CREATE_TIMELINE: true,
