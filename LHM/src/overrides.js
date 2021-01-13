@@ -23,7 +23,6 @@ coyoTrackingUtils.OVERRIDES = {
       'wiki-article': 'Wiki-Artikel',
       'chat-message': 'Chat',
       'create': 'Erstellen',
-      'timeline-item': 'Timeline-Item',
       'comment': 'Kommentieren',
       'share': 'Teilen',
       'subscribe': 'Abonnieren',
@@ -79,6 +78,7 @@ coyoTrackingUtils.OVERRIDES = {
       'busy': 'Beschäftigt',
       'file': 'Datei',
       'user': 'Benutzer',
+      'users': 'Benutzer',
       'list-entry': 'Listeneintrag',
       
       // 'blog-list-view': 'Blog',
