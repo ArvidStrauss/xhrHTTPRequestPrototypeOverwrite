@@ -606,7 +606,7 @@ function trackPageView(searchResults) {
     _paq.push(['setCustomUrl', coyoTrackingUtils._currentUrl]);
     docTitle = pageId;
     _paq.push(['setDocumentTitle', docTitle]);
-    _paq.push(['setGenerationTimeMs', 0]);
+    // _paq.push(['setGenerationTimeMs', 0]);
 
     if(pageType === 'search') {
         if(typeof searchResults !== 'undefined') {
