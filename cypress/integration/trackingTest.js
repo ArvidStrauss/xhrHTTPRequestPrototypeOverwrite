@@ -105,51 +105,92 @@ describe('Tracking', function () {
   //   });
   // });
 
-  context('events/actions', () => {
+  // context('events/actions', () => {
 
-    before(() => {
-      cy.get('.navbar-main a[href="/home"]').click();
-    })
+  //   before(() => {
+  //     cy.get('.navbar-main a[href="/home"]').click();
+  //   })
+
+  //   beforeEach(function () {
+  //     Cypress.Cookies.defaults({
+  //       preserve: ['COYOSESSION']
+  //     })
+  //     cy
+  //       .getCookie('COYOSESSION', {log: true})
+  //       .then((cookie) => console.log('beforeEach Cookie: ' + JSON.stringify(cookie)))
+  //   });
+
+  //   it('homepage -> timelineitem -> like', () => {
+  //     cy
+  //       .getCookie('COYOSESSION', {log: true})
+  //       .then((cookie) => console.log('test Cookie: ' + JSON.stringify(cookie)))
+  //     cy.wrap(trackingEvent('EVENT', function(){
+  //       cy.document().then($doc => {
+  //         console.debug($doc.querySelectorAll('coyo-timeline-stream coyo-timeline-item coyo-like-button button')[0]); 
+  //         cy.debug();
+  //         cy.get('[data-test="like-button"]').first().click();
+  //         // cy.get('coyo-timeline-stream coyo-timeline-item coyo-like-button button').first().click();
+  //       });
+  //     }),{ timeout: 10000 }).then( ({$win, config, tracking}) => {
+  //       expect(tracking.e_a).to.equal($win.coyoTrackingUtils.typeNameOverrides('like'));
+  //       expect(tracking.e_c).to.equal($win.coyoTrackingUtils.typeNameOverrides('timeline-item'));
+  //       expect(tracking.e_n).to.equal('robert-lang >> Allem!');
+  //       expect(tracking.cd.originType).to.equal($win.coyoTrackingUtils.typeNameOverrides('users'));
+  //       expect(tracking.cd.originTitle).to.equal('robert-lang');
+  //       expect(tracking.cd.pageType).to.equal('Timeline');
+  //       expect(tracking.cd.pageTitle).to.equal($win.coyoTrackingUtils.typeNameOverrides('homepage'));
+  //     });
+  //   });
+  //   // it('homepage -> timelineitem -> unlike', () => {
+  //   //   cy.wrap(trackingEvent('EVENT', function(){
+  //   //     cy.get('coyo-timeline-stream coyo-timeline-item coyo-like-button button').first().click();
+  //   //   }),{ timeout: 10000 }).then( ({$win, config, tracking}) => {
+  //   //     expect(tracking.e_a).to.equal($win.coyoTrackingUtils.typeNameOverrides('unlike'));
+  //   //     expect(tracking.e_c).to.equal($win.coyoTrackingUtils.typeNameOverrides('timeline-item'));
+  //   //     expect(tracking.e_n).to.equal('robert-lang >> Allem!');
+  //   //     expect(tracking.cd.originType).to.equal($win.coyoTrackingUtils.typeNameOverrides('users'));
+  //   //     expect(tracking.cd.originTitle).to.equal('robert-lang');
+  //   //     expect(tracking.cd.pageType).to.equal('Timeline');
+  //   //     expect(tracking.cd.pageTitle).to.equal($win.coyoTrackingUtils.typeNameOverrides('homepage'));
+  //   //   });
+  //   // });
+  // });
+
+  context('nav', () => {
 
     beforeEach(function () {
       Cypress.Cookies.defaults({
         preserve: ['COYOSESSION']
       })
+      cy.restoreLocalStorage().then( (data) => { console.table(data) });
+      cy.restoreSessionStorage().then( (data) => { console.table(data) });
       cy
         .getCookie('COYOSESSION', {log: true})
-        .then((cookie) => console.log('Cookie: ' + JSON.stringify(cookie)))
+        .then((cookie) => console.log('before Cookie: ' + JSON.stringify(cookie)))
     });
 
-    it('homepage -> timelineitem -> like', () => {
-      cy.wrap(trackingEvent('EVENT', function(){
-        cy.document().then($doc => {
-          console.debug($doc.querySelectorAll('coyo-timeline-stream coyo-timeline-item coyo-like-button button')[0]); 
-          cy.debug();
-          cy.get('[data-test="like-button"]').first().click();
-          // cy.get('coyo-timeline-stream coyo-timeline-item coyo-like-button button').first().click();
-        });
-      }),{ timeout: 10000 }).then( ({$win, config, tracking}) => {
-        expect(tracking.e_a).to.equal($win.coyoTrackingUtils.typeNameOverrides('like'));
-        expect(tracking.e_c).to.equal($win.coyoTrackingUtils.typeNameOverrides('timeline-item'));
-        expect(tracking.e_n).to.equal('robert-lang >> Allem!');
-        expect(tracking.cd.originType).to.equal($win.coyoTrackingUtils.typeNameOverrides('users'));
-        expect(tracking.cd.originTitle).to.equal('robert-lang');
-        expect(tracking.cd.pageType).to.equal('Timeline');
-        expect(tracking.cd.pageTitle).to.equal($win.coyoTrackingUtils.typeNameOverrides('homepage'));
-      });
+    afterEach(function () {
+      Cypress.Cookies.defaults({
+        preserve: ['COYOSESSION']
+      })
+      cy.saveLocalStorage().then( (data) => { console.table(data) });
+      cy.saveSessionStorage().then( (data) => { console.table(data) });
+      cy
+        .getCookie('COYOSESSION', {log: true})
+        .then((cookie) => console.log('after Cookie: ' + JSON.stringify(cookie)))
     });
-    // it('homepage -> timelineitem -> unlike', () => {
-    //   cy.wrap(trackingEvent('EVENT', function(){
-    //     cy.get('coyo-timeline-stream coyo-timeline-item coyo-like-button button').first().click();
-    //   }),{ timeout: 10000 }).then( ({$win, config, tracking}) => {
-    //     expect(tracking.e_a).to.equal($win.coyoTrackingUtils.typeNameOverrides('unlike'));
-    //     expect(tracking.e_c).to.equal($win.coyoTrackingUtils.typeNameOverrides('timeline-item'));
-    //     expect(tracking.e_n).to.equal('robert-lang >> Allem!');
-    //     expect(tracking.cd.originType).to.equal($win.coyoTrackingUtils.typeNameOverrides('users'));
-    //     expect(tracking.cd.originTitle).to.equal('robert-lang');
-    //     expect(tracking.cd.pageType).to.equal('Timeline');
-    //     expect(tracking.cd.pageTitle).to.equal($win.coyoTrackingUtils.typeNameOverrides('homepage'));
-    //   });
-    // });
+
+    it('homepage', () => {
+      cy
+        .getCookie('COYOSESSION', {log: true})
+        .then((cookie) => console.log('test Cookie: ' + JSON.stringify(cookie)))
+      cy.visit('/home').wait(2000);
+    });
+    it('page', () => {
+      cy
+        .getCookie('COYOSESSION', {log: true})
+        .then((cookie) => console.log('test Cookie: ' + JSON.stringify(cookie)))
+      cy.visit('/pages').wait(2000);
+    });
   });
 });
