@@ -24,3 +24,17 @@ coyoTrackingUtils.OVERRIDES = {
 
 // you can override complete functionality like this:
 // coyoTrackingUtils.translateText = function(text) { ... }
+
+// custom click tracking
+document.addEventListener('click', function(evt) {
+  var item = evt.target && evt.target.parentElement && evt.target.parentElement.className === 'share-item-more' ? evt.target.parentElement : null;
+  var closed = item && item.children.length && item.children[0].classList.contains('zmdi-chevron-up') ? true : false;
+  if(item && closed) {
+    try{
+      var originItem = coyoTrackingDBHelper.getObjectData(item.closest('article').children[0].getAttribute('id').replace('item-',''));
+    }
+    catch(e){console.error(e);var originItem = null;}
+    console.warn(originItem);
+    sendTrackingEvent(coyoTrackingUtils.typeNameOverrides('Timeline-Item'), coyoTrackingUtils.typeNameOverrides('Click'), coyoTrackingUtils.typeNameOverrides('ReadMore'), originItem);
+  }
+});
