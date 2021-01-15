@@ -109,11 +109,11 @@ if(TRACKINGSETTINGS.LIKES) {
             if (typeMatch && typeMatch.length > 1) {
                 var type = typeMatch[1];
                 var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
+                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
                 // if a comment is liked/unliked, its parent is the article, but we want to get the page of this article
                 if(type === 'comment') {
                     item = coyoTrackingDBHelper.getObjectData(item.parent.id);
                 }
-                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
                 sendTrackingEvent(type, 'Like', entry, item);
             }
         }
@@ -126,11 +126,11 @@ if(TRACKINGSETTINGS.LIKES) {
             if (typeMatch && typeMatch.length > 1) {
                 var type = typeMatch[1];
                 var item = coyoTrackingDBHelper.getObjectData(typeMatch[2]);
+                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
                 // if a comment is liked/unliked, its parent is the article, but we want to get the page of this article
                 if(type === 'comment') {
                     item = coyoTrackingDBHelper.getObjectData(item.parent.id);
                 }
-                var entry = item.name || coyoTrackingUtils.getPageConfig().trackingTitle || '';
                 sendTrackingEvent(type, 'Unlike', entry, item);
             }
         }
