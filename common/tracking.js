@@ -382,7 +382,7 @@ function sendTrackingEvent(targetType, action, title, originItem, hasSearchResul
         _paq.push(['setCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT, (hasSearchResults ? coyoTrackingUtils.typeNameOverrides('searchresults') : coyoTrackingUtils.typeNameOverrides('no-searchresults'))]);
     }
 
-    if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && typeof originItem === 'object' && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share'].indexOf(action) !== -1){
+    if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined' && originItem !== null && typeof originItem === 'object' && 'parent' in originItem && ['Like', 'Unlike', 'Comment', 'Subscribe', 'Unsubscribe', 'Share', 'Click'].indexOf(action) !== -1){
         try {
             var originType = 'type' in originItem.parent && originItem.parent.type.length > 0 ? originItem.parent.type : originItem.type;
             var originName = 'name' in originItem.parent && originItem.parent.name.length > 0 ? originItem.parent.name : originItem.name;
