@@ -38,7 +38,7 @@ var coyoTrackingDBHelper = {
         return doc.body.textContent || '';
     },
 
-    buildTrackingTitle: function (item, parent) {
+    buildTrackingTitle: function(item, parent) {
         if (!item) return '';
         var title = item.displayName || '';
         if (item.typeName == 'timeline-item') {
@@ -75,14 +75,20 @@ var coyoTrackingDBHelper = {
         try {
             var cache = coyoTrackingUtils.extend(JSON.parse(sessionStorage['ngStorage-etagBulkCache'] || null), JSON.parse(sessionStorage['coyo-etagBulkCache'] || null));
             var keys = Object.keys(cache);
-            var itemID = (/"([0-9a-fA-F-]*)":/g).exec(responseHeader)[1];
-            var etag = (/:"([0-9a-fA-F-]*)"/g).exec(responseHeader)[1];
-            for (var i = 0; i < keys.length; i++) {
-                var item = cache[keys[i]][itemID];
-                if (this.isAcceptedURL(keys[i], method) && item && item.etag == etag) {
-                    return item.data || item.body;
-                }
-            };
+            var that = this;
+            var content = [];
+            (responseHeader.match(/"([0-9a-fA-F-]*)":"([0-9a-fA-F-]*)"/g) || []).forEach(function(result) {
+                var itemID = /"([0-9a-fA-F-]*)":/g.exec(result)[1];
+                var etag = /:"([0-9a-fA-F-]*)"/g.exec(result)[1];
+                for (var i = 0; i < keys.length; i++) {
+                    var item = cache[keys[i]][itemID];
+                    if (that.isAcceptedURL(keys[i], method) && item && item.etag == etag) {
+                        var temp = item.data || item.body;
+                        if (temp) content.push(temp);
+                    }
+                };
+            });
+            return content;
         } catch (e) { }
         return null;
     },
@@ -168,7 +174,7 @@ var coyoTrackingDBHelper = {
         });
     },
 
-    populateResponseData: function(response, responseURL, method) {
+    populateResponseData: function(response, responseURL, method, noRecursive) {
         if (typeof response == 'undefined' || !response || typeof response != 'object' || !this.isAcceptedURL(responseURL, method)) return;
         var that = this;
         if (response.topApps) {
@@ -186,6 +192,8 @@ var coyoTrackingDBHelper = {
             for (var item in response) {
                 if (response[item] && response[item].content) {
                     this.populateContentData(response[item].content);
+                } else if (response[item] && !noRecursive) {
+                    this.populateResponseData(response[item], responseURL, method, true);
                 }
             }
         }

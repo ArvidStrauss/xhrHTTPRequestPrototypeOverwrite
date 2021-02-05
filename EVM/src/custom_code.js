@@ -31,7 +31,7 @@ coyoTrackingUtils.onContentReady(function() {
           // }
           if (lastopen && lastopen.length) {
             var activity = document.querySelector('#notifications-dialog .notifications-tabs li a[aria-controls="notification-panel-' + lastopen + '"]');
-            if (activity && activity.length) {
+            if (activity) {
               var e = document.createEvent('HTMLEvents');
               e.initEvent('click', false, true);
               activity.dispatchEvent(e);
