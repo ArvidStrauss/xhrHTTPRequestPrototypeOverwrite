@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var beautify = require('gulp-html-beautify');
+var babel = require('gulp-babel');
 var gap = require('gulp-append-prepend');
 var replace = require('gulp-replace');
 var rename = require('gulp-rename');
@@ -30,7 +31,8 @@ module.exports = function(projectData,builds) {
     });
 
     gulp.task('min-js', function() {
-        return gulp.src(['../common/click_tracking.js', '../common/tracking.js', '../common/tracking_utils.js', '../common/tracking_db.js', 'src/overrides.js'])
+        return gulp.src(['../common/click_tracking.js', '../common/tracking.js', '../common/tracking_utils.js', '../common/tracking_db.js', 'src/overrides.js', 'src/custom_code.js'])
+            .pipe(babel({presets: ['@babel/preset-env'] }))
             .pipe(uglify())
             .pipe(rename({ suffix: '.min' }))
             .pipe(gulp.dest('temp'));
@@ -69,10 +71,39 @@ module.exports = function(projectData,builds) {
             .pipe(gulp.dest('local'));
     });
 
+    gulp.task('build-local-min', function() {
+        return gulp.src('src/localtracking.js')
+            .pipe(gap.appendText('/* ###### Tracking Helper DB ###### */'))
+            .pipe(gap.appendFile('temp/tracking_db.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(gap.appendText('/* ###### Tracking Utils ###### */'))
+            .pipe(gap.appendFile('temp/tracking_utils.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(gap.appendText('/* ###### Click Tracking Code ###### */'))
+            .pipe(gap.appendFile('temp/click_tracking.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(gap.appendText('/* ###### Custom Overrides ###### */'))
+            .pipe(gap.appendFile('temp/overrides.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(gap.appendText('/* ###### Tracking Code ###### */'))
+            .pipe(gap.appendFile('temp/tracking.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(gap.appendText('/* ###### Custom Code ###### */'))
+            .pipe(gap.appendFile('temp/custom_code.min.js'))
+            .pipe(gap.appendText(' '))
+            .pipe(replace('_$PROJECT$_', projectData.projectName))
+            .pipe(replace('_$VERSION$_', projectData.projectVersion))
+            .pipe(replace('_$DATE$_', projectData.projectDate))
+            .pipe(replace('_$ENV$_', 'LOCAL'))
+            .pipe(rename('localtracking.min.js'))
+            .pipe(gulp.dest('local'));
+    });
+
     // define all build tasks for each environment
     var tasks = [];
     builds.forEach(function(buildItem) {
 
+        tasks.push('build-local-min');
         tasks.push('build-all-' + buildItem.env);
         tasks.push('build-all-min-' + buildItem.env);
         tasks.push('build-local');
@@ -122,14 +153,14 @@ module.exports = function(projectData,builds) {
                 .pipe(gap.appendFile('temp/tracking.min.js'))
                 .pipe(gap.appendText(' '))
                 .pipe(gap.appendText('/* ###### Custom Code ###### */'))
-                .pipe(gap.appendFile('src/custom_code.js'))
+                .pipe(gap.appendFile('temp/custom_code.min.js'))
                 .pipe(gap.appendText(' '))
                 .pipe(gap.appendText('</script>'))
                 .pipe(replace('_$PROJECT$_', projectData.projectName))
                 .pipe(replace('_$VERSION$_', projectData.projectVersion))
                 .pipe(replace('_$DATE$_', projectData.projectDate))
                 .pipe(replace('_$ENV$_', buildItem.env.toUpperCase()))
-                .pipe(rename(projectData.projectName+'-Tracking-' + buildItem.env.toUpperCase() + '.min.html'))
+                .pipe(rename(projectData.projectName + '-Tracking-' + buildItem.env.toUpperCase() + '.min.html'))
                 .pipe(gulp.dest('build'));
         });
     });

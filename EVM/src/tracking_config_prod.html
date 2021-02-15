@@ -8,35 +8,35 @@
 
 // Adjust matomo tracking settings here
 // If you adjust the following params, you have to adjust the src of the image tag above aswell
-const MATOMO_TARGET_ID = '2';
-const MATOMO_BASEPATH = '//kocoyo-matomo01.evm.de/matomo/';
-const MATOMO_TARGET_PHP = MATOMO_BASEPATH + 'matomo.php';
-const MATOMO_TARGET_JS = MATOMO_BASEPATH + 'matomo.js';
+var MATOMO_TARGET_ID = '2';
+var MATOMO_BASEPATH = '//kocoyo-matomo01.evm.de/matomo/';
+var MATOMO_TARGET_PHP = MATOMO_BASEPATH + 'matomo.php';
+var MATOMO_TARGET_JS = MATOMO_BASEPATH + 'matomo.js';
 // the base (first part) of the action identifier
-const CONTENTBASE = 'pia';
+var CONTENTBASE = 'pia';
 
 // use variables for custom dimensions in case they are setup differently in matomo
-const CUSTOMDIMENSION_PAGETYPE = 1
-const CUSTOMDIMENSION_PAGETITLE = 2
-const CUSTOMDIMENSION_APPTYPE = 3
-const CUSTOMDIMENSION_APPTITLE = 4
-const CUSTOMDIMENSION_CONTENTTITLE = 5
-const CUSTOMDIMENSION_PAGETYPE_EVENT = 6
-const CUSTOMDIMENSION_PAGETITLE_EVENT = 7
-const CUSTOMDIMENSION_APPTYPE_EVENT = 8
-const CUSTOMDIMENSION_APPTITLE_EVENT = 9
+var CUSTOMDIMENSION_PAGETYPE = 1
+var CUSTOMDIMENSION_PAGETITLE = 2
+var CUSTOMDIMENSION_APPTYPE = 3
+var CUSTOMDIMENSION_APPTITLE = 4
+var CUSTOMDIMENSION_CONTENTTITLE = 5
+var CUSTOMDIMENSION_PAGETYPE_EVENT = 6
+var CUSTOMDIMENSION_PAGETITLE_EVENT = 7
+var CUSTOMDIMENSION_APPTYPE_EVENT = 8
+var CUSTOMDIMENSION_APPTITLE_EVENT = 9
 
 // list timeline item tracked users here with profile uri endpoint
 // posts by these users in a timeline wont be tracked (likes,comments,...)
-const EXCLUDE_TIMELINETRACKINGUSERS = []; //'ian-bold', 'robert-lang'
+var EXCLUDE_TIMELINETRACKINGUSERS = []; //'ian-bold', 'robert-lang'
 // do not track at all on these paths
-const EXCLUDED_PATHS = ['/admin']; // '/workspaces/', '/admin/'
+var EXCLUDED_PATHS = ['/admin']; // '/workspaces/', '/admin/'
 // track, but do not send custom dimensions on these paths
-const EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
+var EXCLUDED_GROUPINGPATHS = ['/profile','/account']; // '/workspaces/', '/admin/'
 // dev/test/prod
-const ENV = 'dev';
+var ENV = 'dev';
 
-const TRACKINGSETTINGS = {
+var TRACKINGSETTINGS = {
     // if we track documents, skip the default logic and use the doctitle as CUSTOMDIMENSION_CONTENTTITLE instead of PAGETITLE, APPTYPE or APPTITLE
     DOCUMENTTITLE_AS_CONTENT: true,
     // use the tagmanager or inline js code for tracking, tagmanager needs some extra logic which is activated here
@@ -94,7 +94,7 @@ const TRACKINGSETTINGS = {
 }
 
 // selectors used by clicktracking
-const SELECTORS = {
+var SELECTORS = {
     HEAD_NAVIGATION: '.navbar-main .nav-left a',
     HEAD_SUBNAVIGATION: '.navbar-sub a',
     NAV_SIDEBAR: '.sidebar .nav-sidebar-item a',
@@ -107,7 +107,7 @@ const SELECTORS = {
 }
 
 // matomo specific tracking settings
-const MATOMOSETTINGS = {
+var MATOMOSETTINGS = {
     HEARTBEAT: 0,
     // feature untested: if this is empty the following settings starting with CONTENT_ do nothing, 
     // otherwise its used as selector to send content impressions
