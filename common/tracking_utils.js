@@ -5,6 +5,22 @@
 /* Updated: _$DATE$_
 /** ######################## **/
 
+(function () {
+
+    if ( typeof window.CustomEvent === "function" ) return false;
+
+    function CustomEvent ( event, params ) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+})();
+
 var coyoTrackingUtils = {
     OVERRIDES: {
         TYPE: {},
@@ -500,5 +516,26 @@ var coyoTrackingUtils = {
             return '';
         });
         return { matched: matched, text: cleantext };
+    },
+    sendTestEvent: function(eventType, data, cd) {
+        if(eventType === 'pageview') {
+            var detail = {
+                action_name: data,
+                cd: cd
+            }
+        } else if (eventType === 'event'){
+            var detail = {
+                e_c: data.targetType,
+                e_a: data.action,
+                e_n: data.title,
+                cd: cd
+            }
+        } else {
+            return
+        }
+        var ajaxInterceptorEvent = new CustomEvent('MMS:TRACKING:'+eventType.toUpperCase(), {
+            detail: detail
+        });
+        document.dispatchEvent(ajaxInterceptorEvent);
     }
 };

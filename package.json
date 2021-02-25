@@ -5,7 +5,9 @@
     "private": true,
     "author": "mcbl",
     "scripts": {
-        "check": "es-check es5 './LW/local/localtracking.min.js'"
+        "check": "es-check es5 './LW/local/localtracking.min.js'",
+        "test:open": "cypress open --config-file cypress/config.json",
+        "test:run": "cypress run --config-file cypress/config.json"
     },
     "dependencies": {
         "gulp": "^4.0.2",
@@ -26,6 +28,7 @@
         "@babel/preset-env": "^7.12.16",
         "es-check": "^5.2.0",
         "gulp-babel": "^8.0.0",
+        "cypress": "^6.1.0",
         "http-server": "^0.12.3"
     },
     "presets": [

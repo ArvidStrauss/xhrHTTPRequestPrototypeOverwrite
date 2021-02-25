@@ -132,4 +132,4 @@ const MATOMOSETTINGS = {
     DOMAINS: [location.hostname],
 }
 
-setTimeout(function(){document.querySelector('.license-warning-bar').style = 'display:none;';},2000);
+setTimeout(function(){var bar = document.querySelector('.license-warning-bar'); if(bar) bar.style = 'display:none;';},4000);
