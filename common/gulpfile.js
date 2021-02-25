@@ -73,6 +73,7 @@ module.exports = function(projectData,builds) {
 
     gulp.task('build-local-min', function() {
         return gulp.src('src/localtracking.js')
+            .pipe(babel({presets: ['@babel/preset-env'] }))
             .pipe(gap.appendText('/* ###### Tracking Helper DB ###### */'))
             .pipe(gap.appendFile('temp/tracking_db.min.js'))
             .pipe(gap.appendText(' '))

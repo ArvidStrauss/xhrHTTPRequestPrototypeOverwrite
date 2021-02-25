@@ -8,6 +8,6 @@
         "preinstall": "npm --prefix ../ install",
         "build": "gulp && npm run check && gulp zip",
         "serve": "http-server local --cors",
-        "check": "npm --prefix ../ run check"
+        "check": "npm --prefix ../ run check -- './LW/local/localtracking.min.js'"
     }
 }

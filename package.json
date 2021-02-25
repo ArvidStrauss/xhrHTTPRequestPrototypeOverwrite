@@ -5,7 +5,7 @@
     "private": true,
     "author": "mcbl",
     "scripts": {
-        "check": "es-check es5 './LW/local/localtracking.min.js'",
+        "check": "es-check es5",
         "test:open": "cypress open --config-file cypress/config.json",
         "test:run": "cypress run --config-file cypress/config.json"
     },
