@@ -4,7 +4,9 @@
     "description": "Generates coyo tracking code",
     "private": true,
     "author": "mcbl",
-    "scripts": {},
+    "scripts": {
+        "check": "es-check es5 './LW/local/localtracking.min.js'"
+    },
     "dependencies": {
         "gulp": "^4.0.2",
         "gulp-append-prepend": "^1.0.8",
@@ -20,6 +22,13 @@
         "run-sequence": "^2.2.1"
     },
     "devDependencies": {
+        "@babel/core": "^7.12.16",
+        "@babel/preset-env": "^7.12.16",
+        "es-check": "^5.2.0",
+        "gulp-babel": "^8.0.0",
         "http-server": "^0.12.3"
-    }
+    },
+    "presets": [
+        "@babel/preset-env"
+    ]
 }

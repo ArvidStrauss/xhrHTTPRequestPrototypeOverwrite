@@ -62,6 +62,8 @@ This also sets a watcher on the file, so it gets rebuilt if you change anything 
 6. Go back to the normal Coyo Pages, check if localtracking.js is loaded, matomo gets initialized and things are being tracked
 7. Have fun developing and see you changes on the fly!
 
+### \*\*\* Local Development does not work with IE, because the debugging code will not be transpiled to ES5!
+
 ## Create a new Customer Project
 
 1. Copy the "BasicExampleProject" and rename it
@@ -72,7 +74,7 @@ This also sets a watcher on the file, so it gets rebuilt if you change anything 
 ## Generate Deliveries
 
 1. Go into the customer project directory
-2. Run "gulp" in the customers project directory to build files and create delivery artifact
+2. Run "npm run build" in the customers project directory to build files and create delivery artifact
 3. Edit the projectVersion and projectDate in "project/gulpfile.js" after each delivery!
 
 ## Customizing

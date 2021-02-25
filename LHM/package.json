@@ -1,11 +1,13 @@
 {
-    "name": "coyo-lhm-tracking",
+    "name": "coyo-tracking",
     "version": "1.0.0",
     "description": "",
     "private": true,
     "author": "mcbl",
     "scripts": {
-        "gulp": "gulp",
-        "serve": "http-server local --cors"
+        "preinstall": "npm --prefix ../ install",
+        "build": "gulp && npm run check && gulp zip",
+        "serve": "http-server local --cors",
+        "check": "npm --prefix ../ run check"
     }
 }
