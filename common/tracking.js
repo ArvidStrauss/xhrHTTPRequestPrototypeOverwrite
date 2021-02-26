@@ -754,10 +754,3 @@ if(TRACKINGSETTINGS.USE_TAGMANAGER){
         }
     });
 }
-
-document.addEventListener('MMS:TRACKING:EVENT',function(data){
-    console.warn('asdf:EVENT', data.detail);
-});
-document.addEventListener('MMS:TRACKING:PAGEVIEW',function(data){
-    console.warn('asdf:PAGEVIEW', data.detail);
-});
