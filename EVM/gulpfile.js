@@ -1,6 +1,8 @@
 var gap = require('gulp-append-prepend');
+var babel = require('gulp-babel');
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
 
 // projectdata is required (of course!)
 var projectData = {
@@ -34,7 +36,17 @@ gulp.task('build-css', function() {
         .pipe(gulp.dest('build'));
 });
 
+gulp.task('min-custom-backgrounds', function() {
+        return gulp.src('src/custom_backgrounds/custom_backgrounds.js')
+            .pipe(babel({presets: ['@babel/preset-env'] }))
+            .pipe(uglify())
+            .pipe(gap.prependText('/* ###### Custom Backgrounds ###### */'))
+            .pipe(rename({ suffix: '.min' }))
+            .pipe(gulp.dest('src/custom_backgrounds'));
+    });
+
 commonGulp.tasks.push('build-css');
+commonGulp.tasks.push('min-custom-backgrounds');
 
 gulp.task('build', gulp.parallel(commonGulp.tasks));
 gulp.task('local', function () { gulp.watch(['src/*.js', '../common/*.js'], gulp.series('min-js', 'build-local', 'build-local-min')) });

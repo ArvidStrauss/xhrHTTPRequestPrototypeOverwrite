@@ -1,8 +1,8 @@
 /** ######################## **/
-/* EVM-PIA Custom Backgrounds TEST
+/* EVM-PIA Custom Backgrounds _$ENV$_
 /* T-Systems MMS
 /* Version: 0.1.0
-/* Updated: 2021-03-16
+/* Updated: 2021-03-23
 /** ######################## **/
 
 window.customBackgrounds = {};
@@ -11,22 +11,14 @@ function initCustomBackgrounds() {
         if (!document.querySelector('body .custom-background')) {
             window.customBackgrounds.urls = {
                 'q4deumsy1d5.mms-at-work.de': [
-                    '/web/public-link/daccbf3b-1a53-4e43-be8f-7f6311780ada/download',
-                    '/web/public-link/a5ee6fc0-a01b-4c49-84d9-b5de0e244077/download',
-                    '/web/public-link/1d92f3f1-9f35-44f7-9063-e5bc07a46f3f/download',
-                    '/web/public-link/727b8a9c-fd56-44a5-accd-235ae304258b/download',
-                    '/web/public-link/4a10d8a6-8e8d-44e4-87f9-11573c639561/download',
-                    '/web/public-link/f77b014f-2888-494f-989b-e264ca116579/download'
+                    '/web/public-link/b1626e47-9c31-4417-8590-ce57796303c9/download'
                 ],
                 'pia-test.evm.de': [
-                    '/web/public-link/e2572f80-dcbc-4a18-9487-fabf15304fd1/download',
-                    '/web/public-link/bd9cb2d8-9d7f-4521-bac0-b41da8933b79/download',
-                    '/web/public-link/0eeafa6e-adcf-4c04-b925-4515d0aa0098/download',
-                    '/web/public-link/2943d5ca-2c92-402d-b962-4367670f1db1/download',
-                    '/web/public-link/0b6ae4d8-8614-4c5d-b6b5-b2e4e7250c08/download',
-                    '/web/public-link/e04478d4-5747-410e-920a-dba67493b189/download'
+                    '/web/public-link/7ffa2187-fea2-4ceb-b7e9-382f05d1233f/download'
                 ],
-                'pia.evm.de': ['']
+                'pia.evm.de': [
+                    '/web/public-link/966435e0-2dcb-4b2c-8bd5-6b2f35daea41/download'
+                ]
             }[window.location.hostname];
 
             var styles =
@@ -50,20 +42,22 @@ function initCustomBackgrounds() {
             angular.element(document.head).append(styleSheet);
 
             var img = document.createElement('img');
-            img.src = window.customBackgrounds.urls[(localStorage.getItem('customBackgroundIndex') || 0)];
+            var index = Number.parseInt(localStorage.getItem('customBackgroundIndex')) || 0;
+            index = index < window.customBackgrounds.urls.length ? index : 0;
+            img.src = window.customBackgrounds.urls[index];
             window.customBackgrounds.img = img;
             angular.element(img).addClass('custom-background');
             angular.element(document.body).prepend(img);
         }
 
-        if (!document.querySelector('.custom-nav-item')) {
-            var listItem = document.createElement('li');
-            angular.element(listItem).addClass('custom-nav-item nav-item nav-item-icon hidden-sm hidden-xs');
-            listItem.innerHTML = '<a href="#" onclick="switchCustomBackground(); return false;"><i class="zmdi zmdi-hc-fw zmdi-swap" aria-hidden="true"></i><span class="sr-only">Hintergrundbild ändern</span></a>';
-            var menu = document.querySelector('.main-navigation .navbar-wrapper ul.nav.nav-right');
-            if (!menu) return false;
-            menu.insertBefore(listItem, menu.querySelector('.nav-item-profile'));
-        }
+        // if (!document.querySelector('.custom-nav-item')) {
+        //     var listItem = document.createElement('li');
+        //     angular.element(listItem).addClass('custom-nav-item nav-item nav-item-icon hidden-sm hidden-xs');
+        //     listItem.innerHTML = '<a href="#" onclick="switchCustomBackground(); return false;"><i class="zmdi zmdi-hc-fw zmdi-swap" aria-hidden="true"></i><span class="sr-only">Hintergrundbild ändern</span></a>';
+        //     var menu = document.querySelector('.main-navigation .navbar-wrapper ul.nav.nav-right');
+        //     if (!menu) return false;
+        //     menu.insertBefore(listItem, menu.querySelector('.nav-item-profile'));
+        // }
         return true;
     }
 
@@ -80,12 +74,12 @@ function initCustomBackgrounds() {
         }, 5000);
     }
 };
-function switchCustomBackground() {
-    var index = Number.parseInt(localStorage.getItem('customBackgroundIndex')) || 0;
-    index = index < (window.customBackgrounds.urls.length - 1) ? index + 1 : 0;
-    localStorage.setItem('customBackgroundIndex', index);
-    window.customBackgrounds.img.src = window.customBackgrounds.urls[index];
-};
+// function switchCustomBackground() {
+//     var index = Number.parseInt(localStorage.getItem('customBackgroundIndex')) || 0;
+//     index = index < (window.customBackgrounds.urls.length - 1) ? index + 1 : 0;
+//     localStorage.setItem('customBackgroundIndex', index);
+//     window.customBackgrounds.img.src = window.customBackgrounds.urls[index];
+// };
 initCustomBackgrounds();
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
     initCustomBackgrounds();
