@@ -5,6 +5,7 @@
 /* Updated: _$DATE$_
 /** ######################## **/
 
+// Start Init
 var _paq = _paq || [];
 MATOMOSETTINGS.DOMAINS !== null ? _paq.push(['setDomains', MATOMOSETTINGS.DOMAINS]) : null;
 (function() {
@@ -28,21 +29,7 @@ if(typeof MATOMOSETTINGS.HEARTBEAT === 'number' && MATOMOSETTINGS.HEARTBEAT > 0)
 
 //disable matomo defaut downloadtracking
 _paq.push(['setDownloadExtensions', ""]);
-
-// Element.closest() polyfill for IE
-if (!Element.prototype.matches) {
-    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-}
-if (!Element.prototype.closest) {
-    Element.prototype.closest = function(s) {
-        var el = this;
-        do {
-            if (el.matches(s)) return el;
-            el = el.parentElement || el.parentNode;
-        } while (el !== null && el.nodeType === 1);
-        return null;
-    };
-}
+// End Init
 
 // List of tracked requests
 var coyoRequestTrackingConfig = [];

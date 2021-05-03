@@ -1,7 +1,7 @@
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'BasicExampleProject',
-    projectVersion: '1.0.0',
+    projectVersion: '1.0.2',
     projectDate: '2020-06-12'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
@@ -23,4 +23,4 @@ var gulp = commonGulp.gulp;
 gulp.task('build', gulp.parallel(commonGulp.tasks));
 gulp.task('local', function () { gulp.watch(['src/*.js', '../common/*.js'], gulp.series('min-js', 'build-local', 'build-local-min')) });
 gulp.task('zip', gulp.series(gulp.parallel('clean-temp', 'zip-files')));
-gulp.task('default', gulp.series('min-js', 'build'));
+gulp.task('default', gulp.series('min-js', 'build', 'zip-files'));
