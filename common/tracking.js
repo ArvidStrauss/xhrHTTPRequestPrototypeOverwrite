@@ -433,7 +433,7 @@ function initDownloadListener() {
     // add download tracking for coyo internal files
     window.mtmDownloadListener = window.mtmDownloadListener || setInterval(function() {
         // [].slice.call for IE compatibility
-        [].slice.call(document.querySelectorAll('a[coyo-download]:not(.piwik_ignore), a[href^="/web/senders/"][href*="/documents/"]:not(.piwik_ignore), a.single-file-download:not(.piwik_ignore)')).forEach(function(elem) {
+        [].slice.call(document.querySelectorAll('a[coyo-download]:not(.piwik_ignore), button[coyo-download]:not(.piwik_ignore), a[href^="/web/senders/"][href*="/documents/"]:not(.piwik_ignore), a.single-file-download:not(.piwik_ignore)')).forEach(function(elem) {
             elem.classList.add('piwik_ignore');
             if (!coyoTrackingUtils.excludeFromTracking()) {
                 elem.addEventListener('mousedown', function() {
