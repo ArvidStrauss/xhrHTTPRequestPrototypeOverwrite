@@ -11,13 +11,18 @@ function initCustomBackgrounds() {
         if (!document.querySelector('body .custom-background')) {
             window.customBackgrounds.urls = {
                 'q4deumsy1d5.mms-at-work.de': [
-                    '/web/public-link/b1626e47-9c31-4417-8590-ce57796303c9/download'
+                    '/web/public-link/b06c92a1-0e4c-4b33-b024-79d8baa62185/download'
                 ],
                 'pia-test.evm.de': [
-                    '/web/public-link/7ffa2187-fea2-4ceb-b7e9-382f05d1233f/download'
+                    '/web/public-link/5ebdb82d-27a5-4a9e-b8b5-f6857f4e2b66/download',
+                    '/web/public-link/7bd7961a-035f-4844-812b-69be22b5a1e0/download',
+                    '/web/public-link/21e15404-0fcb-4665-b82b-a99242cf56d5/download',
+                    '/web/public-link/6440e6a9-d11a-46ed-9102-bcee687ccfe2/download',
+                    '/web/public-link/8f2f0f9b-9598-4b6d-9e1d-fa94c9696d85/download'
+
                 ],
                 'pia.evm.de': [
-                    '/web/public-link/966435e0-2dcb-4b2c-8bd5-6b2f35daea41/download'
+                    '/web/public-link/f5419e3b-bfa9-4afb-8597-bfbe63d46a85/download'
                 ]
             }[window.location.hostname];
 
@@ -50,6 +55,7 @@ function initCustomBackgrounds() {
             angular.element(document.body).prepend(img);
         }
 
+        // Enable this to active the custom background switcher at navbar for TEST environment, also enable function switchCustomBackground()
         // if (!document.querySelector('.custom-nav-item')) {
         //     var listItem = document.createElement('li');
         //     angular.element(listItem).addClass('custom-nav-item nav-item nav-item-icon hidden-sm hidden-xs');
@@ -74,12 +80,15 @@ function initCustomBackgrounds() {
         }, 5000);
     }
 };
+
+// Enable this to active the custom background switcher at navbar for TEST environment
 // function switchCustomBackground() {
 //     var index = Number.parseInt(localStorage.getItem('customBackgroundIndex')) || 0;
 //     index = index < (window.customBackgrounds.urls.length - 1) ? index + 1 : 0;
 //     localStorage.setItem('customBackgroundIndex', index);
 //     window.customBackgrounds.img.src = window.customBackgrounds.urls[index];
 // };
+
 initCustomBackgrounds();
 window.document.addEventListener('stateChangeSuccess', debounce(function() {
     initCustomBackgrounds();

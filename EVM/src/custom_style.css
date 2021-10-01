@@ -602,3 +602,8 @@ a.search-icon.search-icon-open:focus {
     border-left: 2px solid #f39100;
     color: #f39100
 }
+
+coyo-license-warning-bar {
+    display: none !important;
+    visibility: hidden !important;
+}
