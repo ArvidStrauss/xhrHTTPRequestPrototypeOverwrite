@@ -14,12 +14,12 @@ function initCustomBackgrounds() {
                     '/web/public-link/b06c92a1-0e4c-4b33-b024-79d8baa62185/download'
                 ],
                 'pia-test.evm.de': [
-                    '/web/public-link/5ebdb82d-27a5-4a9e-b8b5-f6857f4e2b66/download',
-                    '/web/public-link/7bd7961a-035f-4844-812b-69be22b5a1e0/download',
-                    '/web/public-link/21e15404-0fcb-4665-b82b-a99242cf56d5/download',
-                    '/web/public-link/6440e6a9-d11a-46ed-9102-bcee687ccfe2/download',
-                    '/web/public-link/8f2f0f9b-9598-4b6d-9e1d-fa94c9696d85/download'
-
+                    '/web/public-link/7624d97c-8cec-42d4-ba71-7df3cd6e97d3/download',
+                    '/web/public-link/031ee76a-47e2-4172-a8be-b868711d810c/download',
+                    '/web/public-link/b13e56d8-6a08-4e81-87f5-8b25afb0c4f4/download',
+                    '/web/public-link/32568ab0-52de-4ac2-978a-bcbb6550651d/download',
+                    '/web/public-link/9e336254-7055-45f6-9351-2f78d3e46542/download',
+                    '/web/public-link/ee073725-edf0-45d6-8af4-3cee627b9c4c/download'
                 ],
                 'pia.evm.de': [
                     '/web/public-link/f5419e3b-bfa9-4afb-8597-bfbe63d46a85/download'
