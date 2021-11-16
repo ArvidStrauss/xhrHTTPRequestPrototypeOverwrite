@@ -5,14 +5,14 @@
 /* Updated: _$DATE$_
 /** ######################## **/
 
-(function () {
+(function() {
 
-    if ( typeof window.CustomEvent === "function" ) return false;
+    if (typeof window.CustomEvent === "function") return false;
 
-    function CustomEvent ( event, params ) {
+    function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent('CustomEvent');
-        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         return evt;
     }
 
@@ -41,11 +41,11 @@ var coyoTrackingUtils = {
         TYPE: {},
         PAGEID: {}
     },
-    FILEEXTENSIONS: ['7z','aac','apk','arc','arj','asf','asx','avi','azw3','bin','csv','deb','dmg','doc','docx',
-    'epub','exe','flv','gif','gz','gzip','hqx','ibooks','jar','jpg','jpeg','js','mobi','mp2','mp3','mp4','mpg',
-    'mpeg','mov','movie','msi','msp','odb','odf','odg','ods','odt','ogg','ogv','pdf','phps','png','ppt','pptx',
-    'qt','qtm','ra','ram','rar','rpm','sea','sit','tar','tbz','tbz2','bz','bz2','tgz','torrent','txt','wav','wma',
-    'wmv','wpd','xls','xlsx','xml','z','zip'],
+    FILEEXTENSIONS: ['7z', 'aac', 'apk', 'arc', 'arj', 'asf', 'asx', 'avi', 'azw3', 'bin', 'csv', 'deb', 'dmg', 'doc', 'docx',
+        'epub', 'exe', 'flv', 'gif', 'gz', 'gzip', 'hqx', 'ibooks', 'jar', 'jpg', 'jpeg', 'js', 'mobi', 'mp2', 'mp3', 'mp4', 'mpg',
+        'mpeg', 'mov', 'movie', 'msi', 'msp', 'odb', 'odf', 'odg', 'ods', 'odt', 'ogg', 'ogv', 'pdf', 'phps', 'png', 'ppt', 'pptx',
+        'qt', 'qtm', 'ra', 'ram', 'rar', 'rpm', 'sea', 'sit', 'tar', 'tbz', 'tbz2', 'bz', 'bz2', 'tgz', 'torrent', 'txt', 'wav', 'wma',
+        'wmv', 'wpd', 'xls', 'xlsx', 'xml', 'z', 'zip'],
     _openRequests: 0,
     _currentUrl: location.href,
     _initialStateChangeFired: false,
@@ -62,7 +62,7 @@ var coyoTrackingUtils = {
         return hash;
     },
     getUserIdHash: function() {
-        return ''+coyoTrackingUtils.createHashCode(localStorage.getItem('ngStorage-userId'));
+        return '' + coyoTrackingUtils.createHashCode(localStorage.getItem('ngStorage-userId'));
     },
     cleanupCustomDimensions: function() {
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE]);
@@ -74,7 +74,7 @@ var coyoTrackingUtils = {
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT]);
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT]);
         _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT]);
-        if(typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined') {
+        if (typeof CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN !== 'undefined' && typeof CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN !== 'undefined') {
             _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETYPE_EVENT_ORIGIN]);
             _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_PAGETITLE_EVENT_ORIGIN]);
         }
@@ -89,10 +89,10 @@ var coyoTrackingUtils = {
         // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTYPE_EVENT_VISIT]);
         // _paq.push(['deleteCustomDimension', CUSTOMDIMENSION_APPTITLE_EVENT_VISIT]);
     },
-    excludeUrl: function(url,pathArray) {
+    excludeUrl: function(url, pathArray) {
         var paths = pathArray || EXCLUDED_PATHS;
         return paths && paths.some(function(path) {
-            var regex = new RegExp(path.replace('/','\\/')+'(?=$|\\/|\\?)','gi')
+            var regex = new RegExp(path.replace('/', '\\/') + '(?=$|\\/|\\?)', 'gi')
             return url && url.match(regex);
         });
     },
@@ -117,18 +117,18 @@ var coyoTrackingUtils = {
             try {
                 var linkElem = fileOriginElem.nextElementSibling.getElementsByTagName('a')[0];
                 var url = linkElem ? linkElem.href : null;
-                if (coyoTrackingUtils.excludeUrl(url,pathArray)) {
+                if (coyoTrackingUtils.excludeUrl(url, pathArray)) {
                     return true;
                 }
             } catch (e) { }
         }
-        return coyoTrackingUtils.excludeUrl(location.href,pathArray) || coyoTrackingUtils.preventTracking;
+        return coyoTrackingUtils.excludeUrl(location.href, pathArray) || coyoTrackingUtils.preventTracking;
     },
-    typeNameOverrides: function(typeName,escape) {
+    typeNameOverrides: function(typeName, escape) {
         escape = (typeof escape === 'boolean' && escape) ? true : false;
         typeName = coyoTrackingUtils.OVERRIDES.TYPE[typeName.toLowerCase().trim()] || typeName;
-        if(typeName && typeName.length) typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
-        if(escape) typeName = encodeURIComponent(coyoTrackingUtils.shortenString(typeName,200));
+        if (typeName && typeName.length) typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        if (escape) typeName = encodeURIComponent(coyoTrackingUtils.shortenString(typeName, 200));
         typeName = coyoTrackingUtils.cleanUnicodeIcons(typeName).text;
         return typeName;
     },
@@ -152,7 +152,7 @@ var coyoTrackingUtils = {
             .replace(/@/g, ' -at- ')
             .replace(/[^a-zA-Z0-9 \-\\.\/]+/g, '') //remove . after text inside a title to avoid confusion with . as separator
             .replace(/\s+/g, '-')
-            .replace(/[-]{2,}/g,'-')
+            .replace(/[-]{2,}/g, '-')
             .replace(/^-*/g, '') //remove all trailing '-' so we dont get '-my-shiny-title-'
             .replace(/-*$/g, '') || '';
     },
@@ -176,24 +176,24 @@ var coyoTrackingUtils = {
     },
     /* Pass in the objects to merge as arguments.
    For a deep extend, set the first argument to `true`.*/
-    extend: function () {
+    extend: function() {
         // Variables
         var extended = {};
         var deep = false;
         var i = 0;
         var length = arguments.length;
         // Check if a deep merge
-        if ( Object.prototype.toString.call( arguments[0] ) === '[object Boolean]' ) {
+        if (Object.prototype.toString.call(arguments[0]) === '[object Boolean]') {
             deep = arguments[0];
             i++;
         }
         // Merge the object into the extended object
-        var merge = function (obj) {
-            for ( var prop in obj ) {
-                if ( Object.prototype.hasOwnProperty.call( obj, prop ) ) {
+        var merge = function(obj) {
+            for (var prop in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
                     // If deep merge and property is an object, merge properties
-                    if ( deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ) {
-                        extended[prop] = extend( true, extended[prop], obj[prop] );
+                    if (deep && Object.prototype.toString.call(obj[prop]) === '[object Object]') {
+                        extended[prop] = extend(true, extended[prop], obj[prop]);
                     } else {
                         extended[prop] = obj[prop];
                     }
@@ -201,7 +201,7 @@ var coyoTrackingUtils = {
             }
         };
         // Loop through each object and conduct a merge
-        for ( ; i < length; i++ ) {
+        for (; i < length; i++) {
             var obj = arguments[i];
             merge(obj);
         }
@@ -213,32 +213,32 @@ var coyoTrackingUtils = {
     */
     handleAppTypeExceptions: function(classMatch) {
         var split = classMatch.split('-');
-        if(split.length > 1 && split[1].length > 0){
-            switch(split[0]) {
-                case 'members': 
-                    return (['list','invited','requested'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
-                case 'file': 
-                    return (['library'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
-                case 'blog': 
-                    return (['article'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
-                case 'wiki': 
-                    return (['article'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
-                case 'chat': 
-                    return (['message'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
-                case 'timeline': 
-                    return (['item'].indexOf(split[1]) !== -1) ? split[0]+'-'+split[1] : split[0];
+        if (split.length > 1 && split[1].length > 0) {
+            switch (split[0]) {
+                case 'members':
+                    return (['list', 'invited', 'requested'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
+                case 'file':
+                    return (['library'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
+                case 'blog':
+                    return (['article'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
+                case 'wiki':
+                    return (['article'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
+                case 'chat':
+                    return (['message'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
+                case 'timeline':
+                    return (['item'].indexOf(split[1]) !== -1) ? split[0] + '-' + split[1] : split[0];
                 default:
                     return split[0]
             }
         }
         return split[0];
     },
-    getPageConfig: function (override) {
+    getPageConfig: function(override) {
         var contentGroup = [CONTENTBASE];
         var trackingTitle = '';
         override = override || {};
 
-        var analyzePage = function (contentGroup, override) {
+        var analyzePage = function(contentGroup, override) {
             var splitUrl = window.location.href.split('/');
             var pageElem = document.querySelector('section.page div.panel.panel-default div.panel-foreground div.titles-container div.title-description-wrapper div.title');
             var page = pageElem && pageElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
@@ -246,13 +246,13 @@ var coyoTrackingUtils = {
             var navigation = navElem && navElem.textContent.trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-page-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-page-show-([\w\-]*)/g.exec(bodyClass) || /state-main-page-([\w\-]*)/g.exec(bodyClass);
-            if(ENV !== 'prod') console.log('analyzePage',bodyClass,classMatch);
-            if(classMatch && classMatch[1]) {
+            if (ENV !== 'prod') console.log('analyzePage', bodyClass, classMatch);
+            if (classMatch && classMatch[1]) {
                 // see comments on function for more info
                 var app = coyoTrackingUtils.handleAppTypeExceptions(classMatch[1]);
             } else if (splitUrl[6]) {
-               // handle anything that is not an app by prepending the type like members_invited
-               var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] + '-' + splitUrl[6]) : decodeURIComponent(splitUrl[6]);
             }
             // check for platform specific type name overrides
             contentGroup[1] = 'pages';
@@ -261,7 +261,7 @@ var coyoTrackingUtils = {
             if (navigation) contentGroup[4] = override[4] ? override[4] : navigation;
         };
 
-        var analyzeWorkspace = function (contentGroup, override) {
+        var analyzeWorkspace = function(contentGroup, override) {
             var splitUrl = window.location.href.split('/');
             var workspaceElem = document.querySelector('section.workspace div.panel.panel-default div.panel-foreground div.titles-container div.title');
             var workspace = workspaceElem && workspaceElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
@@ -269,13 +269,13 @@ var coyoTrackingUtils = {
             var navigation = navElem && navElem.textContent.trim() || coyoTrackingDBHelper.getObjectData(splitUrl[7]).name;
             var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-workspace-show-apps-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-show-([\w\-]*)/g.exec(bodyClass) || /state-main-workspace-([\w\-]*)/g.exec(bodyClass);
-            if(ENV !== 'prod') console.log('analyzeWorkspace',bodyClass,classMatch);
-            if(classMatch && classMatch[1]) {
+            if (ENV !== 'prod') console.log('analyzeWorkspace', bodyClass, classMatch);
+            if (classMatch && classMatch[1]) {
                 // see comments on function for more info
                 var app = coyoTrackingUtils.handleAppTypeExceptions(classMatch[1]);
             } else if (splitUrl[6]) {
-               // handle anything that is not an app by prepending the type like members_invited
-               var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] + '-' + splitUrl[6]) : decodeURIComponent(splitUrl[6]);
             }
             // check for platform specific type name overrides
             contentGroup[1] = 'workspaces';
@@ -284,19 +284,19 @@ var coyoTrackingUtils = {
             if (navigation) contentGroup[4] = override[4] ? override[4] : navigation;
         };
 
-        var analyzeEvent = function (contentGroup, override) {
+        var analyzeEvent = function(contentGroup, override) {
             var splitUrl = window.location.href.split('/');
             var eventElem = document.querySelector('section.event div.panel.panel-default div.titles-container div.title');
             var event = eventElem && eventElem.textContent.trim() || (splitUrl[4] ? decodeURIComponent(splitUrl[4]) : null);
             var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-event-show-([\w\-]*)/g.exec(bodyClass) || /state-main-event-([\w\-]*)/g.exec(bodyClass);
-            if(ENV !== 'prod') console.log('analyzeEvent',bodyClass,classMatch);
-            if(classMatch && classMatch[1]) {
+            if (ENV !== 'prod') console.log('analyzeEvent', bodyClass, classMatch);
+            if (classMatch && classMatch[1]) {
                 // see comments on function for more info
                 var app = coyoTrackingUtils.handleAppTypeExceptions(classMatch[1]);
             } else if (splitUrl[6]) {
-               // handle anything that is not an app by prepending the type like members_invited
-               var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] +'-'+ splitUrl[6]) : decodeURIComponent(splitUrl[6]);
+                // handle anything that is not an app by prepending the type like members_invited
+                var app = splitUrl[5] && splitUrl[5] !== 'apps' ? decodeURIComponent(splitUrl[5] + '-' + splitUrl[6]) : decodeURIComponent(splitUrl[6]);
             }
             // check for platform specific type name overrides
             contentGroup[1] = 'events';
@@ -304,7 +304,7 @@ var coyoTrackingUtils = {
             if (app && 'create' !== app.toLowerCase()) contentGroup[3] = override[3] ? override[3] : app;
         };
 
-        var analyzeContentTitle = function (contentGroup, override) {
+        var analyzeContentTitle = function(contentGroup, override) {
             // check if the user is creating or editing sth
             var bodyClass = document.querySelector('body').getAttribute('class');
             var classMatch = /state-main-(page|workspace|event)-show-apps-([\w\-]*)/g.exec(bodyClass) ||
@@ -326,7 +326,7 @@ var coyoTrackingUtils = {
                     // the following line seems to be the cause, but I was unable to reproduce it
                     // articleTitle = document.querySelector('form input[id*="title"]').value.trim();
                     var articleFormElem = document.querySelector('form input[id*="title"]');
-                    if(articleFormElem) articleTitle = articleFormElem.value.trim();
+                    if (articleFormElem) articleTitle = articleFormElem.value.trim();
                 }
 
                 var title = articleTitle || threadTitle;
@@ -343,7 +343,7 @@ var coyoTrackingUtils = {
             }
         }
 
-        var analyzeFile = function (contentGroup, override) {
+        var analyzeFile = function(contentGroup, override) {
             var splitUrl = window.location.href.split('/');
             contentGroup[1] = 'filelibrary';
             if (splitUrl[5]) {
@@ -356,7 +356,9 @@ var coyoTrackingUtils = {
         // find the first navigation level
         var navItem = document.querySelector('nav.navbar-main ul.nav li.nav-item.active a');
         if (!navItem) {
-            navItem = document.querySelector('div.sub-navigation nav.navbar ul.nav li.nav-item.active a.nav-item');
+            // check subnav
+            navItem = navItem = document.querySelector('div.sub-navigation nav.navbar ul.nav li.nav-item.active a.nav-item') ||
+                document.querySelector('coyo-landing-page-navigation nav ul.nav li.nav-item.active > a');
         }
         if (navItem && navItem.getAttribute('href')) {
             var menuEntry = (/\/([^?\/]*)/g).exec(navItem.getAttribute('href'));
@@ -370,7 +372,7 @@ var coyoTrackingUtils = {
             var classMatch = (/state-main-([\w-]*)/g).exec(document.querySelector('body').getAttribute('class'));
             if (classMatch && classMatch.length > 1) {
                 var pageType = classMatch[1].split('-')[0];
-                if(['page','workspace','event'].indexOf(pageType) !== -1) pageType += 's';
+                if (['page', 'workspace', 'event'].indexOf(pageType) !== -1) pageType += 's';
                 contentGroup[1] = override[1] ? override[1] : pageType;
             } else if ((/state-admin/g).exec(document.querySelector('body').getAttribute('class'))) {
                 contentGroup[1] = override[1] ? override[1] : 'admin';
@@ -378,24 +380,24 @@ var coyoTrackingUtils = {
         }
 
         var contentGroupTwo = {
-            'home': function () {
+            'home': function() {
                 var homepage = navItem && (/\/[^\/]*\/([^?\/]*)/g).exec(navItem.getAttribute('href'));
                 if (homepage.length > 1) {
                     contentGroup[2] = override[2] ? override[2] : homepage[1];
                 }
             },
-            'pages': function () {
+            'pages': function() {
                 analyzePage(contentGroup, override);
                 analyzeContentTitle(contentGroup, override);
             },
-            'workspaces': function () {
+            'workspaces': function() {
                 analyzeWorkspace(contentGroup, override);
                 analyzeContentTitle(contentGroup, override);
             },
-            'events': function () {
+            'events': function() {
                 analyzeEvent(contentGroup, override);
             },
-            'profile': function () {
+            'profile': function() {
                 var name = (a = document.querySelector('section.profile div.panel.panel-default div.titles-container div.title')) !== null ? a.textContent : null;
                 var view = (a = document.querySelector('section.profile div.panel.panel-default div.profile-nav ul.nav li.nav-item.active')) !== null ? a.getAttribute('href') : null;
                 if (view && view.split('/').length > 3) {
@@ -403,20 +405,20 @@ var coyoTrackingUtils = {
                 }
                 contentGroup[2] = override[2] ? override[2] : name;
             },
-            'timeline-item': function () {
+            'timeline-item': function() {
                 var itemMatch = /\/timeline\/item\/([0-9a-fA-F-]*)/g.exec(window.location.href);
                 if (itemMatch) {
                     contentGroup[2] = override[2] ? override[2] : coyoTrackingDBHelper.getObjectData(itemMatch[1]).name;
                 }
             },
-            'fileLibrary': function () {
+            'fileLibrary': function() {
                 analyzeFile(contentGroup, override);
             }
         };
 
         //remove anchor tag from pageType
-        if(contentGroup[1] && contentGroup[1].indexOf('#') !== -1){
-            contentGroup[1] = contentGroup[1].substr(0,contentGroup[1].indexOf('#'));
+        if (contentGroup[1] && contentGroup[1].indexOf('#') !== -1) {
+            contentGroup[1] = contentGroup[1].substr(0, contentGroup[1].indexOf('#'));
         }
 
         if (contentGroupTwo[contentGroup[1]]) {
@@ -428,13 +430,13 @@ var coyoTrackingUtils = {
             trackingTitle: trackingTitle
         };
     },
-    pageIdToString: function (page) {
+    pageIdToString: function(page) {
         var result = "";
         if (page) {
             for (i = 0; i < 100; i++) {
                 if (page[i]) {
                     result += (i > 0 ? "." : "");
-                    if (i > 4 && i === page.length-1) {
+                    if (i > 4 && i === page.length - 1) {
                         result += coyoTrackingUtils.shortenString(coyoTrackingUtils.typeNameOverridesPageId(coyoTrackingUtils.translateText(page[i])));
                     } else {
                         result += coyoTrackingUtils.typeNameOverridesPageId(coyoTrackingUtils.translateText(page[i]));
@@ -446,10 +448,10 @@ var coyoTrackingUtils = {
         }
         return result;
     },
-    getResponseHeaders: function (respObj) {
+    getResponseHeaders: function(respObj) {
         var headers = respObj.getAllResponseHeaders().split(/\r\n/);
         var headersFormatted = {};
-        for(i=0;i<headers.length;i++){
+        for (i = 0; i < headers.length; i++) {
             var item = headers[i].split(': ');
             var name = item[0];
             var value = item[1]
@@ -457,11 +459,11 @@ var coyoTrackingUtils = {
         }
         return headersFormatted;
     },
-    getVideoInfo: function (url,callback) {
+    getVideoInfo: function(url, callback) {
         var docMatch = (/documents\/([0-9a-fA-F-]*)/g).exec(url);
         var objData = coyoTrackingDBHelper.getObjectData(docMatch[1]);
         // console.debug('getVideoInfo: objData lookup: ', objData);
-        if(objData && objData.name && objData.name.length) {
+        if (objData && objData.name && objData.name.length) {
         } else {
             // console.debug('getVideoInfo: send HEAD Request');
             var http = new XMLHttpRequest();
@@ -472,26 +474,26 @@ var coyoTrackingUtils = {
                     var respHeader = coyoTrackingUtils.getResponseHeaders(this);
                     var contentDisposition = respHeader['content-disposition'] || respHeader['Content-Disposition'];
                     // console.debug('getVideoInfo: DATA ', respHeader, contentDisposition);
-                    var filename = contentDisposition && contentDisposition.match(/filename=\".*"/g)[0].replace('filename="','');
-                    filename = filename.substr(0, filename.length-1);
+                    var filename = contentDisposition && contentDisposition.match(/filename=\".*"/g)[0].replace('filename="', '');
+                    filename = filename.substr(0, filename.length - 1);
                     // console.debug('getVideoInfo: Header: ', respHeader);
                     // console.debug('getVideoInfo: filename', filename);
-                    if(filename) callback(filename);
+                    if (filename) callback(filename);
                 }
             };
             http.send();
         }
-    }, 
+    },
     onContentReady: function(callback) {
-        var check = setInterval(function(){
-            if(ENV !== 'prod') console.debug('checking...',body.className)
-            if(document.body.className.match(/state(\-\w+)+-\w+/,'gi')){
+        var check = setInterval(function() {
+            if (ENV !== 'prod') console.debug('checking...', body.className)
+            if (document.body.className.match(/state(\-\w+)+-\w+/, 'gi')) {
                 clearInterval(check);
                 callback();
             }
-        },500);
+        }, 500);
         //fallback: clear after 30s
-        setTimeout(function(){clearInterval(check);},30000);
+        setTimeout(function() { clearInterval(check); }, 30000);
     },
     // onContentReady: function(callback) {
     //     // idea: increment _openRequests for outgoing xhr requests, decrement for each finished request
@@ -526,19 +528,19 @@ var coyoTrackingUtils = {
     // },
     cleanUnicodeIcons: function(text) {
         var matched = false;
-        var cleantext = text.replace(/[^\u0000-~\u0080-þĀ-žƀ-Ɏ֊־؋৲-৳૱௹฿៛᠆Ḁ-Ỿ\u2000-\u206e₠-₵∀-⋾Ⱡ-\u2c7e⸗⸚〜〰゠꜠-ꟾ﷼︱-︲﹘﹣﹩＄－￠-￡￥-￦]/g, function (match, offset) {
+        var cleantext = text.replace(/[^\u0000-~\u0080-þĀ-žƀ-Ɏ֊־؋৲-৳૱௹฿៛᠆Ḁ-Ỿ\u2000-\u206e₠-₵∀-⋾Ⱡ-\u2c7e⸗⸚〜〰゠꜠-ꟾ﷼︱-︲﹘﹣﹩＄－￠-￡￥-￦]/g, function(match, offset) {
             matched = true;
             return '';
         });
         return { matched: matched, text: cleantext };
     },
     sendTestEvent: function(eventType, data, cd) {
-        if(eventType === 'pageview') {
+        if (eventType === 'pageview') {
             var detail = {
                 action_name: data,
                 cd: cd
             }
-        } else if (eventType === 'event'){
+        } else if (eventType === 'event') {
             var detail = {
                 e_c: data.targetType,
                 e_a: data.action,
@@ -548,7 +550,7 @@ var coyoTrackingUtils = {
         } else {
             return
         }
-        var ajaxInterceptorEvent = new CustomEvent('MMS:TRACKING:'+eventType.toUpperCase(), {
+        var ajaxInterceptorEvent = new CustomEvent('MMS:TRACKING:' + eventType.toUpperCase(), {
             detail: detail
         });
         document.dispatchEvent(ajaxInterceptorEvent);

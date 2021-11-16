@@ -23,6 +23,9 @@ function initCustomBackgrounds() {
                 ],
                 'pia.evm.de': [
                     '/web/public-link/f5419e3b-bfa9-4afb-8597-bfbe63d46a85/download'
+                ],
+                'evm-test.coyocloud.com': [
+                    '/web/public-link/09914af5-644d-4cbe-b837-97be7f07197d/download'
                 ]
             }[window.location.hostname];
 
