@@ -1,8 +1,8 @@
 /** ######################## **/
 /* EVM-PIA Custom Backgrounds _$ENV$_
 /* T-Systems MMS
-/* Version: 0.1.0
-/* Updated: 2021-03-23
+/* Version: 0.2.0
+/* Updated: 2021-11-17
 /** ######################## **/
 
 window.customBackgrounds = {};
@@ -22,10 +22,13 @@ function initCustomBackgrounds() {
                     '/web/public-link/ee073725-edf0-45d6-8af4-3cee627b9c4c/download'
                 ],
                 'pia.evm.de': [
-                    '/web/public-link/f5419e3b-bfa9-4afb-8597-bfbe63d46a85/download'
+                    '/web/public-link/61658d8c-5b26-4095-8e30-62f2e05bc4ee/download'
                 ],
                 'evm-test.coyocloud.com': [
                     '/web/public-link/09914af5-644d-4cbe-b837-97be7f07197d/download'
+                ],
+                'evm.coyocloud.com': [
+                    '/web/public-link/63add8d5-aa1c-4125-8d27-be3ac3fbe9bd/download'
                 ]
             }[window.location.hostname];
 
