@@ -10,9 +10,9 @@ function initCustomBackgrounds() {
     function doInit() {
         if (!document.querySelector('body .custom-background')) {
             window.customBackgrounds.urls = {
-                'q4deumsy1d5.mms-at-work.de': [
-                    '/web/public-link/b06c92a1-0e4c-4b33-b024-79d8baa62185/download'
-                ],
+                // 'q4deumsy1d5.mms-at-work.de': [
+                //     '/web/public-link/b06c92a1-0e4c-4b33-b024-79d8baa62185/download'
+                // ],
                 'pia-test.evm.de': [
                     '/web/public-link/7624d97c-8cec-42d4-ba71-7df3cd6e97d3/download',
                     '/web/public-link/031ee76a-47e2-4172-a8be-b868711d810c/download',
@@ -21,21 +21,24 @@ function initCustomBackgrounds() {
                     '/web/public-link/9e336254-7055-45f6-9351-2f78d3e46542/download',
                     '/web/public-link/ee073725-edf0-45d6-8af4-3cee627b9c4c/download'
                 ],
-                'pia.evm.de': [
-                    '/web/public-link/61658d8c-5b26-4095-8e30-62f2e05bc4ee/download'
-                ],
                 'evm-test.coyocloud.com': [
+                    '/web/public-link/f329da71-2500-4048-bcef-c6766f8ff73d/download',
                     '/web/public-link/09914af5-644d-4cbe-b837-97be7f07197d/download'
                 ],
+                'pia.evm.de': [
+                    '/web/public-link/08b99a2c-3bcb-446a-b4c5-68a3b02517a3/download'
+                ],
                 'evm.coyocloud.com': [
-                    '/web/public-link/63add8d5-aa1c-4125-8d27-be3ac3fbe9bd/download'
+                    '/web/public-link/08b99a2c-3bcb-446a-b4c5-68a3b02517a3/download'
                 ]
             }[window.location.hostname];
+
+            if (!window.customBackgrounds.urls) return true;
 
             var styles =
                 'body img.custom-background {' +
                 'min-height: 100%;' +
-                'min-width: 1200px;' +
+                'min-width: 1900px;' +
                 'width: 100vw;' +
                 'height: auto;' +
                 'position: fixed;' +
