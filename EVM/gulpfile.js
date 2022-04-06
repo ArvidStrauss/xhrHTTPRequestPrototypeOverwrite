@@ -7,8 +7,8 @@ var uglify = require('gulp-uglify');
 // projectdata is required (of course!)
 var projectData = {
     projectName: 'EVM-PIA',
-    projectVersion: '1.1.2',
-    projectDate: '2021-02-01'
+    projectVersion: '1.2.0',
+    projectDate: '2022-04-06'
 }
 // override builds as array of {env,htmlFile} if needed, default is dev/test/prod setup (see common/gulpfile)
 // var builds = [

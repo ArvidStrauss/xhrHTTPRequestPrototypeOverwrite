@@ -15,29 +15,27 @@
 // #### Show first activity tab in notification bell
 // ###############################################
 coyoTrackingUtils.onContentReady(function() {
-  var notifications = document.querySelector('#notification-toggle');
+  var notifications = document.querySelector('.main-navigation ngx-notification-btn');
   var openPrototypeTracking = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function() {
     this.addEventListener('load', function(e) {
-      if (this.responseURL && this.responseURL.match(/notifications/) && notifications && notifications.getAttribute('data-mms-opened') === null) {
+      if (this.responseURL && this.responseURL.match(/notifications\?category=DISCUSSION/gi) && notifications) {
         try {
-          var lastopen = localStorage.getItem('mms.notifications.lastopen') || 'activity';
-          // var tabs = document.querySelectorAll('#notifications-dialog .notifications-tabs li a');
-          // for (var i = 0; i < tabs.length; i++) {
-          //   tabs[i].addEventListener('click', function(){
-          //     var tabname = this.getAttribute('aria-controls').split('-')[2];
-          //     localStorage.setItem('mms.notifications.lastopen',tabname);
-          //   });
-          // }
-          if (lastopen && lastopen.length) {
-            var activity = document.querySelector('#notifications-dialog .notifications-tabs li a[aria-controls="notification-panel-' + lastopen + '"]');
-            if (activity) {
-              var e = document.createEvent('HTMLEvents');
-              e.initEvent('click', false, true);
-              activity.dispatchEvent(e);
-            }
+          // set click listener for storing last opened tab
+          var tabs = document.querySelectorAll('coyo-notification-center .tabs-header button.tab-label');
+          for (var i = 0; i < 2; i++) {
+            tabs[i].setAttribute('tabId', i);
+            tabs[i].addEventListener('click', function(event) {
+              localStorage.setItem('mms.notifications.tab.lastopen', event.currentTarget.getAttribute('tabId'));
+            });
           }
-          notifications.setAttribute('data-mms-opened', '');
+
+          var lastopen = localStorage.getItem('mms.notifications.tab.lastopen') || 1;
+          if (lastopen > 0) {
+            var e = document.createEvent('HTMLEvents');
+            e.initEvent('click', false, true);
+            tabs[lastopen].dispatchEvent(e);
+          }
         } catch (e) {
           console.warn(e);
         }
